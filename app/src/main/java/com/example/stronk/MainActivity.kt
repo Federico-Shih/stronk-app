@@ -26,6 +26,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.stronk.ui.components.AppBar
 import com.example.stronk.ui.components.BottomBar
+import com.example.stronk.ui.screens.ExploreScreen
 import com.example.stronk.ui.theme.StronkTheme
 
 enum class MainScreens {
@@ -74,7 +75,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController = navController, startDestination = BottomBarScreens.EXPLORE.name) {
                         composable(route = BottomBarScreens.EXPLORE.name) {
-                            Greeting(name = "hola")
+                            ExploreScreen()
                         }
                         composable(route = BottomBarScreens.RUTINES.name) {
                             Greeting(name = "rutines")

@@ -14,18 +14,15 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-        primary = Purple500,
-        primaryVariant = Purple700,
-        secondary = Color.White
-
-        /* Other default colors to override
+    primary = OliveGreen,
+    primaryVariant = DarkOliveGreen,
+    secondary = StronkBlack,
     background = Color.White,
     surface = Color.White,
     onPrimary = Color.White,
     onSecondary = Color.Black,
     onBackground = Color.Black,
     onSurface = Color.Black,
-    */
 )
 
 @Composable

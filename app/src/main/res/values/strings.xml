@@ -3,4 +3,6 @@
     <string name="explore_label">Explore</string>
     <string name="routines_label">Routines</string>
     <string name="exercise_label">Exercises</string>
+    <string name="detailed">Detailed View</string>
+    <string name="resumed">Resumed View</string>
 </resources>
