@@ -1,25 +1,16 @@
-package com.example.stronk
+package com.example.stronk.ui.components
 
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Canvas
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import coil.request.ImageRequest
 import com.example.stronk.ui.theme.StronkTheme
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.geometry.CornerRadius
@@ -31,24 +22,24 @@ class ExInfo(val name: String, val reps: Int?, val duration: Int?, val imageUrl:
 @Composable
 fun Cycle(title: String, exList: List<ExInfo>) {
 
-    val stroke = Stroke(width = 8.dp.value,
-        pathEffect = PathEffect.dashPathEffect(floatArrayOf(40.dp.value), 20.dp.value)
-    )
-    Box() {
-        Canvas(modifier = Modifier
-            .fillMaxWidth()) {
-            drawRoundRect(Color.Blue, style= stroke, cornerRadius = CornerRadius(8.dp.toPx()))
-        }
+    val calculatedHeight = 100 + 65 * exList.size
 
-        Column(
+    val stroke = Stroke(width = 10.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f))
+
+    val color = MaterialTheme.colors.primary
+    Box(modifier = Modifier.fillMaxWidth().height(calculatedHeight.dp).padding(10.dp)) {
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawRoundRect(color = color, style= stroke, cornerRadius = CornerRadius(8.dp.toPx()))
+        }
+        Column(modifier = Modifier.padding(10.dp)
         ) {
             Text(text = title, style = MaterialTheme.typography.h5)
             for (ex in exList) {
                 ExerciseItem(ex)
             }
-
         }
     }
+
 
 }
 
