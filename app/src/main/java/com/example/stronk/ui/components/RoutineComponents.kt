@@ -39,8 +39,6 @@ fun Cycle(title: String, exList: List<ExInfo>) {
             }
         }
     }
-
-
 }
 
 
