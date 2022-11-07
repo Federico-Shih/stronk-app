@@ -15,6 +15,7 @@ import com.example.stronk.ui.theme.StronkTheme
 import androidx.compose.foundation.Canvas
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 
 class ExInfo(val name: String, val reps: Int?, val duration: Int?, val imageUrl: String?)
 
@@ -22,20 +23,29 @@ class ExInfo(val name: String, val reps: Int?, val duration: Int?, val imageUrl:
 @Composable
 fun Cycle(title: String, exList: List<ExInfo>) {
 
-    val calculatedHeight = 100 + 65 * exList.size
 
-    val stroke = Stroke(width = 10.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f))
+    val dashedStroke = Stroke(width = 10.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(20f, 20f), 0f))
+    val solidStroke = Stroke(width = 10.dp.value)
+
 
     val color = MaterialTheme.colors.primary
-    Box(modifier = Modifier.fillMaxWidth().height(calculatedHeight.dp).padding(10.dp)) {
-        Canvas(modifier = Modifier.fillMaxSize()) {
-            drawRoundRect(color = color, style= stroke, cornerRadius = CornerRadius(8.dp.toPx()))
+    Box(modifier = Modifier.wrapContentSize().padding(10.dp)) {
+        Canvas(modifier = Modifier.matchParentSize()) {
+            drawRoundRect(color = color, style= dashedStroke, cornerRadius = CornerRadius(8.dp.toPx()))
         }
+
         Column(modifier = Modifier.padding(10.dp)
         ) {
-            Text(text = title, style = MaterialTheme.typography.h5)
-            for (ex in exList) {
-                ExerciseItem(ex)
+            Text(text = title, style = MaterialTheme.typography.h5, fontWeight = FontWeight.Bold)
+            Box(modifier = Modifier.wrapContentSize().padding(10.dp)) {
+                Canvas(modifier = Modifier.matchParentSize().padding(end = 260.dp)) {
+                    drawRoundRect(color = color, style= solidStroke, cornerRadius = CornerRadius(8.dp.toPx()))
+                }
+                Column(modifier = Modifier.padding(start = 10.dp)) {
+                    for (ex in exList) {
+                        ExerciseItem(ex)
+                    }
+                }
             }
         }
     }
@@ -56,7 +66,7 @@ fun ExerciseItem(exercise: ExInfo) {
                     tint = MaterialTheme.colors.primary,
                 )
             },
-            text = { Text(text = exercise.name) },
+            text = { Text(text = exercise.name, fontWeight = FontWeight.SemiBold) },
             secondaryText = {
                 Row() {
                     if (exercise.reps != null) {
