@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Stronk</string>
+    <string name="explore_label">Explorar</string>
+    <string name="routines_label">Rutinas</string>
+    <string name="exercise_label">Ejercicios</string>
+    <string name="detailed">Vista Detallada</string>
+    <string name="condensed">Vista Resumida</string>
+    <string name="reps_">"  reps"</string>
+    <string name="x_repetitions">%1$d repeticiones</string>
+    <string name="x_seconds">%1$d segundos</string>
+    <string name="made_by_x">hecho por %1$s</string>
+    <string name="category">Categoría</string>
+    <string name="difficulty">Dificultad</string>
+    <string name="description">Descripción</string>
+    <string name="start">Inicio</string>
+    <string name="end">Fin</string>
+    <string name="in_progress_">En Curso...</string>
+    <string name="repetitions">Repeticiones</string>
+    <string name="clear">Borrar</string>
+    <string name="time_left">Tiempo Restante</string>
+    <string name="category_representing_image">Imagen Representativa de Categoría</string>
+    <string name="current_cycle">Ciclo Actual</string>
+    <string name="next_exercise">Próximo Ejercicio</string>
+</resources>

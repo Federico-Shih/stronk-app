@@ -1,19 +1,16 @@
 package com.example.stronk.ui.components
 
-import androidx.compose.animation.expandHorizontally
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -87,7 +84,7 @@ fun InfoCycle(currentCycle: String, nextExer: String)
             Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal)) {
-                        append(stringResource(R.string.ActualCycleExec)) // falta traducirlo al inglés
+                        append(stringResource(R.string.current_cycle)) // falta traducirlo al inglés
                     }
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Black)) {
                         append(currentCycle)
@@ -105,7 +102,7 @@ fun InfoCycle(currentCycle: String, nextExer: String)
             Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal)) {
-                        append(stringResource(R.string.NextExExec)) // falta traducirlo al inglés
+                        append(stringResource(R.string.next_exercise)) // falta traducirlo al inglés
                     }
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Black)) {
                         append(nextExer)

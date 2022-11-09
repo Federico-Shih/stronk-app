@@ -4,11 +4,22 @@
     <string name="routines_label">Routines</string>
     <string name="exercise_label">Exercises</string>
     <string name="detailed">Detailed View</string>
-    <string name="resumed">Resumed View</string>
-    <string name="RepetitionsExecControls">Repetitions:</string>
-    <string name="TimeExecControls">Time left:</string>
-    <string name="contentDescriptionRoutineButton">Image representative to the Category</string>
-    <string name="clearSearchBar">Clear</string>
-    <string name="ActualCycleExec">Actual Cycle:</string>
-    <string name="NextExExec">Next Exercise:</string>
+    <string name="condensed">Condensed View</string>
+    <string name="repetitions">Repetitions</string>
+    <string name="time_left">Time left</string>
+    <string name="category_representing_image">Category Representing Image</string>
+    <string name="clear">Clear</string>
+    <string name="current_cycle">Current Cycle</string>
+    <string name="next_exercise">Next Exercise</string>
+    <string name="reps_">" reps"</string>
+    <string name="x_repetitions">%1$d repetitions</string>
+    <string name="x_seconds">%1$d seconds</string>
+    <string name="made_by_x">made by %1$s</string>
+    <string name="category">Category</string>
+    <string name="difficulty">Difficulty</string>
+    <string name="description">Description</string>
+    <string name="start">Start</string>
+    <string name="end">End</string>
+    <string name="in_progress_">In Progress…</string>
+
 </resources>

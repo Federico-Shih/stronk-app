@@ -4,7 +4,6 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
@@ -39,7 +38,7 @@ fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String){
     ) {
         Box{
             Image(
-                painter = image, contentDescription = stringResource(R.string.contentDescriptionRoutineButton),
+                painter = image, contentDescription = stringResource(R.string.category_representing_image),
                 contentScale = ContentScale.Crop, modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()

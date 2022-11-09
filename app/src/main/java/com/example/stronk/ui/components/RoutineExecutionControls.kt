@@ -14,8 +14,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stronk.R
 import com.example.stronk.ui.theme.StronkTheme
-import kotlinx.coroutines.delay
-import java.util.Timer
 
 @Composable
 fun RoutineControls(StartingTimer: Long?=null, Reps: Int?=null) {
@@ -33,7 +31,7 @@ fun RoutineControls(StartingTimer: Long?=null, Reps: Int?=null) {
             Column(modifier= Modifier
                 .align(Alignment.TopStart)
                 .padding(15.dp, 10.dp, 0.dp, 0.dp)){
-                Text(text = stringResource(R.string.RepetitionsExecControls))//Todo TRANSLATE
+                Text(text = stringResource(R.string.repetitions))//Todo TRANSLATE
                 Row {
                     Text(text =Reps.toString(), fontSize = MaterialTheme.typography.h3.fontSize, modifier = Modifier.alignByBaseline())
                     Text(text =" reps.", modifier=Modifier.alignByBaseline())
@@ -44,7 +42,7 @@ fun RoutineControls(StartingTimer: Long?=null, Reps: Int?=null) {
             Column(modifier= Modifier
                 .align(Alignment.TopEnd)
                 .padding(0.dp, 10.dp, 15.dp, 0.dp)){
-                Text(text = stringResource(R.string.TimeExecControls))//TODO translate
+                Text(text = stringResource(R.string.time_left))//TODO translate
                 Text(text = "$minutes:$seconds",fontSize = MaterialTheme.typography.h3.fontSize)
 
             }

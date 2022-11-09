@@ -1,16 +1,10 @@
 package com.example.stronk.ui.screens
 
-import android.content.Context
 import android.content.res.Resources
-import android.provider.Settings.Global.getString
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,7 +37,7 @@ fun Tabs(pagerState: PagerState) {
     // in this list we are specifying data as
     // name of the tab and the icon for it.
     val list = listOf(
-        Resources.getSystem().getString(R.string.resumed),
+        Resources.getSystem().getString(R.string.condensed),
         Resources.getSystem().getString(R.string.detailed),
     )
     // on below line we are creating

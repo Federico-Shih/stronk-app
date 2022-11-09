@@ -28,7 +28,7 @@ fun SearchBar(
         singleLine = true,
         trailingIcon = {
             IconButton(onClick = {  }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = stringResource(R.string.clearSearchBar))
+                Icon(imageVector = Icons.Filled.Search, contentDescription = stringResource(R.string.clear))
             }
         },
     )
