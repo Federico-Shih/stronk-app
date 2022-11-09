@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
@@ -19,6 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.stronk.R
 import com.example.stronk.ui.theme.StronkTheme
 
 @Composable
@@ -85,7 +87,7 @@ fun InfoCycle(currentCycle: String, nextExer: String)
             Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal)) {
-                        append("Ciclo Actual: ") // falta traducirlo al inglés
+                        append(stringResource(R.string.ActualCycleExec)) // falta traducirlo al inglés
                     }
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Black)) {
                         append(currentCycle)
@@ -103,7 +105,7 @@ fun InfoCycle(currentCycle: String, nextExer: String)
             Text(
                 buildAnnotatedString {
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal)) {
-                        append("Próximo Ejercicio: ") // falta traducirlo al inglés
+                        append(stringResource(R.string.NextExExec)) // falta traducirlo al inglés
                     }
                     withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Black)) {
                         append(nextExer)

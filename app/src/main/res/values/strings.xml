@@ -5,4 +5,10 @@
     <string name="exercise_label">Exercises</string>
     <string name="detailed">Detailed View</string>
     <string name="resumed">Resumed View</string>
+    <string name="RepetitionsExecControls">Repetitions:</string>
+    <string name="TimeExecControls">Time left:</string>
+    <string name="contentDescriptionRoutineButton">Image representative to the Category</string>
+    <string name="clearSearchBar">Clear</string>
+    <string name="ActualCycleExec">Actual Cycle:</string>
+    <string name="NextExExec">Next Exercise:</string>
 </resources>

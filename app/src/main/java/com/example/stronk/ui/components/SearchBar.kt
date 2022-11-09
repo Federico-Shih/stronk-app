@@ -6,6 +6,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.example.stronk.R
 
 @Composable
 fun SearchBar(
@@ -26,7 +28,7 @@ fun SearchBar(
         singleLine = true,
         trailingIcon = {
             IconButton(onClick = {  }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = "Clear")
+                Icon(imageVector = Icons.Filled.Search, contentDescription = stringResource(R.string.clearSearchBar))
             }
         },
     )

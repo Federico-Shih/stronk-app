@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,7 +39,7 @@ fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String){
     ) {
         Box{
             Image(
-                painter = image, contentDescription = "Image representative to the Category",
+                painter = image, contentDescription = stringResource(R.string.contentDescriptionRoutineButton),
                 contentScale = ContentScale.Crop, modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
@@ -49,7 +50,7 @@ fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String){
                     .padding(10.dp)
                     .align(Alignment.BottomStart),
                 fontStyle = MaterialTheme.typography.h6.fontStyle,
-                color = MaterialTheme.colors.secondary,
+                color = MaterialTheme.colors.primary,
                 fontWeight = FontWeight(400)
             )
         }
