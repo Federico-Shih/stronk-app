@@ -9,6 +9,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,10 +23,12 @@ import kotlinx.coroutines.launch
 @Composable
 fun ExecuteRoutineScreen() {
     val pagerState = rememberPagerState(pageCount = 2)
-    Tabs(pagerState = pagerState)
-    // on below line we are calling tabs content
-    // for displaying our page for each tab layout
-    TabsContent(pagerState = pagerState)
+    Column {
+        Tabs(pagerState = pagerState)
+        // on below line we are calling tabs content
+        // for displaying our page for each tab layout
+        TabsContent(pagerState = pagerState)
+    }
 }
 
 // on below line we are
@@ -37,8 +40,8 @@ fun Tabs(pagerState: PagerState) {
     // in this list we are specifying data as
     // name of the tab and the icon for it.
     val list = listOf(
-        Resources.getSystem().getString(R.string.condensed),
-        Resources.getSystem().getString(R.string.detailed),
+        stringResource(id = R.string.condensed),
+        stringResource(id = R.string.detailed),
     )
     // on below line we are creating
     // a variable for the scope.
@@ -72,7 +75,7 @@ fun Tabs(pagerState: PagerState) {
     ) {
         // on below line we are specifying icon
         // and text for the individual tab item
-        list.forEachIndexed { index, _ ->
+        list.forEachIndexed { index, text ->
             // on below line we are creating a tab.
             Tab(
                 // on below line we are specifying the text for
@@ -80,7 +83,7 @@ fun Tabs(pagerState: PagerState) {
                 // from the list which we have created.
                 text = {
                     Text(
-                        list[index],
+                        text,
                         // on below line we are specifying the text color
                         // for the text in that tab
                         color = if (pagerState.currentPage == index) Color.White else Color.LightGray
@@ -93,6 +96,7 @@ fun Tabs(pagerState: PagerState) {
                 // on click for the tab which is selected.
                 onClick = {
                     // on below line we are specifying the scope.
+                    println(index)
                     scope.launch {
                         pagerState.animateScrollToPage(index)
                     }
