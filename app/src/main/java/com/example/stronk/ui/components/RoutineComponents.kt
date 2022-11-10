@@ -1,8 +1,9 @@
 package com.example.stronk.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -25,13 +26,50 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.stronk.R
 import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.ExInfo
 
+@Composable
+@ExperimentalAnimationApi
+fun ExecutingCycles(prevCycle: CycleInfo? = null, currentCycle: CycleInfo, nextCycle: CycleInfo? = null, currentExercise: Int, currentRepetition: Int) {
 
+    val color = MaterialTheme.colors.primary
+    Box(modifier = Modifier.height(IntrinsicSize.Max)) {
+        Canvas(modifier = Modifier
+            .matchParentSize()
+            .padding(start = 87.dp, top = 10.dp, bottom = 10.dp)
+            .zIndex(1f)) {
+            val canvasHeight = size.height
+            drawLine(
+                start = Offset(x = 0f, y = 0f),
+                end = Offset(x = 0f, y = canvasHeight),
+                color = color,
+                strokeWidth = 10.dp.value
+            )
+        }
+        Column {
+            AnimatedVisibility(visible = prevCycle != null) {
+                CollapsedCycle(title = prevCycle!!.name, cycleReps = prevCycle.cycleReps, label = stringResource(id = R.string.prev_cy))
+            }
+            ExecuteCycle(
+                title = currentCycle.name,
+                exList = currentCycle.exList,
+                cycleReps = currentCycle.cycleReps,
+                currentExercise = currentExercise,
+                currentRepetition = currentRepetition
+            )
+            AnimatedVisibility(visible = nextCycle != null) {
+                CollapsedCycle(title = nextCycle!!.name, cycleReps = nextCycle.cycleReps, label = stringResource(id = R.string.next_cy))
+            }
+        }
+    }
+}
+
+@ExperimentalAnimationApi
 @Composable
 fun CompleteRoutine(cycleList: List<CycleInfo>) {
     val color = MaterialTheme.colors.primary
@@ -59,8 +97,102 @@ fun CompleteRoutine(cycleList: List<CycleInfo>) {
 }
 
 @Composable
-fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
+fun CollapsedCycle(title: String, cycleReps: Int, label: String)
+{
+    val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
+    val color = MaterialTheme.colors.primary
+    Box(modifier = Modifier
+        .wrapContentSize()
+        .padding(10.dp)) {
+        Canvas(modifier = Modifier.matchParentSize()) {
+            drawRoundRect(color = color, style= dashedStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+        }
+        Row(modifier = Modifier
+            .align(Alignment.CenterStart)
+            .padding(bottom = 0.dp, start = 20.dp)
+            .zIndex(1f)
+        )
+        {
 
+            Text(text = "$cycleReps", fontWeight = FontWeight.SemiBold, fontSize = 20.sp, modifier = Modifier.alignByBaseline())
+            Text(text = stringResource(R.string.reps_), fontSize = 11.sp, modifier = Modifier.alignByBaseline())
+        }
+        Row(modifier = Modifier
+            .height(IntrinsicSize.Max)
+            .padding(start = 65.dp)
+            .fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                Icons.Filled.Circle,
+                contentDescription = null,
+                modifier = Modifier
+                    .size(34.dp)
+                    .padding(end = 10.dp),
+                tint = MaterialTheme.colors.primary,
+            )
+            Row(modifier = Modifier.padding(end = 10.dp)) {
+                Text(text = "${label}: ", fontWeight = FontWeight.Light, fontSize = 14.sp, modifier = Modifier.alignByBaseline())
+                Text(text = title, style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.alignByBaseline())
+            }
+        }
+    }
+}
+
+@Composable
+@ExperimentalAnimationApi
+fun ExecuteCycle(title: String, exList: List<ExInfo>, cycleReps: Int, currentExercise: Int, currentRepetition: Int)
+{
+    val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
+    val solidStroke = Stroke(width = 10.dp.value)
+
+    val color = MaterialTheme.colors.primary
+    Box(modifier = Modifier
+        .wrapContentSize()
+        .padding(10.dp)) {
+        Canvas(modifier = Modifier.matchParentSize()) {
+            drawRoundRect(color = color, style= dashedStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+        }
+        Row(modifier = Modifier
+            .align(Alignment.BottomStart)
+            .padding(bottom = 25.dp, start = 22.dp)
+            .zIndex(1f)
+        )
+        {
+            Text(text = "$currentRepetition", fontWeight = FontWeight.SemiBold, fontSize = 28.sp, modifier = Modifier.alignByBaseline())
+            Text(text = "/$cycleReps", fontSize = 14.sp, modifier = Modifier.alignByBaseline())
+        }
+
+
+        Box(modifier = Modifier
+            .height(IntrinsicSize.Max)
+            .padding(15.dp)) {
+            Canvas(modifier = Modifier
+                .fillMaxHeight()
+                .width(62.dp)
+                .zIndex(1f)) {
+                drawRoundRect(color = color, style= solidStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+            }
+            Column(modifier = Modifier
+                .padding(start = 40.dp)
+                .wrapContentHeight()) {
+                Column(modifier = Modifier.padding(start = 42.dp, bottom = 10.dp)) {
+                    Text(text = "${stringResource(id = R.string.current_cycle)}: ", fontWeight = FontWeight.Light, fontSize = 14.sp)
+                    Text(text = title, style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
+                }
+                for (ex in exList) {
+                    ExerciseItem(ex, if(currentExercise == exList.indexOf(ex)) ExerciseItemType.EXPANDED else ExerciseItemType.NO_PIC)
+                }
+            }
+        }
+
+    }
+}
+
+@Composable
+@ExperimentalAnimationApi
+fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
 
     val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
     val solidStroke = Stroke(width = 10.dp.value)
@@ -98,7 +230,7 @@ fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
                 .wrapContentHeight()) {
                 Text(text = title, style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 32.dp, bottom = 10.dp))
                 for (ex in exList) {
-                    ExerciseItem(ex, ExerciseItemType.values()[(exList.indexOf(ex)+3) % 4])
+                    ExerciseItem(ex, ExerciseItemType.REGULAR)
                 }
             }
         }
@@ -240,75 +372,76 @@ fun RatingCard(rating: Int, modifier: Modifier)
 
 @Preview(showBackground = true)
 @Composable
+@ExperimentalAnimationApi
 fun ExerciseList() {
     StronkTheme {
         Box(modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState()))
         {
-            CompleteRoutine(
-                cycleList = listOf(
-                    CycleInfo(
-                        "Sugerida por copilot",
-                        listOf(
-                            ExInfo(
-                                "Pushups",
-                                10,
-                                3,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
-                            ExInfo(
-                                "Squats",
-                                10,
-                                null,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
-                            ExInfo(
-                                "Pullups",
-                                null,
-                                10,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
-                            ExInfo(
-                                "Planks",
-                                null,
-                                10,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
+            ExecutingCycles(
+                currentCycle = CycleInfo(
+                    "Sugerida por copilot",
+                    listOf(
+                        ExInfo(
+                            "Pushups",
+                            10,
+                            3,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
                         ),
-                        6
+                        ExInfo(
+                            "Squats",
+                            10,
+                            null,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                        ),
+                        ExInfo(
+                            "Pullups",
+                            null,
+                            10,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                        ),
+                        ExInfo(
+                            "Planks",
+                            null,
+                            10,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                        ),
                     ),
-                    CycleInfo(
-                        "AAAAAA",
-                        listOf(
-                            ExInfo(
-                                "Pushups",
-                                10,
-                                null,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
-                            ExInfo(
-                                "Squats",
-                                10,
-                                50,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
-                            ExInfo(
-                                "Pullups",
-                                null,
-                                10,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
-                            ExInfo(
-                                "Planks",
-                                null,
-                                10,
-                                "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                            ),
+                    6
+                ),
+                prevCycle = CycleInfo(
+                    "Sugerida por copilot",
+                    listOf(
+                        ExInfo(
+                            "Pushups",
+                            10,
+                            3,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
                         ),
-                        81
-                    )
-                )
+                        ExInfo(
+                            "Squats",
+                            10,
+                            null,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                        ),
+                        ExInfo(
+                            "Pullups",
+                            null,
+                            10,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                        ),
+                        ExInfo(
+                            "Planks",
+                            null,
+                            10,
+                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                        ),
+                    ),
+                    6
+                ),
+                currentExercise = 0,
+                currentRepetition = 0
             )
         }
     }
