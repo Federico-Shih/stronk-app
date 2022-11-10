@@ -6,6 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DirectionsRun
@@ -73,15 +75,22 @@ class MainActivity : ComponentActivity() {
                         )
                     }
                 ) {
-                    NavHost(navController = navController, startDestination = BottomBarScreens.EXPLORE.name) {
-                        composable(route = BottomBarScreens.EXPLORE.name) {
-                            ExploreScreen()
-                        }
-                        composable(route = BottomBarScreens.RUTINES.name) {
-                            Greeting(name = "rutines")
-                        }
-                        composable(route = BottomBarScreens.EXERCISES.name) {
-                            Greeting(name = "hola")
+                    Column(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = it.calculateBottomPadding())
+                        .verticalScroll(
+                            rememberScrollState()
+                        )) {
+                        NavHost(navController = navController, startDestination = BottomBarScreens.EXPLORE.name) {
+                            composable(route = BottomBarScreens.EXPLORE.name) {
+                                ExploreScreen()
+                            }
+                            composable(route = BottomBarScreens.RUTINES.name) {
+                                Greeting(name = "rutines")
+                            }
+                            composable(route = BottomBarScreens.EXERCISES.name) {
+                                Greeting(name = "hola")
+                            }
                         }
                     }
                 }

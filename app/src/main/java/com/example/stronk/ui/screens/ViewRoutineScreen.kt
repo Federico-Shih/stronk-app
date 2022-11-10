@@ -21,9 +21,9 @@ import androidx.compose.material.Chip
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.ui.res.stringResource
 import com.example.stronk.R
+import com.example.stronk.state.CycleInfo
+import com.example.stronk.state.ExInfo
 import com.example.stronk.ui.components.CompleteRoutine
-import com.example.stronk.ui.components.CycleInfo
-import com.example.stronk.ui.components.ExInfo
 
 @ExperimentalMaterialApi
 @Composable
