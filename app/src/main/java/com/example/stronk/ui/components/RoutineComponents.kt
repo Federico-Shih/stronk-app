@@ -28,10 +28,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.stronk.R
+import com.example.stronk.state.CycleInfo
+import com.example.stronk.state.ExInfo
 
-class ExInfo(val name: String, val reps: Int?, val duration: Int?, val imageUrl: String?)
-
-class CycleInfo(val name: String, val exList: List<ExInfo>, val cycleReps: Int)
 
 @Composable
 fun CompleteRoutine(cycleList: List<CycleInfo>) {
