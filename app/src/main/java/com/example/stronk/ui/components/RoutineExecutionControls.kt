@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -14,14 +15,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stronk.R
 import com.example.stronk.ui.theme.StronkTheme
+import kotlinx.coroutines.delay
 
 @Composable
 fun RoutineControls(StartingTimer: Long?=null, Reps: Int?=null) {
-    var totalremainingSeconds: Long by remember { mutableStateOf(StartingTimer ?: 0L) }
+    var totalremainingMilliSeconds: Long by rememberSaveable { mutableStateOf(if(StartingTimer != null) StartingTimer*1000L else 0L ) }
     var timerRunning by remember {mutableStateOf(false)}
-    val minutes = totalremainingSeconds/60
-    val seconds = totalremainingSeconds%60
-    /*TODO Temporizador */
+    var minutes : Long = (totalremainingMilliSeconds)/(1000*60)
+    var seconds : Long = (totalremainingMilliSeconds/1000) % 60
+    /*TODO Temporizador Alerta */
+    LaunchedEffect(key1 = totalremainingMilliSeconds,key2 = timerRunning) {
+        if (timerRunning && totalremainingMilliSeconds > 0L) {
+            delay(100L) //Funciona en milisegundos
+            totalremainingMilliSeconds-= 100L
+        }
+    }
     Box(
         Modifier
             .fillMaxWidth()
@@ -31,7 +39,7 @@ fun RoutineControls(StartingTimer: Long?=null, Reps: Int?=null) {
             Column(modifier= Modifier
                 .align(Alignment.TopStart)
                 .padding(15.dp, 10.dp, 0.dp, 0.dp)){
-                Text(text = stringResource(R.string.repetitions))//Todo TRANSLATE
+                Text(text = stringResource(R.string.repetitions))
                 Row {
                     Text(text =Reps.toString(), fontSize = MaterialTheme.typography.h3.fontSize, modifier = Modifier.alignByBaseline())
                     Text(text =" reps.", modifier=Modifier.alignByBaseline())
@@ -43,7 +51,7 @@ fun RoutineControls(StartingTimer: Long?=null, Reps: Int?=null) {
                 .align(Alignment.TopEnd)
                 .padding(0.dp, 10.dp, 15.dp, 0.dp)){
                 Text(text = stringResource(R.string.time_left))//TODO translate
-                Text(text = "$minutes:$seconds",fontSize = MaterialTheme.typography.h3.fontSize)
+                Text(text = String.format("%02d:%02d",minutes,seconds),fontSize = MaterialTheme.typography.h3.fontSize)
 
             }
         }
@@ -55,16 +63,16 @@ fun RoutineControls(StartingTimer: Long?=null, Reps: Int?=null) {
             }
             if(StartingTimer != null){
                 IconButton(onClick = { /*TODO Parar timer*/
-                                     if(totalremainingSeconds <= 0L){
-                                         totalremainingSeconds = StartingTimer ?: 0L
+                                     if(totalremainingMilliSeconds <= 0L){
+                                         totalremainingMilliSeconds = StartingTimer*1000L
                                          timerRunning=true
                                      }else{
                                          timerRunning = !timerRunning
                                      }
 
                                      },) {
-                    val icon= if (!timerRunning && totalremainingSeconds > 0L ) Icons.Filled.PlayArrow
-                                else if(timerRunning && totalremainingSeconds > 0L) Icons.Filled.Pause
+                    val icon= if (!timerRunning && totalremainingMilliSeconds > 0L ) Icons.Filled.PlayArrow
+                                else if(timerRunning && totalremainingMilliSeconds > 0L) Icons.Filled.Pause
                                 else Icons.Filled.Replay
                     Icon( icon, contentDescription = null, modifier= Modifier.size(50.dp))
                 }
@@ -85,7 +93,7 @@ fun RoutineControlsPreview(){
                 Box(modifier = Modifier
                     .fillMaxWidth()
                     .height(200.dp)) {
-                    RoutineControls(StartingTimer = 150, Reps = 10)
+                    RoutineControls(StartingTimer = 15, Reps = 10)
                 }
 
             }
