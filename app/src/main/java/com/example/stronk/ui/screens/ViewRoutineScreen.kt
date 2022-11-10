@@ -1,5 +1,6 @@
 package com.example.stronk.ui.screens
 
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -26,6 +27,7 @@ import com.example.stronk.state.ExInfo
 import com.example.stronk.ui.components.CompleteRoutine
 
 @ExperimentalMaterialApi
+@ExperimentalAnimationApi
 @Composable
 fun ViewRoutineScreen() {
     val routineName = "Abdominales en 15 minutos"
@@ -140,6 +142,7 @@ fun ViewRoutineScreen() {
 
 @Preview(showBackground = true)
 @ExperimentalMaterialApi
+@ExperimentalAnimationApi
 @Composable
 fun ExampleRoutineView() {
     StronkTheme() {

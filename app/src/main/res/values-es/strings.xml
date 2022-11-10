@@ -22,4 +22,6 @@
     <string name="category_representing_image">Imagen Representativa de Categoría</string>
     <string name="current_cycle">Ciclo Actual</string>
     <string name="next_exercise">Próximo Ejercicio</string>
+    <string name="prev_cy">C. Anterior</string>
+    <string name="next_cy">C. Próximo</string>
 </resources>

@@ -21,5 +21,7 @@
     <string name="start">Start</string>
     <string name="end">End</string>
     <string name="in_progress_">In Progress…</string>
+    <string name="prev_cy">Prev. C.</string>
+    <string name="next_cy">Next C.</string>
 
 </resources>
