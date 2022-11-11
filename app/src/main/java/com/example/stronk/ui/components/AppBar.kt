@@ -17,37 +17,53 @@ import com.example.stronk.BottomBarScreens
 
 @Preview
 @Composable
-fun AppBar(modifier: Modifier = Modifier, screen: String = "Hola", canGoBack: Boolean = false, goBack: () -> Unit = {}) {
-    TopAppBar(modifier = modifier
-        .fillMaxWidth()
-        .background(color = MaterialTheme.colors.primary)
+fun AppBar(
+    modifier: Modifier = Modifier,
+    screen: String = "Hola",
+    canGoBack: Boolean = false,
+    goBack: () -> Unit = {}
+) {
+    TopAppBar(
+        modifier = modifier
+            .fillMaxWidth(),
+        backgroundColor = MaterialTheme.colors.primary,
+        contentColor = MaterialTheme.colors.onPrimary,
     ) {
-        if (canGoBack)
-        {
+        if (canGoBack) {
             IconButton(onClick = goBack) {
-                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = "BackButton", tint = MaterialTheme.colors.secondary)
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "BackButton",
+                )
             }
         }
         Text(
             text = screen,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.secondary,
             fontSize = 20.sp,
-            modifier = Modifier.padding(10.dp))
+            modifier = Modifier.padding(10.dp)
+        )
     }
 }
 
 @Preview
 @Composable
-fun BottomBar(modifier: Modifier = Modifier, onNavClick: (route: String) -> Unit = {}, currentRoute: String? = BottomBarScreens.EXERCISES.name) {
-    BottomAppBar(modifier = modifier.background(color = MaterialTheme.colors.primary)) {
+fun BottomBar(
+    modifier: Modifier = Modifier,
+    onNavClick: (route: String) -> Unit = {},
+    currentRoute: String? = BottomBarScreens.EXERCISES.name
+) {
+    BottomAppBar(
+        backgroundColor = MaterialTheme.colors.primary,
+        contentColor = MaterialTheme.colors.onPrimary
+    ) {
         BottomBarScreens.values().forEach {
             BottomNavigationItem(
                 onClick = {
                     onNavClick(it.name)
                 },
-                icon= { Icon(imageVector = it.icon, contentDescription = it.name)},
-                label={ Text(text = it.label) },
+                icon = { Icon(imageVector = it.icon, contentDescription = it.name) },
+                label = { Text(text = it.label) },
                 alwaysShowLabel = true,
                 selected = currentRoute == it.name,
             )

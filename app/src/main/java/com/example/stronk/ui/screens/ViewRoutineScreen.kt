@@ -28,7 +28,7 @@ import com.example.stronk.ui.components.CompleteRoutine
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
-fun ViewRoutineScreen(routineId: Int) {
+fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) -> Unit) {
     val routineName = "Abdominales en 15 minutos"
     val routineDescription =
         "Esta rutina es perfecta para cuando no tienes mucho tiempo, pero quieres hacer algo de ejercicio."
@@ -102,7 +102,7 @@ fun ViewRoutineScreen(routineId: Int) {
 
     Scaffold(floatingActionButton = {
         FloatingActionButton(
-            onClick = { /*TODO*/ },
+            onClick = { onNavigateToExecution(routineId) },
             backgroundColor = MaterialTheme.colors.primary,
             contentColor = MaterialTheme.colors.onPrimary,
             modifier = Modifier.size(72.dp)
@@ -187,6 +187,6 @@ fun ViewRoutineScreen(routineId: Int) {
 @Composable
 fun ExampleRoutineView() {
     StronkTheme() {
-        ViewRoutineScreen(1)
+        ViewRoutineScreen(1, {})
     }
 }

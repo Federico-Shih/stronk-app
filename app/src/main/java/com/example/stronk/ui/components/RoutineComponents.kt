@@ -41,7 +41,7 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
     Box(modifier = Modifier.height(IntrinsicSize.Max)) {
         Canvas(modifier = Modifier
             .matchParentSize()
-            .padding(start = 87.dp, top = 10.dp, bottom = 10.dp)
+            .padding(start = 87.dp, top = if(prevCycle==null) 10.dp else 0.dp, bottom = if(nextCycle==null) 10.dp else 0.dp)
             .zIndex(1f)) {
             val canvasHeight = size.height
             drawLine(
@@ -55,6 +55,10 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
             if(prevCycle != null) {
                 CollapsedCycle(title = prevCycle.name, cycleReps = prevCycle.cycleReps, label = stringResource(id = R.string.prev_cy))
             }
+            else {
+                StartEndLabel(label = stringResource(id = R.string.start))
+            }
+
             ExecuteCycle(
                 title = currentCycle.name,
                 exList = currentCycle.exList,
@@ -64,6 +68,9 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
             )
             if(nextCycle != null) {
                 CollapsedCycle(title = nextCycle.name, cycleReps = nextCycle.cycleReps, label = stringResource(id = R.string.next_cy))
+            }
+            else {
+                StartEndLabel(label = stringResource(id = R.string.end))
             }
         }
     }
@@ -266,7 +273,7 @@ enum class ExerciseItemType {
 
 @Composable
 fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.REGULAR) {
-    val background = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) MaterialTheme.colors.background else Color.Transparent
+    val background = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) MaterialTheme.colors.surface else Color.Transparent
     val nameSize = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 24.sp else 16.sp
     val iconTopPadding = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 27.dp else 0.dp
     Box(

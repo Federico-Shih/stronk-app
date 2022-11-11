@@ -1,9 +1,7 @@
 package com.example.stronk.ui.screens
 
-import android.content.res.Resources
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
 import com.example.stronk.model.ExecuteViewModel
+import com.example.stronk.state.ExecuteRoutineState
 import com.example.stronk.state.currentCycle
 import com.example.stronk.state.nextCycle
 import com.example.stronk.state.previousCycle
@@ -29,13 +28,23 @@ import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
+@ExperimentalPagerApi
+@ExperimentalAnimationApi
+@Composable
+fun ExecuteRoutineScreen(routineId: Int) {
+    val pagerState = rememberPagerState(pageCount = 2)
+    Column {
+        Tabs(pagerState = pagerState)
+        TabsContent(pagerState = pagerState, routineId = routineId)
+    }
+}
 
 @ExperimentalPagerApi
 @Composable
 fun Tabs(pagerState: PagerState) {
     val list = listOf(
-        stringResource(id = R.string.condensed),
-        stringResource(id = R.string.detailed),
+        stringResource(id = R.string.condensed).uppercase(),
+        stringResource(id = R.string.detailed).uppercase(),
     )
     val scope = rememberCoroutineScope()
     TabRow(
@@ -80,18 +89,20 @@ fun Tabs(pagerState: PagerState) {
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
 @Composable
-fun TabsContent(pagerState: PagerState) {
+fun TabsContent(pagerState: PagerState, routineId: Int) {
+    val executeViewModel: ExecuteViewModel = viewModel()
+    executeViewModel.executeRoutine(routineId)
     HorizontalPager(state = pagerState) {
             page ->
         when (page) {
-            0 -> ResumedScreen()
-            1 -> DetailedScreen()
+            0 -> ResumedScreen(executeViewModel)
+            1 -> DetailedScreen(executeViewModel)
         }
     }
 }
 
 @Composable
-fun ResumedScreen() {
+fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -109,13 +120,11 @@ fun ResumedScreen() {
 @Composable
 @ExperimentalAnimationApi
 fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
-    executeViewModel.executeRoutine(0)
     val state = executeViewModel.uiState
-    var i by remember {
-        mutableStateOf(0)
-    }
     Column(
-        modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState()),
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
 
     ) {
         ExecutingCycles(
@@ -135,15 +144,4 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
 
 
     }
-}
-
-@Preview
-@ExperimentalPagerApi
-@ExperimentalAnimationApi
-@Composable
-fun ExecuteRoutineScreen() {
-    StronkTheme() {
-        DetailedScreen()
-    }
-
 }
