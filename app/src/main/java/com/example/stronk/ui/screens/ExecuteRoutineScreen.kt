@@ -1,6 +1,7 @@
 package com.example.stronk.ui.screens
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -29,6 +30,7 @@ import kotlinx.coroutines.launch
 
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 @Composable
 fun ExecuteRoutineScreen(routineId: Int) {
     val pagerState = rememberPagerState(pageCount = 2)
@@ -87,10 +89,17 @@ fun Tabs(pagerState: PagerState) {
 
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 @Composable
 fun TabsContent(pagerState: PagerState, routineId: Int) {
     val executeViewModel: ExecuteViewModel = viewModel()
     executeViewModel.executeRoutine(routineId)
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(key1 = pagerState.currentPage) {
+        coroutineScope.launch {
+            executeViewModel.setPage(pagerState.currentPage)
+        }
+    }
     HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> ResumedScreen(executeViewModel)
@@ -117,6 +126,7 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
 
 @Composable
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
     val state = executeViewModel.uiState
     Scaffold(bottomBar = {
@@ -140,7 +150,8 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
                 currentCycle = state.currentCycle,
                 nextCycle = state.nextCycle,
                 currentExercise = state.exerciseIndex,
-                currentRepetition = state.cycleRepetition
+                currentRepetition = state.cycleRepetition,
+                shouldMoveScrolling = state.page == 1
             )
         }
     }
@@ -148,9 +159,10 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
 }
 
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 @Preview(showBackground = true)
 @Composable
-fun previewDetailedScreen() {
+fun PreviewDetailedScreen() {
     StronkTheme {
         DetailedScreen()
     }

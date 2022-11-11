@@ -4,6 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.relocation.BringIntoViewRequester
+import androidx.compose.foundation.relocation.bringIntoViewRequester
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -18,10 +20,14 @@ import coil.compose.AsyncImage
 import com.example.stronk.ui.theme.StronkTheme
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
@@ -32,16 +38,22 @@ import androidx.compose.ui.zIndex
 import com.example.stronk.R
 import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.ExInfo
+import kotlinx.coroutines.launch
 
 @Composable
 @ExperimentalAnimationApi
-fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: CycleInfo?, currentExercise: Int, currentRepetition: Int) {
+@ExperimentalFoundationApi
+fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: CycleInfo?, currentExercise: Int, currentRepetition: Int, shouldMoveScrolling: Boolean = false) {
 
     val color = MaterialTheme.colors.primary
     Box(modifier = Modifier.height(IntrinsicSize.Max)) {
         Canvas(modifier = Modifier
             .matchParentSize()
-            .padding(start = 87.dp, top = if(prevCycle==null) 10.dp else 0.dp, bottom = if(nextCycle==null) 10.dp else 0.dp)
+            .padding(
+                start = 87.dp,
+                top = if (prevCycle == null) 10.dp else 0.dp,
+                bottom = if (nextCycle == null) 10.dp else 0.dp
+            )
             .zIndex(1f)) {
             val canvasHeight = size.height
             drawLine(
@@ -64,7 +76,8 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
                 exList = currentCycle.exList,
                 cycleReps = currentCycle.cycleReps,
                 currentExercise = currentExercise,
-                currentRepetition = currentRepetition
+                currentRepetition = currentRepetition,
+                shouldMoveScrolling = shouldMoveScrolling
             )
             if(nextCycle != null) {
                 CollapsedCycle(title = nextCycle.name, cycleReps = nextCycle.cycleReps, label = stringResource(id = R.string.next_cy))
@@ -78,6 +91,7 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
 
 @ExperimentalAnimationApi
 @Composable
+@ExperimentalFoundationApi
 fun CompleteRoutine(cycleList: List<CycleInfo>) {
     val color = MaterialTheme.colors.primary
     Box(modifier = Modifier.height(IntrinsicSize.Max)) {
@@ -149,7 +163,8 @@ fun CollapsedCycle(title: String, cycleReps: Int, label: String)
 
 @Composable
 @ExperimentalAnimationApi
-fun ExecuteCycle(title: String, exList: List<ExInfo>, cycleReps: Int, currentExercise: Int, currentRepetition: Int)
+@ExperimentalFoundationApi
+fun ExecuteCycle(title: String, exList: List<ExInfo>, cycleReps: Int, currentExercise: Int, currentRepetition: Int, shouldMoveScrolling: Boolean = false)
 {
     val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
     val solidStroke = Stroke(width = 10.dp.value)
@@ -189,7 +204,7 @@ fun ExecuteCycle(title: String, exList: List<ExInfo>, cycleReps: Int, currentExe
                     Text(text = title, style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
                 }
                 for (ex in exList) {
-                    ExerciseItem(ex, if(currentExercise == exList.indexOf(ex)) ExerciseItemType.EXPANDED else ExerciseItemType.NO_PIC)
+                    ExerciseItem(exercise = ex, variant = if(currentExercise == exList.indexOf(ex)) ExerciseItemType.EXPANDED else ExerciseItemType.NO_PIC, shouldMoveScrolling = shouldMoveScrolling)
                 }
             }
         }
@@ -199,6 +214,7 @@ fun ExecuteCycle(title: String, exList: List<ExInfo>, cycleReps: Int, currentExe
 
 @Composable
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
 
     val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
@@ -272,16 +288,31 @@ enum class ExerciseItemType {
 }
 
 @Composable
-fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.REGULAR) {
+@ExperimentalFoundationApi
+fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.REGULAR, shouldMoveScrolling: Boolean = false) {
     val background = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) MaterialTheme.colors.surface else Color.Transparent
     val nameSize = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 24.sp else 16.sp
     val iconTopPadding = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 27.dp else 0.dp
+
+    val bringIntoViewRequester = remember { BringIntoViewRequester() }
+    val coroutineScope = rememberCoroutineScope()
+    val surroundings = Rect(0f, (-200).dp.value, 0f, 800.dp.value)
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(10.dp))
             .background(background)
             .padding(10.dp)
+            .bringIntoViewRequester(bringIntoViewRequester)
     ) {
+        LaunchedEffect(key1 = variant) {
+            if(shouldMoveScrolling && (variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC)) {
+                coroutineScope.launch {
+                    bringIntoViewRequester.bringIntoView(surroundings)
+                }
+            }
+        }
+
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -381,6 +412,7 @@ fun RatingCard(rating: Int, modifier: Modifier)
 @Preview(showBackground = true)
 @Composable
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 fun ExerciseList() {
     StronkTheme {
         Box(modifier = Modifier

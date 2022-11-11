@@ -111,6 +111,10 @@ class ExecuteViewModel : ViewModel() {
         uiState = uiState.copy(cycles = cycleListPrueba)
     }
 
+    fun setPage(page: Int) {
+        uiState = uiState.copy(page = page)
+    }
+
     fun next() {
         if (uiState.hasNext) {
             uiState = if (uiState.exerciseIndex < uiState.cycles[uiState.cycleIndex].exList.size - 1) {
