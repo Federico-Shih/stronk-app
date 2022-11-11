@@ -15,18 +15,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
+import com.example.stronk.model.ExecuteViewModel
+import com.example.stronk.state.currentCycle
 import com.example.stronk.ui.theme.StronkTheme
 import kotlinx.coroutines.delay
+import kotlin.properties.Delegates
 
 @Composable
 fun RoutineControls(
+    modifier: Modifier = Modifier,
     startingTimer: Long? = null,
     reps: Int? = null,
     backgroundColor: Color = MaterialTheme.colors.primary,
     contentColor: Color = MaterialTheme.colors.onPrimary,
     onSkipPrevious: () -> Unit,
-    onSkipNext: () -> Unit
+    onSkipNext: () -> Unit,
 ) {
     var totalremainingMilliSeconds: Long by rememberSaveable { mutableStateOf(if (startingTimer != null) startingTimer * 1000L else 0L) }
     var timerRunning by remember { mutableStateOf(false) }
@@ -39,52 +44,68 @@ fun RoutineControls(
             totalremainingMilliSeconds -= 100L
         }
     }
-    Box(
-        Modifier
+    LaunchedEffect(key1 = startingTimer) {
+        totalremainingMilliSeconds = if (startingTimer != null) {
+            startingTimer * 1000L
+        } else {
+            0L
+        }
+    }
+    Column(
+        modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight()
-            .padding(10.dp)
-            .background(backgroundColor)
+            .wrapContentHeight()
+            .background(backgroundColor),
+        verticalArrangement = Arrangement.SpaceEvenly,
     ) {
-        if (reps != null) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .padding(15.dp, 10.dp, 0.dp, 0.dp)
-            ) {
-                Text(text = stringResource(R.string.repetitions), color = contentColor)
-                Row {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            if (reps != null) {
+                Column(
+                    modifier = Modifier
+                        .padding(20.dp, 10.dp, 0.dp, 0.dp)
+                        .align(Alignment.TopStart),
+                ) {
+                    Text(text = stringResource(R.string.repetitions), color = contentColor)
+                    Row {
+                        Text(
+                            text = reps.toString(),
+                            fontSize = MaterialTheme.typography.h3.fontSize,
+                            modifier = Modifier.alignByBaseline(),
+                            color = contentColor
+                        )
+                        Text(
+                            text = " reps.",
+                            modifier = Modifier.alignByBaseline(),
+                            color = contentColor
+                        )
+                    }
+                }
+            }
+            if (startingTimer != null) {
+                Column(
+                    modifier = Modifier
+                        .padding(0.dp, 10.dp, 20.dp, 0.dp)
+                        .align(Alignment.TopEnd),
+                ) {
+                    Text(text = stringResource(R.string.time_left), color = contentColor)
                     Text(
-                        text = reps.toString(),
+                        text = String.format("%02d:%02d", minutes, seconds),
                         fontSize = MaterialTheme.typography.h3.fontSize,
-                        modifier = Modifier.alignByBaseline(),
                         color = contentColor
                     )
-                    Text(text = " reps.", modifier = Modifier.alignByBaseline(), color = contentColor)
+
                 }
             }
         }
-        if (startingTimer != null) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(0.dp, 10.dp, 15.dp, 0.dp)
-            ) {
-                Text(text = stringResource(R.string.time_left), color = contentColor)
-                Text(
-                    text = String.format("%02d:%02d", minutes, seconds),
-                    fontSize = MaterialTheme.typography.h3.fontSize,
-                    color = contentColor
-                )
-
-            }
-        }
-        Row(
+        Box(
             modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth(), horizontalArrangement = Arrangement.SpaceAround
+                .fillMaxWidth()
+                .padding(30.dp, 0.dp, 30.dp, 0.dp)
         ) {
-            IconButton(onClick = onSkipPrevious) {
+            IconButton(onClick = {
+                onSkipPrevious()
+                timerRunning = false
+            }, modifier = Modifier.align(Alignment.CenterStart)) {
                 Icon(
                     Icons.Filled.SkipPrevious,
                     contentDescription = null,
@@ -103,15 +124,27 @@ fun RoutineControls(
                         }
 
                     },
+                    modifier = Modifier.align(Alignment.Center)
                 ) {
                     val icon =
                         if (!timerRunning && totalremainingMilliSeconds > 0L) Icons.Filled.PlayArrow
                         else if (timerRunning && totalremainingMilliSeconds > 0L) Icons.Filled.Pause
                         else Icons.Filled.Replay
-                    Icon(icon, contentDescription = null, modifier = Modifier.size(50.dp), tint = contentColor)
+                    Icon(
+                        icon,
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp),
+                        tint = contentColor
+                    )
                 }
             }
-            IconButton(onClick = onSkipNext) {
+            IconButton(
+                onClick = {
+                    onSkipNext()
+                    timerRunning = false
+                },
+                modifier = Modifier.align(Alignment.CenterEnd)
+            ) {
                 Icon(
                     Icons.Filled.SkipNext,
                     contentDescription = null,
@@ -130,14 +163,7 @@ fun RoutineControlsPreview() {
     StronkTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                ) {
-                    RoutineControls(startingTimer = 15, reps = 10, onSkipNext = {}, onSkipPrevious = {})
-                }
-
+                RoutineControls(startingTimer = 15, reps = 10, onSkipNext = {}, onSkipPrevious = {})
             }
 
         }

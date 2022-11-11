@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
@@ -22,6 +23,7 @@ import com.example.stronk.state.nextCycle
 import com.example.stronk.state.previousCycle
 import com.example.stronk.ui.components.ExecutingCycles
 import com.example.stronk.ui.components.RoutineControls
+import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
@@ -118,16 +120,14 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
 fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
     val state = executeViewModel.uiState
     Scaffold(bottomBar = {
-        Box(modifier = Modifier.height(170.dp).background(MaterialTheme.colors.primary)) {
-            RoutineControls(
+        RoutineControls(
                 startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
                 reps = state.currentCycle.exList[state.exerciseIndex].reps,
                 onSkipPrevious = { executeViewModel.previous() },
                 onSkipNext = { executeViewModel.next() },
             )
         }
-
-    }) {
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -143,6 +143,16 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
                 currentRepetition = state.cycleRepetition
             )
         }
+    }
+
+}
+
+@ExperimentalAnimationApi
+@Preview(showBackground = true)
+@Composable
+fun previewDetailedScreen() {
+    StronkTheme {
+        DetailedScreen()
     }
 
 }
