@@ -1,10 +1,13 @@
 package com.example.stronk.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
@@ -18,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stronk.R
+import com.example.stronk.ui.theme.LightOliveGreen
 import com.example.stronk.ui.theme.StronkTheme
 
 @Composable
@@ -25,9 +29,9 @@ fun TitleAndSubtitle(MainText: String, SecondaryText: String)
 {
     Card(modifier = Modifier
         .fillMaxWidth()
-        .fillMaxHeight()
-        .padding(10.dp)
-        .shadow(10.dp)
+        .wrapContentHeight()
+        .padding(10.dp),
+     backgroundColor = Color.Transparent, elevation = 0.dp,
     ) {
         Column {
             Text(
@@ -42,7 +46,7 @@ fun TitleAndSubtitle(MainText: String, SecondaryText: String)
             )
             // TODO: Cómo centro el divider?
             Divider(color = Color.Black, thickness = 2.dp,
-                modifier = Modifier.fillMaxWidth(0.95F))
+                modifier = Modifier.fillMaxWidth(0.95F).align(Alignment.CenterHorizontally))
             Text(
                 text = SecondaryText,
                 textAlign = TextAlign.Center,
@@ -58,10 +62,11 @@ fun TitleAndSubtitle(MainText: String, SecondaryText: String)
 }
 
 @Composable
-fun InfoCycle(currentCycle: String, nextExer: String)
+fun InfoCycle(currentCycle: String,cycleRepetitions:Int,currentCycleRepetition:Int, nextExer: String, )
 {
     Column(modifier = Modifier
-        .padding(10.dp)) {
+        .padding(10.dp)
+        .wrapContentHeight()){
         /*Row {
             Text(
                 modifier = Modifier
@@ -77,51 +82,42 @@ fun InfoCycle(currentCycle: String, nextExer: String)
         // TODO: que los textos como currentCycle se alineen a la derecha
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(3.dp)
-            .background(color = MaterialTheme.colors.primary, CircleShape)
-            .padding(10.dp),) {
+            .background(color = MaterialTheme.colors.secondaryVariant, RoundedCornerShape(10.dp))
+            .padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween) {
 
-            Text(
-                buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal)) {
-                        append(stringResource(R.string.current_cycle)) // falta traducirlo al inglés
-                    }
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Black)) {
-                        append(currentCycle)
-                    }
-                }
-            )
+            Text(color = MaterialTheme.colors.onSecondary,
+                fontWeight = FontWeight.Normal,
+                text =stringResource(R.string.current_cycle) )
+            Text(color = MaterialTheme.colors.onSecondary,
+                fontWeight = FontWeight.Bold,
+                text =String.format("%s (%d/%d)",currentCycle,currentCycleRepetition,cycleRepetitions))
         }
-
+        Spacer(modifier =Modifier.height(10.dp))
         Row(modifier = Modifier
             .fillMaxWidth()
-            .padding(3.dp)
-            .background(color = MaterialTheme.colors.primary, CircleShape)
-            .padding(10.dp),) {
+            .background(color = MaterialTheme.colors.secondaryVariant, RoundedCornerShape(10.dp))
+            .padding(10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween) {
 
-            Text(
-                buildAnnotatedString {
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Normal)) {
-                        append(stringResource(R.string.next_exercise)) // falta traducirlo al inglés
-                    }
-                    withStyle(style = SpanStyle(color = MaterialTheme.colors.secondary, fontWeight = FontWeight.Black)) {
-                        append(nextExer)
-                    }
-                }
-
-            )
+            Text(color = MaterialTheme.colors.onSecondary,
+                fontWeight = FontWeight.Normal,
+                text =stringResource(R.string.next_exercise) )
+            Text(color = MaterialTheme.colors.onSecondary,
+                fontWeight = FontWeight.Bold,
+                text =nextExer)
         }
     }
 }
 
 @Preview
 @Composable
-fun MyPreview(MainText: String = "Abdominales (1/3)", SecondaryText: String = "Descanso")
+fun MyPreview(MainText: String = "Abdominales", SecondaryText: String = "Descanso")
 {
     StronkTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             //TitleAndSubtitle(MainText = MainText, SecondaryText = SecondaryText)
-            InfoCycle(currentCycle = MainText, nextExer = SecondaryText)
+            InfoCycle(currentCycle = MainText, cycleRepetitions = 3, currentCycleRepetition = 2, nextExer = SecondaryText)
         }
     }
 }

@@ -409,111 +409,111 @@ fun RatingCard(rating: Int, modifier: Modifier)
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-@ExperimentalAnimationApi
-@ExperimentalFoundationApi
-fun ExerciseList() {
-    StronkTheme {
-        Box(modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()))
-        {
-            ExecutingCycles(
-                currentCycle = CycleInfo(
-                    "Sugerida por copilot",
-                    listOf(
-                        ExInfo(
-                            "Pushups",
-                            10,
-                            3,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Squats",
-                            10,
-                            null,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Pullups",
-                            null,
-                            10,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Planks",
-                            null,
-                            10,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                    ),
-                    64
-                ),
-                prevCycle = CycleInfo(
-                    "Sugerida por copilot",
-                    listOf(
-                        ExInfo(
-                            "Pushups",
-                            10,
-                            3,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Squats",
-                            10,
-                            null,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Pullups",
-                            null,
-                            10,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Planks",
-                            null,
-                            10,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                    ),
-                    6
-                ),
-                nextCycle = CycleInfo(
-                    "Sugerida por copilot",
-                    listOf(
-                        ExInfo(
-                            "Pushups",
-                            10,
-                            3,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Squats",
-                            10,
-                            null,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Pullups",
-                            null,
-                            10,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                        ExInfo(
-                            "Planks",
-                            null,
-                            10,
-                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
-                        ),
-                    ),
-                    6
-                ),
-
-                currentExercise = 2,
-                currentRepetition = 17
-            )
-        }
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//@ExperimentalAnimationApi
+//@ExperimentalFoundationApi
+//fun ExerciseList() {
+//    StronkTheme {
+//        Box(modifier = Modifier
+//            .fillMaxSize()
+//            .verticalScroll(rememberScrollState()))
+//        {
+//            ExecutingCycles(
+//                currentCycle = CycleInfo(
+//                    "Sugerida por copilot",
+//                    listOf(
+//                        ExInfo(
+//                            "Pushups",
+//                            10,
+//                            3,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Squats",
+//                            10,
+//                            null,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Pullups",
+//                            null,
+//                            10,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Planks",
+//                            null,
+//                            10,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                    ),
+//                    64
+//                ),
+//                prevCycle = CycleInfo(
+//                    "Sugerida por copilot",
+//                    listOf(
+//                        ExInfo(
+//                            "Pushups",
+//                            10,
+//                            3,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Squats",
+//                            10,
+//                            null,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Pullups",
+//                            null,
+//                            10,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Planks",
+//                            null,
+//                            10,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                    ),
+//                    6
+//                ),
+//                nextCycle = CycleInfo(
+//                    "Sugerida por copilot",
+//                    listOf(
+//                        ExInfo(
+//                            "Pushups",
+//                            10,
+//                            3,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Squats",
+//                            10,
+//                            null,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Pullups",
+//                            null,
+//                            10,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                        ExInfo(
+//                            "Planks",
+//                            null,
+//                            10,
+//                            "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+//                        ),
+//                    ),
+//                    6
+//                ),
+//
+//                currentExercise = 2,
+//                currentRepetition = 17
+//            )
+//        }
+//    }
+//}

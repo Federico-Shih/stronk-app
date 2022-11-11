@@ -17,6 +17,7 @@ private val LightColorPalette = lightColors(
     primary = OliveGreen,
     primaryVariant = DarkOliveGreen,
     secondary = StronkBlack,
+    secondaryVariant = LightOliveGreen,
     background = Color.White,
     surface = LightPaleIcelandic,
     onPrimary = Color.White,
