@@ -1,9 +1,8 @@
 package com.example.stronk.ui.screens
 
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -14,17 +13,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
 import com.example.stronk.model.ExecuteViewModel
-import com.example.stronk.state.ExecuteRoutineState
 import com.example.stronk.state.currentCycle
 import com.example.stronk.state.nextCycle
 import com.example.stronk.state.previousCycle
 import com.example.stronk.ui.components.ExecutingCycles
-import com.example.stronk.ui.theme.StronkTheme
+import com.example.stronk.ui.components.RoutineControls
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
 
@@ -92,8 +89,7 @@ fun Tabs(pagerState: PagerState) {
 fun TabsContent(pagerState: PagerState, routineId: Int) {
     val executeViewModel: ExecuteViewModel = viewModel()
     executeViewModel.executeRoutine(routineId)
-    HorizontalPager(state = pagerState) {
-            page ->
+    HorizontalPager(state = pagerState) { page ->
         when (page) {
             0 -> ResumedScreen(executeViewModel)
             1 -> DetailedScreen(executeViewModel)
@@ -121,27 +117,32 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
 @ExperimentalAnimationApi
 fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
     val state = executeViewModel.uiState
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
-
-    ) {
-        ExecutingCycles(
-            prevCycle = state.previousCycle,
-            currentCycle = state.currentCycle,
-            nextCycle = state.nextCycle,
-            currentExercise = state.exerciseIndex,
-            currentRepetition = state.cycleRepetition
-        )
-        Button(onClick = { executeViewModel.next() }) {
-            Text("Next Exercise")
+    Scaffold(bottomBar = {
+        Box(modifier = Modifier.height(170.dp).background(MaterialTheme.colors.primary)) {
+            RoutineControls(
+                startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
+                reps = state.currentCycle.exList[state.exerciseIndex].reps,
+                onSkipPrevious = { executeViewModel.previous() },
+                onSkipNext = { executeViewModel.next() },
+            )
         }
-        Button(onClick = { executeViewModel.previous() }) {
-            Text("Previous Exercise")
+
+    }) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .verticalScroll(rememberScrollState()),
+
+            ) {
+            ExecutingCycles(
+                prevCycle = state.previousCycle,
+                currentCycle = state.currentCycle,
+                nextCycle = state.nextCycle,
+                currentExercise = state.exerciseIndex,
+                currentRepetition = state.cycleRepetition
+            )
         }
-        Text("cycle: ${state.cycleIndex}, exercise: ${state.exerciseIndex}, repetition: ${state.cycleRepetition}")
-
-
     }
+
 }
