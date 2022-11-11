@@ -47,8 +47,8 @@ fun ExecuteRoutineScreen(routineId: Int) {
 @Composable
 fun Tabs(pagerState: PagerState) {
     val list = listOf(
-        stringResource(id = R.string.condensed).uppercase(),
         stringResource(id = R.string.detailed).uppercase(),
+        stringResource(id = R.string.condensed).uppercase(),
     )
     val scope = rememberCoroutineScope()
     TabRow(
@@ -105,14 +105,47 @@ fun TabsContent(pagerState: PagerState, routineId: Int) {
     }
     HorizontalPager(state = pagerState) { page ->
         when (page) {
-            0 -> ResumedScreen(executeViewModel)
-            1 -> DetailedScreen(executeViewModel)
+            0 -> DetailedScreen(executeViewModel)
+            1 -> ResumedScreen(executeViewModel)
         }
     }
 }
 
 @Composable
+@ExperimentalAnimationApi
+@ExperimentalFoundationApi
 fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
+    val state = executeViewModel.uiState
+    Scaffold(bottomBar = {
+        RoutineControls(
+            startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
+            reps = state.currentCycle.exList[state.exerciseIndex].reps,
+            onSkipPrevious = { executeViewModel.previous() },
+            onSkipNext = { executeViewModel.next() },
+        )
+    }
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(it)
+                .verticalScroll(rememberScrollState()),
+
+            ) {
+            ExecutingCycles(
+                prevCycle = state.previousCycle,
+                currentCycle = state.currentCycle,
+                nextCycle = state.nextCycle,
+                currentExercise = state.exerciseIndex,
+                currentRepetition = state.cycleRepetition,
+                shouldMoveScrolling = state.page == 1
+            )
+        }
+    }
+}
+
+@Composable
+fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
     val state = executeViewModel.uiState
     val exercise:ExInfo= state.currentCycle.exList[state.exerciseIndex]
     Scaffold(bottomBar = {
@@ -146,39 +179,8 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
             )
         }
     }
-}
 
-@Composable
-@ExperimentalAnimationApi
-@ExperimentalFoundationApi
-fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
-    val state = executeViewModel.uiState
-    Scaffold(bottomBar = {
-        RoutineControls(
-                startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
-                reps = state.currentCycle.exList[state.exerciseIndex].reps,
-                onSkipPrevious = { executeViewModel.previous() },
-                onSkipNext = { executeViewModel.next() },
-            )
-        }
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(it)
-                .verticalScroll(rememberScrollState()),
 
-            ) {
-            ExecutingCycles(
-                prevCycle = state.previousCycle,
-                currentCycle = state.currentCycle,
-                nextCycle = state.nextCycle,
-                currentExercise = state.exerciseIndex,
-                currentRepetition = state.cycleRepetition,
-                shouldMoveScrolling = state.page == 1
-            )
-        }
-    }
 
 }
 

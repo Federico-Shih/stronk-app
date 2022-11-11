@@ -21,7 +21,9 @@ import coil.compose.AsyncImage
 import com.example.stronk.ui.components.RatingCard
 import com.example.stronk.ui.theme.StronkTheme
 import androidx.compose.ui.res.stringResource
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
+import com.example.stronk.model.ViewRoutineViewModel
 import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.ExInfo
 import com.example.stronk.ui.components.CompleteRoutine
@@ -29,87 +31,11 @@ import com.example.stronk.ui.components.CompleteRoutine
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
-@ExperimentalFoundationApi
 @Composable
 fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) -> Unit) {
-    val routineName = "Abdominales en 15 minutos"
-    val routineDescription =
-        "Esta rutina es perfecta para cuando no tienes mucho tiempo, pero quieres hacer algo de ejercicio."
-    val creatorProfileImage = "https://picsum.photos/100"
-    val creatorName = "Juan Perez"
-    val category = "Full Body"
-    val difficulty = "Principiante"
-    val rating = 3
-    val cycleList = listOf(
-        CycleInfo(
-            "Sugerida por copilot",
-            listOf(
-                ExInfo(
-                    "Pushups",
-                    10,
-                    3,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-                ExInfo(
-                    "Squats",
-                    10,
-                    null,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-                ExInfo(
-                    "Pullups",
-                    null,
-                    10,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-                ExInfo(
-                    "Planks",
-                    null,
-                    10,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-            ),
-            6
-        ),
-        CycleInfo(
-            "AAAAAA",
-            listOf(
-                ExInfo(
-                    "Pushups",
-                    10,
-                    null,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-                ExInfo(
-                    "Squats",
-                    10,
-                    50,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-                ExInfo(
-                    "Pullups",
-                    null,
-                    10,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-                ExInfo(
-                    "Planks",
-                    null,
-                    10,
-                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando el pecho y los brazos"
-                ),
-            ),
-            81
-        )
-    )
+    val viewRoutineViewModel: ViewRoutineViewModel = viewModel()
+    viewRoutineViewModel.fetchRoutine(routineId)
+    val state = viewRoutineViewModel.uiState
 
     Scaffold(floatingActionButton = {
         FloatingActionButton(
@@ -127,16 +53,15 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
         ) {
-            Text(text = "id: $routineId", style = MaterialTheme.typography.h1)
             Text(
-                text = routineName,
+                text = state.routine.name,
                 style = MaterialTheme.typography.h5,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 4.dp)
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AsyncImage(
-                    model = creatorProfileImage,
+                    model = state.routine.user.avatarUrl,
                     contentDescription = null,
                     modifier = Modifier
                         .size(32.dp)
@@ -144,7 +69,7 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
                     contentScale = ContentScale.Crop
                 )
                 Text(
-                    text = stringResource(id = R.string.made_by_x, creatorName),
+                    text = stringResource(id = R.string.made_by_x, state.routine.user.username),
                     modifier = Modifier.padding(start = 8.dp)
                 )
             }
@@ -161,7 +86,7 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
                             fontWeight = FontWeight.SemiBold
                         )
                         Chip(onClick = {}) {
-                            Text(text = category)
+                            Text(text = state.routine.category)
                         }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -171,12 +96,12 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
                             fontWeight = FontWeight.SemiBold
                         )
                         Chip(onClick = {}) {
-                            Text(text = difficulty)
+                            Text(text = state.routine.difficulty)
                         }
                     }
                 }
                 RatingCard(
-                    rating = rating, modifier = Modifier
+                    rating = state.routine.rating, modifier = Modifier
                         .padding(top = 10.dp)
                         .wrapContentWidth()
                 )
@@ -185,8 +110,8 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
                 text = "${stringResource(id = R.string.description)}:",
                 fontWeight = FontWeight.SemiBold
             )
-            Text(text = routineDescription)
-            CompleteRoutine(cycleList = cycleList)
+            Text(text = state.routine.description)
+            CompleteRoutine(cycleList = state.cycles)
         }
     }
 
@@ -196,7 +121,6 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
 @Preview(showBackground = true)
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
-@ExperimentalFoundationApi
 @Composable
 fun ExampleRoutineView() {
     StronkTheme() {
