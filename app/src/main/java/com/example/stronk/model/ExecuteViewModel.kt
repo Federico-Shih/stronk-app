@@ -1,65 +1,136 @@
 package com.example.stronk.model
 
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.ViewModel
-import com.example.stronk.state.ExecuteRoutineState
-import com.example.stronk.state.hasNext
-import com.example.stronk.state.hasPrevious
+import com.example.stronk.state.*
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 
 class ExecuteViewModel : ViewModel() {
-    private val _executeState = MutableStateFlow(ExecuteRoutineState())
-    val uiState: StateFlow<ExecuteRoutineState> = _executeState
+    var uiState by mutableStateOf(ExecuteRoutineState())
+
+    val cycleListPrueba = listOf(
+        CycleInfo(
+            "Sugerida por copilot",
+            listOf(
+                ExInfo(
+                    "Pushups",
+                    10,
+                    3,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Squats",
+                    10,
+                    null,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Pullups",
+                    null,
+                    10,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Planks",
+                    null,
+                    10,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+            ),
+            2
+        ),
+        CycleInfo(
+            "AAAAAA",
+            listOf(
+                ExInfo(
+                    "Pushups",
+                    10,
+                    null,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Squats",
+                    10,
+                    50,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Pullups",
+                    null,
+                    10,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Planks",
+                    null,
+                    10,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+            ),
+            1
+        ),
+        CycleInfo(
+            "Sugerida por copilot",
+            listOf(
+                ExInfo(
+                    "Pushups",
+                    10,
+                    3,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Squats",
+                    10,
+                    null,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Pullups",
+                    null,
+                    10,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+                ExInfo(
+                    "Planks",
+                    null,
+                    10,
+                    "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg"
+                ),
+            ),
+            2
+        )
+    )
 
     fun executeRoutine(id: Int) {
         // Cargar la rutina en el state.
+        uiState = uiState.copy(cycles = cycleListPrueba)
     }
 
     fun next() {
-        val current = uiState.value
-        if (current.hasNext) {
-            if (current.exerciseIndex < current.cycles[current.cycleIndex].exList.size - 1) {
-                _executeState.update { it.copy(exerciseIndex = current.exerciseIndex + 1) }
-            } else if (current.cycleRepetition < current.cycles[current.cycleIndex].cycleReps - 1) {
-                _executeState.update {
-                    it.copy(
-                        exerciseIndex = 0,
-                        cycleRepetition = current.cycleRepetition + 1
-                    )
-                }
+        if (uiState.hasNext) {
+            uiState = if (uiState.exerciseIndex < uiState.cycles[uiState.cycleIndex].exList.size - 1) {
+                uiState.copy(exerciseIndex = uiState.exerciseIndex + 1)
+            } else if (uiState.cycleRepetition < uiState.cycles[uiState.cycleIndex].cycleReps - 1) {
+                uiState.copy(exerciseIndex = 0, cycleRepetition = uiState.cycleRepetition + 1)
             } else {
-                _executeState.update {
-                    it.copy(
-                        exerciseIndex = 0,
-                        cycleRepetition = 0,
-                        cycleIndex = current.cycleIndex + 1
-                    )
-                }
+                uiState.copy(exerciseIndex = 0, cycleRepetition = 0, cycleIndex = uiState.cycleIndex + 1)
             }
         }
     }
 
     fun previous() {
-        val current = uiState.value
-        if (current.hasPrevious) {
-            if (current.exerciseIndex > 0) {
-                _executeState.update { it.copy(exerciseIndex = current.exerciseIndex - 1) }
-            } else if (current.cycleRepetition > 0) {
-                _executeState.update {
-                    it.copy(
-                        exerciseIndex = current.cycles[current.cycleIndex].exList.size - 1,
-                        cycleRepetition = current.cycleRepetition - 1
-                    )
-                }
+        if (uiState.hasPrevious) {
+            uiState = if (uiState.exerciseIndex > 0) {
+                uiState.copy(exerciseIndex = uiState.exerciseIndex - 1)
+            } else if (uiState.cycleRepetition > 0) {
+                uiState.copy(exerciseIndex = uiState.cycles[uiState.cycleIndex].exList.size - 1, cycleRepetition = uiState.cycleRepetition - 1)
             } else {
-                _executeState.update {
-                    it.copy(
-                        exerciseIndex = current.cycles[current.cycleIndex - 1].exList.size - 1,
-                        cycleRepetition = current.cycles[current.cycleIndex - 1].cycleReps - 1,
-                        cycleIndex = current.cycleIndex - 1
-                    )
-                }
+                uiState.copy(exerciseIndex = uiState.cycles[uiState.cycleIndex - 1].exList.size - 1, cycleRepetition = uiState.cycles[uiState.cycleIndex - 1].cycleReps - 1, cycleIndex = uiState.cycleIndex - 1)
             }
         }
     }
