@@ -24,4 +24,5 @@
     <string name="next_exercise">Próximo Ejercicio</string>
     <string name="prev_cy">C. Anterior</string>
     <string name="next_cy">C. Próximo</string>
+    <string name="empty">" "</string>
 </resources>

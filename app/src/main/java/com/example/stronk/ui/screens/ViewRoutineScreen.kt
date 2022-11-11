@@ -29,6 +29,7 @@ import com.example.stronk.ui.components.CompleteRoutine
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 @Composable
 fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) -> Unit) {
     val routineName = "Abdominales en 15 minutos"
@@ -195,6 +196,7 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
 @Preview(showBackground = true)
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
+@ExperimentalFoundationApi
 @Composable
 fun ExampleRoutineView() {
     StronkTheme() {

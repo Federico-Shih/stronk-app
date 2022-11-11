@@ -23,5 +23,6 @@
     <string name="in_progress_">In Progress…</string>
     <string name="prev_cy">Prev. C.</string>
     <string name="next_cy">Next C.</string>
+    <string name="empty">" "</string>
 
 </resources>

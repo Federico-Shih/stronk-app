@@ -9,11 +9,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.stronk.BottomBarScreens
+import com.example.stronk.MainScreens
 
 @Preview
 @Composable
@@ -46,24 +47,24 @@ fun AppBar(
     }
 }
 
-@Preview
 @Composable
 fun BottomBar(
     modifier: Modifier = Modifier,
     onNavClick: (route: String) -> Unit = {},
-    currentRoute: String? = BottomBarScreens.EXERCISES.name
+    currentRoute: String,
+    screenList: List<MainScreens>
 ) {
     BottomAppBar(
         backgroundColor = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.onPrimary
     ) {
-        BottomBarScreens.values().forEach {
+        screenList.forEach {
             BottomNavigationItem(
                 onClick = {
                     onNavClick(it.name)
                 },
                 icon = { Icon(imageVector = it.icon, contentDescription = it.name) },
-                label = { Text(text = it.label) },
+                label = { Text(stringResource(id = it.label)) },
                 alwaysShowLabel = true,
                 selected = currentRoute == it.name,
             )

@@ -8,6 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Article
 import androidx.compose.material.icons.filled.DirectionsRun
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Search
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -29,14 +31,8 @@ import com.example.stronk.ui.screens.ViewRoutineScreen
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 
-enum class MainScreens {
-    AUTH, EXPLORE, ROUTINES, EXECUTE, VIEW_ROUTINE
-}
-
-enum class BottomBarScreens(val label: String, val icon: ImageVector) {
-    EXPLORE("Explore", Icons.Filled.Search),
-    ROUTINES("Routines", Icons.Filled.DirectionsRun),
-    EXERCISES("Exercises", Icons.Filled.FitnessCenter),
+enum class MainScreens(val label: Int = R.string.empty, val icon: ImageVector = Icons.Filled.Article, val hidesBottomNav: Boolean = false) {
+    AUTH, EXPLORE(R.string.explore_label, Icons.Filled.Search), ROUTINES(R.string.routines_label, Icons.Filled.DirectionsRun), EXECUTE(hidesBottomNav = true), VIEW_ROUTINE
 }
 
 @ExperimentalAnimationApi
@@ -45,37 +41,34 @@ enum class BottomBarScreens(val label: String, val icon: ImageVector) {
 @ExperimentalFoundationApi
 class MainActivity : ComponentActivity() {
 
+    private val bottomBarScreens = listOf(MainScreens.EXPLORE, MainScreens.ROUTINES)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = backStackEntry?.destination?.route ?: MainScreens.EXPLORE.name
+            val currentScreen = MainScreens.valueOf(currentRoute.split("/")[0])
             StronkTheme {
                 Scaffold(
                     topBar = {
                         AppBar(
-                            screen = currentRoute,
-                            canGoBack = currentRoute !in BottomBarScreens.values().map { it.name },
+                            screen = stringResource(id = currentScreen.label),
+                            canGoBack = currentScreen !in bottomBarScreens,
                             goBack = { navController.popBackStack() }
                         )
                     },
                     bottomBar = {
-                        BottomBar(
-                            onNavClick = { name ->
-                                navController.navigate(name)
-//                            {
-//                                navController.graph.startDestinationRoute?.let { screenRoute ->
-//                                    popUpTo(screenRoute) {
-//                                        saveState = true
-//                                    }
-//                                    launchSingleTop = true
-//                                    restoreState = true
-//                                }
-//                            }
-                            },
-                            currentRoute = currentRoute
-                        )
+                        if(!currentScreen.hidesBottomNav) {
+                            BottomBar(
+                                onNavClick = { name ->
+                                    navController.navigate(name)
+                                },
+                                currentRoute = currentRoute,
+                                screenList = bottomBarScreens
+                            )
+                        }
                     }
                 ) {
                     Column(
@@ -85,18 +78,15 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = BottomBarScreens.EXPLORE.name
+                            startDestination = MainScreens.EXPLORE.name
                         ) {
-                            composable(route = BottomBarScreens.EXPLORE.name) {
+                            composable(route = MainScreens.EXPLORE.name) {
                                 ExploreScreen(onNavigateToViewRoutine = { routineId ->
                                     navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
                                 })
                             }
-                            composable(route = BottomBarScreens.ROUTINES.name) {
+                            composable(route = MainScreens.ROUTINES.name) {
                                 Greeting(name = "rutines")
-                            }
-                            composable(route = BottomBarScreens.EXERCISES.name) {
-                                Greeting(name = "hola")
                             }
                             composable(
                                 route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
