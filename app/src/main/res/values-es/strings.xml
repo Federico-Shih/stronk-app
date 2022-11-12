@@ -25,4 +25,7 @@
     <string name="prev_cy">C. Anterior</string>
     <string name="next_cy">C. Próximo</string>
     <string name="empty">" "</string>
+    <string name="your_rating_for_this_routine">Tu puntuación para esta rutina</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
 </resources>

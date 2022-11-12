@@ -136,4 +136,16 @@ class ViewRoutineViewModel : ViewModel() {
     fun rateRoutine(rating: Int) {
         //TODO: rate routine in database
     }
+
+    fun shareRoutine() {
+
+    }
+
+    fun showRatingDialog() {
+        uiState = uiState.copy(showRatingDialog = true)
+    }
+
+    fun hideRatingDialog() {
+        uiState = uiState.copy(showRatingDialog = false)
+    }
 }

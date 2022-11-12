@@ -24,5 +24,8 @@
     <string name="prev_cy">Prev. C.</string>
     <string name="next_cy">Next C.</string>
     <string name="empty">" "</string>
+    <string name="your_rating_for_this_routine">Your rating for this routine</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

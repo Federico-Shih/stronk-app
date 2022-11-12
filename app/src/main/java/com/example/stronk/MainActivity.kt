@@ -8,10 +8,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Article
-import androidx.compose.material.icons.filled.DirectionsRun
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -31,8 +28,39 @@ import com.example.stronk.ui.screens.ViewRoutineScreen
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 
-enum class MainScreens(val label: Int = R.string.empty, val icon: ImageVector = Icons.Filled.Article, val hidesBottomNav: Boolean = false) {
-    AUTH, EXPLORE(R.string.explore_label, Icons.Filled.Search), ROUTINES(R.string.routines_label, Icons.Filled.DirectionsRun), EXECUTE(hidesBottomNav = true), VIEW_ROUTINE
+enum class MainScreens(
+    val label: Int = R.string.empty,
+    val icon: ImageVector = Icons.Filled.Article,
+    val hidesBottomNav: Boolean = false,
+    val topLeftButtons: @Composable () -> Unit = {}
+) {
+    AUTH,
+    EXPLORE(R.string.explore_label, Icons.Filled.Search),
+    ROUTINES(
+        R.string.routines_label,
+        Icons.Filled.DirectionsRun
+    ),
+    EXECUTE(hidesBottomNav = true),
+    VIEW_ROUTINE(topLeftButtons = {
+        val viewRoutineViewModel: com.example.stronk.model.ViewRoutineViewModel =
+            androidx.lifecycle.viewmodel.compose.viewModel()
+        val state = viewRoutineViewModel.uiState
+        Row() {
+            Text(text = state.routine.name, style = MaterialTheme.typography.h5)
+            IconButton(onClick = { viewRoutineViewModel.favRoutine() }) {
+                Icon(
+                    imageVector = if(state.faved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                    contentDescription = "favorite",
+                )
+            }
+            IconButton(onClick = { viewRoutineViewModel.shareRoutine() }) {
+                Icon(
+                    imageVector = Icons.Filled.Share,
+                    contentDescription = "share",
+                )
+            }
+        }
+    })
 }
 
 @ExperimentalAnimationApi
@@ -56,11 +84,12 @@ class MainActivity : ComponentActivity() {
                         AppBar(
                             screen = stringResource(id = currentScreen.label),
                             canGoBack = currentScreen !in bottomBarScreens,
-                            goBack = { navController.popBackStack() }
+                            goBack = { navController.popBackStack() },
+                            TopRightButtons = currentScreen.topLeftButtons
                         )
                     },
                     bottomBar = {
-                        if(!currentScreen.hidesBottomNav) {
+                        if (!currentScreen.hidesBottomNav) {
                             BottomBar(
                                 onNavClick = { name ->
                                     navController.navigate(name)

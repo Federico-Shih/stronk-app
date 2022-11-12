@@ -43,18 +43,27 @@ import kotlinx.coroutines.launch
 @Composable
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
-fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: CycleInfo?, currentExercise: Int, currentRepetition: Int, shouldMoveScrolling: Boolean = false) {
+fun ExecutingCycles(
+    prevCycle: CycleInfo?,
+    currentCycle: CycleInfo,
+    nextCycle: CycleInfo?,
+    currentExercise: Int,
+    currentRepetition: Int,
+    shouldMoveScrolling: Boolean = false
+) {
 
     val color = MaterialTheme.colors.primary
     Box(modifier = Modifier.height(IntrinsicSize.Max)) {
-        Canvas(modifier = Modifier
-            .matchParentSize()
-            .padding(
-                start = 87.dp,
-                top = if (prevCycle == null) 10.dp else 0.dp,
-                bottom = if (nextCycle == null) 10.dp else 0.dp
-            )
-            .zIndex(1f)) {
+        Canvas(
+            modifier = Modifier
+                .matchParentSize()
+                .padding(
+                    start = 87.dp,
+                    top = if (prevCycle == null) 10.dp else 0.dp,
+                    bottom = if (nextCycle == null) 10.dp else 0.dp
+                )
+                .zIndex(1f)
+        ) {
             val canvasHeight = size.height
             drawLine(
                 start = Offset(x = 0f, y = 0f),
@@ -64,10 +73,13 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
             )
         }
         Column {
-            if(prevCycle != null) {
-                CollapsedCycle(title = prevCycle.name, cycleReps = prevCycle.cycleReps, label = stringResource(id = R.string.prev_cy))
-            }
-            else {
+            if (prevCycle != null) {
+                CollapsedCycle(
+                    title = prevCycle.name,
+                    cycleReps = prevCycle.cycleReps,
+                    label = stringResource(id = R.string.prev_cy)
+                )
+            } else {
                 StartEndLabel(label = stringResource(id = R.string.start))
             }
 
@@ -79,10 +91,13 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
                 currentRepetition = currentRepetition,
                 shouldMoveScrolling = shouldMoveScrolling
             )
-            if(nextCycle != null) {
-                CollapsedCycle(title = nextCycle.name, cycleReps = nextCycle.cycleReps, label = stringResource(id = R.string.next_cy))
-            }
-            else {
+            if (nextCycle != null) {
+                CollapsedCycle(
+                    title = nextCycle.name,
+                    cycleReps = nextCycle.cycleReps,
+                    label = stringResource(id = R.string.next_cy)
+                )
+            } else {
                 StartEndLabel(label = stringResource(id = R.string.end))
             }
         }
@@ -95,10 +110,12 @@ fun ExecutingCycles(prevCycle: CycleInfo?, currentCycle: CycleInfo, nextCycle: C
 fun CompleteRoutine(cycleList: List<CycleInfo>) {
     val color = MaterialTheme.colors.primary
     Box(modifier = Modifier.height(IntrinsicSize.Max)) {
-        Canvas(modifier = Modifier
-            .matchParentSize()
-            .padding(start = 87.dp, top = 16.dp, bottom = 16.dp)
-            .zIndex(1f)) {
+        Canvas(
+            modifier = Modifier
+                .matchParentSize()
+                .padding(start = 87.dp, top = 16.dp, bottom = 16.dp)
+                .zIndex(1f)
+        ) {
             val canvasHeight = size.height
             drawLine(
                 start = Offset(x = 0f, y = 0f),
@@ -118,30 +135,49 @@ fun CompleteRoutine(cycleList: List<CycleInfo>) {
 }
 
 @Composable
-fun CollapsedCycle(title: String, cycleReps: Int, label: String)
-{
-    val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
+fun CollapsedCycle(title: String, cycleReps: Int, label: String) {
+    val dashedStroke = Stroke(
+        width = 4.dp.value,
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f)
+    )
     val color = MaterialTheme.colors.primary
-    Box(modifier = Modifier
-        .wrapContentSize()
-        .padding(10.dp)) {
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(10.dp)
+    ) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            drawRoundRect(color = color, style= dashedStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+            drawRoundRect(
+                color = color,
+                style = dashedStroke,
+                cornerRadius = CornerRadius(20.dp.toPx())
+            )
         }
-        Row(modifier = Modifier
-            .align(Alignment.CenterStart)
-            .padding(bottom = 0.dp, start = 20.dp)
-            .zIndex(1f)
+        Row(
+            modifier = Modifier
+                .align(Alignment.CenterStart)
+                .padding(bottom = 0.dp, start = 20.dp)
+                .zIndex(1f)
         )
         {
 
-            Text(text = "$cycleReps", fontWeight = FontWeight.SemiBold, fontSize = 20.sp, modifier = Modifier.alignByBaseline())
-            Text(text = stringResource(R.string.reps_), fontSize = 11.sp, modifier = Modifier.alignByBaseline())
+            Text(
+                text = "$cycleReps",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                modifier = Modifier.alignByBaseline()
+            )
+            Text(
+                text = stringResource(R.string.reps_),
+                fontSize = 11.sp,
+                modifier = Modifier.alignByBaseline()
+            )
         }
-        Row(modifier = Modifier
-            .height(IntrinsicSize.Max)
-            .padding(start = 65.dp)
-            .fillMaxWidth(),
+        Row(
+            modifier = Modifier
+                .height(IntrinsicSize.Max)
+                .padding(start = 65.dp)
+                .fillMaxWidth(),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -154,8 +190,20 @@ fun CollapsedCycle(title: String, cycleReps: Int, label: String)
                 tint = MaterialTheme.colors.primary,
             )
             Row(modifier = Modifier.padding(end = 10.dp)) {
-                Text(text = "${label}: ", fontWeight = FontWeight.Light, fontSize = 14.sp, modifier = Modifier.alignByBaseline())
-                Text(text = title, style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold, maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.alignByBaseline())
+                Text(
+                    text = "${label}: ",
+                    fontWeight = FontWeight.Light,
+                    fontSize = 14.sp,
+                    modifier = Modifier.alignByBaseline()
+                )
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.h6,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.alignByBaseline()
+                )
             }
         }
     }
@@ -164,47 +212,90 @@ fun CollapsedCycle(title: String, cycleReps: Int, label: String)
 @Composable
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
-fun ExecuteCycle(title: String, exList: List<ExInfo>, cycleReps: Int, currentExercise: Int, currentRepetition: Int, shouldMoveScrolling: Boolean = false)
-{
-    val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
+fun ExecuteCycle(
+    title: String,
+    exList: List<ExInfo>,
+    cycleReps: Int,
+    currentExercise: Int,
+    currentRepetition: Int,
+    shouldMoveScrolling: Boolean = false
+) {
+    val dashedStroke = Stroke(
+        width = 4.dp.value,
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f)
+    )
     val solidStroke = Stroke(width = 10.dp.value)
 
     val color = MaterialTheme.colors.primary
-    Box(modifier = Modifier
-        .wrapContentSize()
-        .padding(10.dp)) {
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(10.dp)
+    ) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            drawRoundRect(color = color, style= dashedStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+            drawRoundRect(
+                color = color,
+                style = dashedStroke,
+                cornerRadius = CornerRadius(20.dp.toPx())
+            )
         }
-        Row(modifier = Modifier
-            .align(Alignment.BottomStart)
-            .padding(bottom = 25.dp, start = 22.dp)
-            .zIndex(1f)
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 25.dp, start = 22.dp)
+                .zIndex(1f)
         )
         {
-            Text(text = "${currentRepetition+1}", fontWeight = FontWeight.SemiBold, fontSize = 28.sp, modifier = Modifier.alignByBaseline())
+            Text(
+                text = "${currentRepetition + 1}",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 28.sp,
+                modifier = Modifier.alignByBaseline()
+            )
             Text(text = "/$cycleReps", fontSize = 14.sp, modifier = Modifier.alignByBaseline())
         }
 
 
-        Box(modifier = Modifier
-            .height(IntrinsicSize.Max)
-            .padding(15.dp)) {
-            Canvas(modifier = Modifier
-                .fillMaxHeight()
-                .width(62.dp)
-                .zIndex(1f)) {
-                drawRoundRect(color = color, style= solidStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+        Box(
+            modifier = Modifier
+                .height(IntrinsicSize.Max)
+                .padding(15.dp)
+        ) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(62.dp)
+                    .zIndex(1f)
+            ) {
+                drawRoundRect(
+                    color = color,
+                    style = solidStroke,
+                    cornerRadius = CornerRadius(20.dp.toPx())
+                )
             }
-            Column(modifier = Modifier
-                .padding(start = 40.dp)
-                .wrapContentHeight()) {
+            Column(
+                modifier = Modifier
+                    .padding(start = 40.dp)
+                    .wrapContentHeight()
+            ) {
                 Column(modifier = Modifier.padding(start = 42.dp, bottom = 10.dp)) {
-                    Text(text = "${stringResource(id = R.string.current_cycle)}: ", fontWeight = FontWeight.Light, fontSize = 14.sp)
-                    Text(text = title, style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "${stringResource(id = R.string.current_cycle)}: ",
+                        fontWeight = FontWeight.Light,
+                        fontSize = 14.sp
+                    )
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.h6,
+                        fontWeight = FontWeight.Bold
+                    )
                 }
                 for (ex in exList) {
-                    ExerciseItem(exercise = ex, variant = if(currentExercise == exList.indexOf(ex)) ExerciseItemType.EXPANDED else ExerciseItemType.NO_PIC, shouldMoveScrolling = shouldMoveScrolling)
+                    ExerciseItem(
+                        exercise = ex,
+                        variant = if (currentExercise == exList.indexOf(ex)) ExerciseItemType.EXPANDED else ExerciseItemType.NO_PIC,
+                        shouldMoveScrolling = shouldMoveScrolling
+                    )
                 }
             }
         }
@@ -217,41 +308,75 @@ fun ExecuteCycle(title: String, exList: List<ExInfo>, cycleReps: Int, currentExe
 @ExperimentalFoundationApi
 fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
 
-    val dashedStroke = Stroke(width = 4.dp.value, pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f))
+    val dashedStroke = Stroke(
+        width = 4.dp.value,
+        pathEffect = PathEffect.dashPathEffect(floatArrayOf(40f, 40f), 0f)
+    )
     val solidStroke = Stroke(width = 10.dp.value)
 
 
     val color = MaterialTheme.colors.primary
-    Box(modifier = Modifier
-        .wrapContentSize()
-        .padding(10.dp)) {
+    Box(
+        modifier = Modifier
+            .wrapContentSize()
+            .padding(10.dp)
+    ) {
         Canvas(modifier = Modifier.matchParentSize()) {
-            drawRoundRect(color = color, style= dashedStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+            drawRoundRect(
+                color = color,
+                style = dashedStroke,
+                cornerRadius = CornerRadius(20.dp.toPx())
+            )
         }
-        Row(modifier = Modifier
-            .align(Alignment.BottomStart)
-            .padding(bottom = 25.dp, start = 22.dp)
-            .zIndex(1f)
+        Row(
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(bottom = 25.dp, start = 22.dp)
+                .zIndex(1f)
         )
         {
-            Text(text = "$cycleReps", fontWeight = FontWeight.SemiBold, fontSize = 20.sp, modifier = Modifier.alignByBaseline())
-            Text(text = stringResource(R.string.reps_), fontSize = 11.sp, modifier = Modifier.alignByBaseline())
+            Text(
+                text = "$cycleReps",
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 20.sp,
+                modifier = Modifier.alignByBaseline()
+            )
+            Text(
+                text = stringResource(R.string.reps_),
+                fontSize = 11.sp,
+                modifier = Modifier.alignByBaseline()
+            )
         }
 
 
-        Box(modifier = Modifier
-            .height(IntrinsicSize.Max)
-            .padding(15.dp)) {
-            Canvas(modifier = Modifier
-                .fillMaxHeight()
-                .width(62.dp)
-                .zIndex(1f)) {
-                drawRoundRect(color = color, style= solidStroke, cornerRadius = CornerRadius(20.dp.toPx()))
+        Box(
+            modifier = Modifier
+                .height(IntrinsicSize.Max)
+                .padding(15.dp)
+        ) {
+            Canvas(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .width(62.dp)
+                    .zIndex(1f)
+            ) {
+                drawRoundRect(
+                    color = color,
+                    style = solidStroke,
+                    cornerRadius = CornerRadius(20.dp.toPx())
+                )
             }
-            Column(modifier = Modifier
-                .padding(start = 40.dp)
-                .wrapContentHeight()) {
-                Text(text = title, style = MaterialTheme.typography.h6, fontWeight = FontWeight.Bold, modifier = Modifier.padding(start = 32.dp, bottom = 10.dp))
+            Column(
+                modifier = Modifier
+                    .padding(start = 40.dp)
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.h6,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 32.dp, bottom = 10.dp)
+                )
                 for (ex in exList) {
                     ExerciseItem(ex, ExerciseItemType.REGULAR)
                 }
@@ -263,11 +388,11 @@ fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
 
 
 @Composable
-fun StartEndLabel(label: String)
-{
-    Row(modifier = Modifier
-        .height(IntrinsicSize.Max)
-        .padding(start = 72.dp),
+fun StartEndLabel(label: String) {
+    Row(
+        modifier = Modifier
+            .height(IntrinsicSize.Max)
+            .padding(start = 72.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -289,10 +414,17 @@ enum class ExerciseItemType {
 
 @Composable
 @ExperimentalFoundationApi
-fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.REGULAR, shouldMoveScrolling: Boolean = false) {
-    val background = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) MaterialTheme.colors.surface else Color.Transparent
-    val nameSize = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 24.sp else 16.sp
-    val iconTopPadding = if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 27.dp else 0.dp
+fun ExerciseItem(
+    exercise: ExInfo,
+    variant: ExerciseItemType = ExerciseItemType.REGULAR,
+    shouldMoveScrolling: Boolean = false
+) {
+    val background =
+        if (variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) MaterialTheme.colors.surface else Color.Transparent
+    val nameSize =
+        if (variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 24.sp else 16.sp
+    val iconTopPadding =
+        if (variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) 27.dp else 0.dp
 
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
@@ -306,7 +438,7 @@ fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.
             .bringIntoViewRequester(bringIntoViewRequester)
     ) {
         LaunchedEffect(key1 = variant) {
-            if(shouldMoveScrolling && (variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC)) {
+            if (shouldMoveScrolling && (variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC)) {
                 coroutineScope.launch {
                     bringIntoViewRequester.bringIntoView(surroundings)
                 }
@@ -329,12 +461,22 @@ fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.
                         .size(24.dp),
                     tint = MaterialTheme.colors.primary,
                 )
-                Column(modifier = Modifier
-                    .padding(bottom = 14.dp, start = 10.dp)) {
-                    if(variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) {
-                        Text(text = stringResource(id = R.string.in_progress_), fontSize = 16.sp, fontWeight = FontWeight.Light)
+                Column(
+                    modifier = Modifier
+                        .padding(bottom = 14.dp, start = 10.dp)
+                ) {
+                    if (variant == ExerciseItemType.EXPANDED || variant == ExerciseItemType.EXPANDED_NO_PIC) {
+                        Text(
+                            text = stringResource(id = R.string.in_progress_),
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Light
+                        )
                     }
-                    Text(text = exercise.name, fontWeight = FontWeight.SemiBold, fontSize = nameSize)
+                    Text(
+                        text = exercise.name,
+                        fontWeight = FontWeight.SemiBold,
+                        fontSize = nameSize
+                    )
                     Column() {
                         if (exercise.reps != null) {
                             Text(text = stringResource(id = R.string.x_repetitions, exercise.reps))
@@ -343,7 +485,7 @@ fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.
                             Text(text = stringResource(id = R.string.x_seconds, exercise.duration))
                         }
                     }
-                    if(variant == ExerciseItemType.EXPANDED) {
+                    if (variant == ExerciseItemType.EXPANDED) {
                         AsyncImage(
                             model = exercise.imageUrl,
                             contentDescription = null,
@@ -353,12 +495,12 @@ fun ExerciseItem(exercise: ExInfo, variant: ExerciseItemType = ExerciseItemType.
                                 .clip(RoundedCornerShape(10.dp)),
                             contentScale = ContentScale.Crop,
 
-                        )
+                            )
                     }
                 }
             }
 
-            if(variant == ExerciseItemType.REGULAR) {
+            if (variant == ExerciseItemType.REGULAR) {
                 AsyncImage(
                     model = exercise.imageUrl,
                     contentDescription = null,
@@ -384,7 +526,12 @@ fun RatingBar(
 
     Row(modifier = modifier) {
         repeat(rating) {
-            Icon(imageVector = Icons.Filled.Star, contentDescription = null, tint = starsColor, modifier = Modifier.size(starsSize.dp))
+            Icon(
+                imageVector = Icons.Filled.Star,
+                contentDescription = null,
+                tint = starsColor,
+                modifier = Modifier.size(starsSize.dp)
+            )
         }
 
         repeat(stars - rating) {
@@ -399,11 +546,39 @@ fun RatingBar(
 }
 
 @Composable
-fun RatingCard(rating: Int, modifier: Modifier)
-{
+fun ClickableRatingBar(
+    modifier: Modifier = Modifier,
+    stars: Int = 5,
+    starsColor: Color = MaterialTheme.colors.secondary,
+    starsSize: Int = 18,
+    currentRating: Int,
+    onRatingChange: (Int) -> Unit
+) {
+
+    Row(modifier = modifier) {
+        repeat(stars) {
+            Icon(
+                imageVector = if (it < currentRating) Icons.Filled.Star else Icons.Filled.StarOutline,
+                contentDescription = null,
+                tint = starsColor,
+                modifier = Modifier
+                    .size(starsSize.dp)
+                    .clickable { onRatingChange(it + 1) },
+            )
+        }
+    }
+}
+
+@Composable
+fun RatingCard(rating: Int, modifier: Modifier) {
     Card(modifier = modifier) {
         Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "$rating", fontSize = 16.sp, fontWeight = FontWeight.Bold, modifier = Modifier.padding(end = 10.dp))
+            Text(
+                text = "$rating",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 10.dp)
+            )
             RatingBar(rating = rating, stars = 5, starsColor = MaterialTheme.colors.primary)
         }
     }
