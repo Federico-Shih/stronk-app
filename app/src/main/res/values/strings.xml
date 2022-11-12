@@ -27,5 +27,8 @@
     <string name="your_rating_for_this_routine">Your rating for this routine</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
+    <string name="ShowMore">Show more</string>
+    <string name="MyRoutines">My routines</string>
+    <string name="FavRoutines">Favourite Routines</string>
 
 </resources>

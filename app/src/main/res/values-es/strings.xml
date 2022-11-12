@@ -28,4 +28,8 @@
     <string name="your_rating_for_this_routine">Tu puntuación para esta rutina</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
+    <string name="ShowMore">Ver más</string>
+    <string name="MyRoutines">Mis Rutinas</string>
+    <string name="FavRoutines">Rutinas Favoritas</string>
+    
 </resources>

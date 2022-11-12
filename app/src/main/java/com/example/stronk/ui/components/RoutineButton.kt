@@ -30,11 +30,11 @@ import androidx.compose.ui.unit.sp
 import com.example.stronk.ui.theme.StronkTheme
 
 @Composable
-fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String,modifierButton: Modifier = Modifier, onClick: () -> Unit = {}) {
+fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String,modifierButton: Modifier = Modifier, onNavigateToViewRoutine: (routineId: Int) -> Unit={}) {
     val image: Painter = painterResource(id = RoutineImageID)
     Card(modifier = modifierButton
         .padding(10.dp)
-        .clickable { onClick }, elevation = 10.dp,
+        .clickable { onNavigateToViewRoutine(RoutineID) }, elevation = 10.dp,
         border= BorderStroke(2.dp, MaterialTheme.colors.primaryVariant),
         shape= RoundedCornerShape(20.dp)
         ) {

@@ -25,6 +25,7 @@ import com.example.stronk.ui.components.BottomBar
 import com.example.stronk.ui.screens.ExecuteRoutineScreen
 import com.example.stronk.ui.screens.ExploreScreen
 import com.example.stronk.ui.screens.ViewRoutineScreen
+import com.example.stronk.ui.screens.myRoutinesScreen
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 
@@ -115,7 +116,9 @@ class MainActivity : ComponentActivity() {
                                 })
                             }
                             composable(route = MainScreens.ROUTINES.name) {
-                                Greeting(name = "rutines")
+                                myRoutinesScreen(onNavigateToViewRoutine = { routineId ->
+                                    navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+                                })
                             }
                             composable(
                                 route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
