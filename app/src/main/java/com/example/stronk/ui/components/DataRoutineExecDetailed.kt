@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
@@ -25,7 +26,7 @@ import com.example.stronk.ui.theme.LightOliveGreen
 import com.example.stronk.ui.theme.StronkTheme
 
 @Composable
-fun TitleAndSubtitle(MainText: String, SecondaryText: String)
+fun TitleAndSubtitle(MainText: String, SecondaryText: String?=null)
 {
     Card(modifier = Modifier
         .fillMaxWidth()
@@ -47,16 +48,18 @@ fun TitleAndSubtitle(MainText: String, SecondaryText: String)
             // TODO: Cómo centro el divider?
             Divider(color = Color.Black, thickness = 2.dp,
                 modifier = Modifier.fillMaxWidth(0.95F).align(Alignment.CenterHorizontally))
-            Text(
-                text = SecondaryText,
-                textAlign = TextAlign.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp),
-                fontStyle = MaterialTheme.typography.h4.fontStyle,
-                color = MaterialTheme.colors.secondary, // quizás mejor directamente negro
-                fontWeight = FontWeight(400)
-            )
+            if (SecondaryText != null) {
+                Text(
+                    text = SecondaryText,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
+                    fontStyle = MaterialTheme.typography.h4.fontStyle,
+                    color = MaterialTheme.colors.secondary, // quizás mejor directamente negro
+                    fontWeight = FontWeight(400)
+                )
+            }
         }
     }
 }
