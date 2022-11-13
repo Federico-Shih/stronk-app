@@ -3,7 +3,6 @@ package com.example.stronk.model
 import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.*
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stronk.state.*
@@ -133,8 +132,8 @@ class ViewRoutineViewModel : ViewModel() {
 
     fun initialize() {
         uiState = uiState.copy(
-            loading = true,
             routine = Routine(0, "", "", Date(0), 0, "", UserRoutine(0, "", "", "", Date(0)), ""),
+            loadState = ApiState(ApiStatus.LOADING, ""),
             cycles = listOf(),
             faved = false,
             showRatingDialog = false,
@@ -146,10 +145,10 @@ class ViewRoutineViewModel : ViewModel() {
         viewModelScope.launch {
             uiState = uiState.copy(cycles = cycleListPrueba, routine = routinePrueba, faved = true)
             withContext(Dispatchers.IO) {
-                Thread.sleep(2000)
+                Thread.sleep(500)
             }
             // cuando termina de cargar
-            uiState = uiState.copy(loading = false)
+            uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS, "OK"))
         }
     }
 

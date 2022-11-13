@@ -9,7 +9,9 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -25,11 +27,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
+import com.example.stronk.model.ApiStatus
 import com.example.stronk.model.ViewRoutineViewModel
 import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.ExInfo
 import com.example.stronk.ui.components.ClickableRatingBar
 import com.example.stronk.ui.components.CompleteRoutine
+import com.example.stronk.ui.components.LoadDependingContent
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
@@ -45,17 +49,12 @@ fun ViewRoutineScreen(
     viewRoutineViewModel: ViewRoutineViewModel
 ) {
     val state = viewRoutineViewModel.uiState
-    viewRoutineViewModel.fetchRoutine(routineId)
+    LaunchedEffect(key1 = routineId) {
+        viewRoutineViewModel.initialize()
+        viewRoutineViewModel.fetchRoutine(routineId)
+    }
 
-    if (state.loading) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            CircularProgressIndicator()
-        }
-    } else {
+    LoadDependingContent(loadState = state.loadState) {
         Scaffold(floatingActionButton = {
             FloatingActionButton(
                 onClick = { onNavigateToExecution(routineId) },
@@ -131,8 +130,14 @@ fun ViewRoutineScreen(
                     )
                 }
                 Row() {
-                    Text(text = "Fecha de creación: ", fontWeight = FontWeight.SemiBold)
-                   val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(state.routine.creationDate).toString()
+                    Text(
+                        text = "${stringResource(id = R.string.creation_date)}: ",
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    val date = SimpleDateFormat(
+                        "dd/MM/yyyy",
+                        Locale.getDefault()
+                    ).format(Date(state.routine.creationDate)).toString()
                     Text(text = date)
                 }
                 Text(
@@ -186,6 +191,8 @@ fun ViewRoutineScreen(
                 }
             }
         }
+
+
     }
 
 

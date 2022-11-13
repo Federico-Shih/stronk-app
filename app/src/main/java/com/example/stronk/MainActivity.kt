@@ -1,5 +1,6 @@
 package com.example.stronk
 
+import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -10,8 +11,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -32,12 +32,15 @@ import com.example.stronk.ui.screens.*
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 
 enum class MainScreens(
     val label: Int = R.string.empty,
     val icon: ImageVector = Icons.Filled.Article,
     val hidesBottomNav: Boolean = false,
-    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?) -> Unit = {}
+    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?) -> Unit = {},
+    val confirmationOnExit: Boolean = false
 ) {
     AUTH,
     EXPLORE(R.string.explore_label, Icons.Filled.Search),
@@ -45,24 +48,33 @@ enum class MainScreens(
         R.string.routines_label,
         Icons.Filled.DirectionsRun
     ),
-    EXECUTE(hidesBottomNav = true),
+    EXECUTE(hidesBottomNav = true, confirmationOnExit = true),
     VIEW_ROUTINE(topLeftButtons = { onGetViewModel ->
         val viewRoutineViewModel: ViewRoutineViewModel = onGetViewModel() as ViewRoutineViewModel
         val state = viewRoutineViewModel.uiState
         Row() {
             val context = LocalContext.current
-            IconButton(onClick = { viewRoutineViewModel.favRoutine() }) {
-                Icon(
-                    imageVector = if(state.faved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
-                    contentDescription = "favorite",
-                )
+            if (viewRoutineViewModel.uiState.loadState.status == com.example.stronk.model.ApiStatus.SUCCESS) {
+                IconButton(onClick = { viewRoutineViewModel.favRoutine() }) {
+                    Icon(
+                        imageVector = if (state.faved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                        contentDescription = "favorite",
+                        tint = MaterialTheme.colors.onPrimary
+                    )
+                }
+                IconButton(onClick = {
+                    viewRoutineViewModel.shareRoutine(
+                        context
+                    )
+                }) {
+                    Icon(
+                        imageVector = Icons.Filled.Share,
+                        contentDescription = "share",
+                        tint = MaterialTheme.colors.onPrimary
+                    )
+                }
             }
-            IconButton(onClick = { viewRoutineViewModel.shareRoutine(context) }) {
-                Icon(
-                    imageVector = Icons.Filled.Share,
-                    contentDescription = "share",
-                )
-            }
+
         }
     })
 }
@@ -75,6 +87,7 @@ class MainActivity : ComponentActivity() {
 
     private val bottomBarScreens = listOf(MainScreens.EXPLORE, MainScreens.ROUTINES)
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -83,15 +96,26 @@ class MainActivity : ComponentActivity() {
             val currentRoute = backStackEntry?.destination?.route ?: MainScreens.EXPLORE.name
             val currentScreen = MainScreens.valueOf(currentRoute.split("/")[0])
             val viewRoutineViewModel: ViewRoutineViewModel = viewModel()
+            var showConfirmExitDialog by remember { mutableStateOf(false) }
             StronkTheme {
                 Scaffold(
                     topBar = {
                         AppBar(
                             screen = stringResource(id = currentScreen.label),
                             canGoBack = currentScreen !in bottomBarScreens,
-                            goBack = { navController.popBackStack() },
+                            goBack = {
+                                if (!currentScreen.confirmationOnExit) {
+                                    navController.popBackStack()
+                                } else {
+                                    showConfirmExitDialog = true
+                                }
+                            },
                             TopRightButtons = currentScreen.topLeftButtons,
-                            onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) { { viewRoutineViewModel } } else { { null } }
+                            onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) {
+                                { viewRoutineViewModel }
+                            } else {
+                                { null }
+                            }
                         )
                     },
                     bottomBar = {
@@ -128,10 +152,10 @@ class MainActivity : ComponentActivity() {
                             composable(
                                 route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
                                 deepLinks = listOf(
-                                  navDeepLink {
-                                      uriPattern = "https://www.stronk.com/routines/{routineId}"
-                                      action = Intent.ACTION_VIEW
-                                  }
+                                    navDeepLink {
+                                        uriPattern = "https://www.stronk.com/routines/{routineId}"
+                                        action = Intent.ACTION_VIEW
+                                    }
                                 ),
                                 arguments = listOf(navArgument("routineId") {
                                     type = NavType.IntType
@@ -158,14 +182,45 @@ class MainActivity : ComponentActivity() {
                             composable(
                                 route = MainScreens.AUTH.name
                             ) {
-                                val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+                                val loginViewModel: LoginViewModel =
+                                    viewModel(factory = LoginViewModel.Factory)
                                 LoginScreen(
-                                    onSubmit = {
-                                        username, password ->
+                                    onSubmit = { username, password ->
                                         loginViewModel.login(username, password)
                                     },
                                     isAuthenticated = loginViewModel.uiState.isAuthenticated
                                 )
+                            }
+                        }
+                    }
+                    if (showConfirmExitDialog) {
+                        Dialog(onDismissRequest = { showConfirmExitDialog = false }) {
+                            Card(
+                                backgroundColor = MaterialTheme.colors.background,
+                                contentColor = MaterialTheme.colors.onBackground,
+                            ) {
+                                Column(modifier = Modifier.padding(16.dp)) {
+                                    Text(
+                                        text = stringResource(id = R.string.exit_confirmation),
+                                        style = MaterialTheme.typography.h6,
+                                        modifier = Modifier.padding(bottom = 10.dp)
+                                    )
+                                    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                                        Button(
+                                            onClick = { showConfirmExitDialog = false },
+                                            modifier = Modifier.padding(end = 10.dp)
+                                        ) {
+                                            Text(text = stringResource(id = R.string.cancel).uppercase())
+                                        }
+                                        Button(onClick = {
+                                            showConfirmExitDialog = false
+                                            navController.popBackStack()
+                                        }) {
+                                            Text(text = stringResource(id = R.string.exit).uppercase())
+                                        }
+                                    }
+
+                                }
                             }
                         }
                     }

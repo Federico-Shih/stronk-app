@@ -37,6 +37,7 @@ fun AppBar(
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
                         contentDescription = "BackButton",
+                        tint = MaterialTheme.colors.onPrimary
                     )
                 }
             }
@@ -44,7 +45,8 @@ fun AppBar(
                 text = screen,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
-                modifier = Modifier.padding(10.dp)
+                modifier = Modifier.padding(10.dp),
+                color = MaterialTheme.colors.onPrimary
             )
             TopRightButtons(onGetViewModel)
         }
