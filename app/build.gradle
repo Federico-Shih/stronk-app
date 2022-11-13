@@ -25,7 +25,10 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "API_BASE_URL","\"https://stronk-backend.herokuapp.com/\""
+            buildConfigField "String", "API_BASE_URL", "\"https://reqres.in/\""
+        }
+        debug {
+            buildConfigField "String", "API_BASE_URL", "\"https://reqres.in/\""
         }
     }
     compileOptions {
@@ -69,11 +72,8 @@ dependencies {
     implementation "androidx.compose.material:material-icons-extended:1.3.1"
     implementation "com.google.accompanist:accompanist-pager:0.13.0"
     implementation "com.google.accompanist:accompanist-pager-indicators:0.13.0"
-    implementation "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
-    implementation "org.jetbrains.kotlinx:kotlinx-serialization-json:1.4.0"
-
-    implementation "com.google.code.gson:gson:2.10"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation 'com.google.code.gson:gson:2.10'
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
-    implementation "com.squareup.okhttp3:logging-interceptor:4.10.0"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 }

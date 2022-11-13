@@ -1,12 +1,33 @@
 package com.example.stronk.network.dtos
 
-import kotlinx.serialization.Serializable
+import com.google.gson.annotations.SerializedName
 
-@Serializable
-data class User(val id: Int, val username: String, val gender: String, val avatarUrl: String, val date: Long)
 
-@Serializable
-data class Routine(val id: Int, val name: String, val description: String, val creationDate: Long, val rating: Int, val difficulty: String, val user: User, val category: String)
+data class UserDTO(
+    @SerializedName("id") val id: Int,
+    @SerializedName("username") val username: String,
+    @SerializedName("gender") val gender: String,
+    @SerializedName("avatarUrl") val avatarUrl: String,
+    @SerializedName("date") val date: Long
+)
 
-@Serializable
-data class PaginatedRoutines(val totalCount: Int, val orderBy: String, val direction: String, val content: List<Routine>, val size: Int, val page: Int, val isLastPage: Boolean)
+data class RoutineDTO(
+    @SerializedName("id") val id: Int,
+    @SerializedName("name") val name: String,
+    @SerializedName("description") val description: String,
+    @SerializedName("creationDate") val creationDate: Long,
+    @SerializedName("rating") val rating: Int,
+    @SerializedName("difficulty") val difficulty: String,
+    @SerializedName("user") val user: UserDTO,
+    @SerializedName("category") val category: String
+)
+
+data class PaginatedRoutinesDTO(
+    @SerializedName("totalCount") val totalCount: Int,
+    @SerializedName("orderBy") val orderBy: String,
+    @SerializedName("direction") val direction: String,
+    @SerializedName("content") val content: List<RoutineDTO>,
+    @SerializedName("size") val size: Int,
+    @SerializedName("page") val page: Int,
+    @SerializedName("isLastPage") val isLastPage: Boolean
+)
