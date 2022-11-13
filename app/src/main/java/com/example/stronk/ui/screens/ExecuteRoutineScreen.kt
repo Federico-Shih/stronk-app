@@ -19,16 +19,19 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.stronk.R
 import com.example.stronk.model.ExecuteViewModel
 import com.example.stronk.state.*
-import com.example.stronk.ui.components.*
+import com.example.stronk.ui.components.ExecutingCycles
+import com.example.stronk.ui.components.InfoCycle
+import com.example.stronk.ui.components.RoutineControls
+import com.example.stronk.ui.components.TitleAndSubtitle
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
-import kotlin.math.exp
 
 @ExperimentalPagerApi
 @ExperimentalAnimationApi
@@ -115,9 +118,9 @@ fun TabsContent(pagerState: PagerState, routineId: Int) {
 @ExperimentalFoundationApi
 fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
     val state = executeViewModel.uiState
-    val windowInfo = rememberWindowInfo()
-    val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
-    if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
+    val windowInfo= rememberWindowInfo()
+    val exercise:ExInfo= state.currentCycle.exList[state.exerciseIndex]
+    if(windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
         Scaffold(bottomBar = {
             RoutineControls(
                 startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
@@ -140,12 +143,12 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
                     nextCycle = state.nextCycle,
                     currentExercise = state.exerciseIndex,
                     currentRepetition = state.cycleRepetition,
-                    shouldMoveScrolling = state.page == 1,
+                    shouldMoveScrolling = state.page == 1
                 )
             }
 
         }
-    } else {
+    }else{
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceEvenly,
@@ -156,35 +159,34 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
                     .weight(1f)
                     .verticalScroll(rememberScrollState())
                     .padding(10.dp),
-            ) {
+                ) {
                 ExecutingCycles(
                     prevCycle = state.previousCycle,
                     currentCycle = state.currentCycle,
                     nextCycle = state.nextCycle,
                     currentExercise = state.exerciseIndex,
                     currentRepetition = state.cycleRepetition,
-                    shouldMoveScrolling = state.page == 1,
-                    expandedExerciseVariant = ExerciseItemType.EXPANDED_NO_PIC
+                    shouldMoveScrolling = state.page == 1
                 )
             }
             Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.80f)
-                    .padding(end = 5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.80f)
+                        .padding(end = 5.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
             ) {
-                TitleAndSubtitle(MainText = exercise.name)
-                RoutineControls(
-                    startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
-                    reps = state.currentCycle.exList[state.exerciseIndex].reps,
-                    onSkipPrevious = { executeViewModel.previous() },
-                    onSkipNext = { executeViewModel.next() },
-                    contentColor = MaterialTheme.colors.onBackground,
-                    backgroundColor = MaterialTheme.colors.background
-                )
-            }
+                TitleAndSubtitle(MainText = exercise.name, MainFontSize = 30.sp )
+            RoutineControls(
+                startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
+                reps = state.currentCycle.exList[state.exerciseIndex].reps,
+                onSkipPrevious = { executeViewModel.previous() },
+                onSkipNext = { executeViewModel.next() },
+                contentColor = MaterialTheme.colors.onBackground,
+                backgroundColor = MaterialTheme.colors.background
+            )
+        }
         }
     }
 }
@@ -192,9 +194,9 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
 @Composable
 fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
     val state = executeViewModel.uiState
-    val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
-    val windowInfo = rememberWindowInfo()
-    if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
+    val exercise:ExInfo= state.currentCycle.exList[state.exerciseIndex]
+    val windowInfo= rememberWindowInfo()
+    if(windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact){
         Scaffold(bottomBar = {
             RoutineControls(
                 startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
@@ -202,88 +204,86 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
                 onSkipPrevious = { executeViewModel.previous() },
                 onSkipNext = { executeViewModel.next() },
             )
-        }
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(it),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                AsyncImage(
-                    model = exercise.imageUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .sizeIn(maxHeight = 200.dp)
-                        .clip(RoundedCornerShape(10.dp))
-                )
-                TitleAndSubtitle(MainText = exercise.name, SecondaryText = exercise.description)
-                InfoCycle(
-                    currentCycle = state.currentCycle.name,
-                    cycleRepetitions = state.currentCycle.cycleReps,
-                    currentCycleRepetition = state.cycleRepetition + 1,
-                    nextExer = state.nextExercise?.name ?: "---"
-                )
             }
+        ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(it),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    AsyncImage(
+                        model = exercise.imageUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .sizeIn(maxHeight = 200.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                    )
+                    TitleAndSubtitle(MainText = exercise.name, SecondaryText = exercise.description)
+                    InfoCycle(
+                        currentCycle = state.currentCycle.name,
+                        cycleRepetitions = state.currentCycle.cycleReps,
+                        currentCycleRepetition = state.cycleRepetition+1,
+                        nextExer = state.nextExercise?.name ?:"---"
+                    )
+                }
         }
-    } else {
+    }else{
 
         Row(
             modifier = Modifier.fillMaxSize(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .wrapContentWidth()
-                    .padding(start = 5.dp)
-                    .alignByBaseline(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                TitleAndSubtitle(MainText = exercise.name, SecondaryText = exercise.description)
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .wrapContentWidth()
+                        .padding(start = 5.dp)
+                        .alignByBaseline()
+                        .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    AsyncImage(
-                        model = exercise.imageUrl,
-                        contentDescription = null,
-                        modifier = Modifier
-                            .sizeIn(maxHeight = 100.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                    )
-                    InfoCycle(
-                        currentCycle = state.currentCycle.name,
-                        cycleRepetitions = state.currentCycle.cycleReps,
-                        currentCycleRepetition = state.cycleRepetition + 1,
-                        nextExer = state.nextExercise?.name ?: "---"
-                    )
-                }
+                    TitleAndSubtitle(MainText = exercise.name, SecondaryText = exercise.description, MainFontSize = 24.sp, SecondaryFontSize = 16.sp)
+                    Row(modifier=Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceEvenly){
+                        AsyncImage(
+                            model = exercise.imageUrl,
+                            contentDescription = null,
+                            modifier = Modifier
+                                .sizeIn(maxHeight = 100.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                        )
+                        InfoCycle(
+                            currentCycle = state.currentCycle.name,
+                            cycleRepetitions = state.currentCycle.cycleReps,
+                            currentCycleRepetition = state.cycleRepetition+1,
+                            nextExer = state.nextExercise?.name ?:"---"
+                        )
+                    }
 
-            }
-            Column(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(0.60f)
-                    .padding(end = 5.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Bottom
-            ) {
-                RoutineControls(
-                    startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
-                    reps = state.currentCycle.exList[state.exerciseIndex].reps,
-                    onSkipPrevious = { executeViewModel.previous() },
-                    onSkipNext = { executeViewModel.next() },
-                    contentColor = MaterialTheme.colors.onBackground,
-                    backgroundColor = MaterialTheme.colors.background
-                )
-            }
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.60f)
+                        .padding(end = 5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Bottom
+                ) {
+                    RoutineControls(
+                        startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
+                        reps = state.currentCycle.exList[state.exerciseIndex].reps,
+                        onSkipPrevious = { executeViewModel.previous() },
+                        onSkipNext = { executeViewModel.next() },
+                        contentColor = MaterialTheme.colors.onBackground,
+                        backgroundColor = MaterialTheme.colors.background
+                    )
+                 }
         }
 
-    }
+        }
 }
 
 

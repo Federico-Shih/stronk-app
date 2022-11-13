@@ -67,7 +67,6 @@ enum class MainScreens(
     })
 }
 
-//@ExperimentalMaterial3WindowSizeClassApi
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
 @ExperimentalPagerApi

@@ -37,14 +37,17 @@ fun RoutineControls(
     var timerRunning by remember { mutableStateOf(false) }
     var minutes: Long = (totalremainingMilliSeconds) / (1000 * 60)
     var seconds: Long = (totalremainingMilliSeconds / 1000) % 60
+    var changed:Boolean by remember { mutableStateOf(false) }
+
     /*TODO Temporizador Alerta */
+
     LaunchedEffect(key1 = totalremainingMilliSeconds, key2 = timerRunning) {
         if (timerRunning && totalremainingMilliSeconds > 0L) {
             delay(100L) //Funciona en milisegundos
             totalremainingMilliSeconds -= 100L
         }
     }
-    LaunchedEffect(key1 = startingTimer) {
+    LaunchedEffect(key1=changed) {
         totalremainingMilliSeconds = if (startingTimer != null) {
             startingTimer * 1000L
         } else {
@@ -105,6 +108,7 @@ fun RoutineControls(
             IconButton(onClick = {
                 onSkipPrevious()
                 timerRunning = false
+                changed= !changed
             }, modifier = Modifier.align(Alignment.CenterStart)) {
                 Icon(
                     Icons.Filled.SkipPrevious,
@@ -142,6 +146,7 @@ fun RoutineControls(
                 onClick = {
                     onSkipNext()
                     timerRunning = false
+                    changed= !changed
                 },
                 modifier = Modifier.align(Alignment.CenterEnd)
             ) {

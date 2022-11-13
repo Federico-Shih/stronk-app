@@ -22,8 +22,7 @@ class ExecuteViewModel : ViewModel() {
                     10,
                     3,
                     "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                "Este es un ejercicio que se realiza ejercitando"
-                ),
+                    "Este es un ejercicio que se realiza ejercitando aaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaa aaaaaaaaaa aaa           aaaaaaaaaaaaa aaaaaaaaaaaaaaa"                ),
                 ExInfo(
                     "Squats",
                     10,

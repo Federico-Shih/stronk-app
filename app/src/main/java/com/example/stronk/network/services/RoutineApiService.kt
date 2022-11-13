@@ -13,15 +13,15 @@ import retrofit2.http.Query
 interface RoutineApiService {
     @GET("routines")
     suspend fun getRoutines(
-        @Query("categoryId") category: Int,
-        @Query("userId") userId: Int,
-        @Query("difficulty") difficulty: Int,
-        @Query("score") score: Int,
-        @Query("search") search: String,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("orderBy") orderBy: String,
-        @Query("direction") direction: String,
+        @Query("categoryId") category: Int?,
+        @Query("userId") userId: Int?,
+        @Query("difficulty") difficulty: Int?,
+        @Query("score") score: Int?,
+        @Query("search") search: String?,
+        @Query("page") page: Int?,
+        @Query("size") size: Int?,
+        @Query("orderBy") orderBy: String?,
+        @Query("direction") direction: String?,
         ): Response<List<Paginated<RoutineData>>>
 
     @GET("routines/{id}")
@@ -29,29 +29,29 @@ interface RoutineApiService {
 
     @GET("users/current/routines")
     suspend fun getMyRoutines(
-        @Query("difficulty") difficulty: Int,
-        @Query("search") search: String,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("orderBy") orderBy: String,
-        @Query("direction") direction: String,
+        @Query("difficulty") difficulty: Int?,
+        @Query("search") search: String?,
+        @Query("page") page: Int?,
+        @Query("size") size: Int?,
+        @Query("orderBy") orderBy: String ?,
+        @Query("direction") direction: String ?,
     ): Response<Paginated<RoutineData>>
 
     @GET("routines/{routineId}/cycles")
     suspend fun getCycles(
         @Path("routineId") routineId: Int,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("orderBy") orderBy: String,
-        @Query("direction") direction: String
+        @Query("page") page: Int?,
+        @Query("size") size: Int?,
+        @Query("orderBy") orderBy: String?,
+        @Query("direction") direction: String?,
     ): Response<Paginated<CycleData>>
 
     @GET("exercises/{exerciseId}/images")
     suspend fun getExercisesImages(
         @Path("exerciseId") exerciseId: Int,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("orderBy") orderBy: String,
-        @Query("direction") direction: String
+        @Query("page") page: Int?,
+        @Query("size") size: Int?,
+        @Query("orderBy") orderBy: String?,
+        @Query("direction") direction: String?,
     ): Response<Paginated<List<ExerciseImageData>>>
 }

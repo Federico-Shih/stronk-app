@@ -1,24 +1,36 @@
 package com.example.stronk.model
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.stronk.state.MyRoutinesState
 import com.example.stronk.state.Routine
 import com.example.stronk.state.User
+import com.example.stronk.state.UserRoutine
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import java.util.*
 
 class MyRoutinesViewModel : ViewModel() {
-    var uiState = MyRoutinesState()
+    var uiState by mutableStateOf(MyRoutinesState())
+        private set
+
+    private var fetchJob:Job? = null
+
 
     val routinesTest= listOf<Routine>(Routine(id=1,name="Abdos en 15mins",
-        "abods",165432697,4,"Avanzado",
-        User(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",165432697),
+        "abods", Date(165432697),4,"Avanzado",
+        UserRoutine(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",Date(165432697)),
         "Abdominales"),
         Routine(id=2,name="Abdos en 15mins",
-            "abods",165432697,4,"Avanzado",
-            User(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",165432697),
+            "abods",Date(165432697),4,"Avanzado",
+            UserRoutine(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",Date(165432697)),
             "Abdominales"),
         Routine(id=3,name="Abdos en 15mins",
-            "abods",165432697,4,"Avanzado",
-            User(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",165432697),
+            "abods",Date(165432697),4,"Avanzado",
+            UserRoutine(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",Date(165432697)),
             "Abdominales"),
         )
 
@@ -32,6 +44,23 @@ class MyRoutinesViewModel : ViewModel() {
         uiState = uiState.copy(myRoutines = routinesTest,favouriteRoutinesPage = uiState.favouriteRoutinesPage + 1)
     }
     fun fetchFirstRoutines(){
+        fetchJob?.cancel()
+        fetchJob = viewModelScope.launch {
+            //uiState = uiState.copy(isLoading = true)
+            runCatching {
+                /*  val apiService=RetrofitClient.getApiService()
+                val response = apiService.getRoutines()
+                */
+            }.onSuccess { // response->
+                //uiState=uiState.copy(myRoutines = response.body(),myRoutinesPage = 1,isLoading = false)
+            }.onFailure {//e->
+                //  uiState = uiState.copy(message = e.message, isLoading = false)
+            }
+            try{
+            }catch (e:Exception){
+              //  uiState = uiState.copy(message = "Error al obtener las rutinas", isLoading = false)
+            }
+        }
         //Pido las primeras rutinas al repositorio si ya tengo, no hago nada
         if (uiState.myRoutinesPage == 0){
             uiState = uiState.copy(myRoutines = routinesTest,myRoutinesPage =1)

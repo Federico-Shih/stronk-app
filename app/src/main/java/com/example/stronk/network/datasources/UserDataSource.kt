@@ -5,7 +5,7 @@ import com.example.stronk.network.SessionManager
 import com.example.stronk.network.dtos.LoginDTO
 import com.example.stronk.network.dtos.UserData
 import com.example.stronk.network.services.UsersApiService
-import com.example.stronk.state.models.User
+import com.example.stronk.state.User
 
 class UserDataSource(
     private val sessionManager: SessionManager,

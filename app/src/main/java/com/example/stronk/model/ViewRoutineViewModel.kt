@@ -10,6 +10,7 @@ import com.example.stronk.state.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.*
 
 class ViewRoutineViewModel : ViewModel() {
     var uiState by mutableStateOf(ViewRoutineState())
@@ -18,9 +19,9 @@ class ViewRoutineViewModel : ViewModel() {
         id = 1,
         name = "Abdominales en 15 minutos!",
         description = "Este es un entrenamiento de abdominales que te ayudará a fortalecer tu abdomen y a quemar grasa abdominal.",
-        creationDate = 34572452467,
+        creationDate = Date(34572452467),
         rating = 4,
-        user = User(1, "Juan", "Helicóptero", "https://picsum.photos/100", 34572452467),
+        user = UserRoutine(1, "Juan", "Helicóptero", "https://picsum.photos/100", Date(34572452467)),
         category = "Full Body",
         difficulty = "Advanced"
     )
@@ -34,7 +35,7 @@ class ViewRoutineViewModel : ViewModel() {
                     10,
                     3,
                     "https://images.ecestaticos.com/WAot9QyeV2vzRuE1gVu55WLdv7Y=/0x0:0x0/1200x900/filters:fill(white):format(jpg)/f.elconfidencial.com%2Foriginal%2Fb3c%2Fc7c%2Fff6%2Fb3cc7cff6cc1ee44df172f15afa3e4f9.jpg",
-                    "Este es un ejercicio que se realiza ejercitando"
+                    "Este es un ejercicio que se realiza ejercitando aaaaaaaaaaaaaaaaaaaaaaaaaaaaa aaaaaaaaaaa aaaaaaaaaa aaa           aaaaaaaaaaaaa aaaaaaaaaaaaaaa"
                 ),
                 ExInfo(
                     "Squats",
@@ -133,7 +134,7 @@ class ViewRoutineViewModel : ViewModel() {
     fun initialize() {
         uiState = uiState.copy(
             loading = true,
-            routine = Routine(0, "", "", 0, 0, "", User(0, "", "", "", 0), ""),
+            routine = Routine(0, "", "", Date(0), 0, "", UserRoutine(0, "", "", "", Date(0)), ""),
             cycles = listOf(),
             faved = false,
             showRatingDialog = false,

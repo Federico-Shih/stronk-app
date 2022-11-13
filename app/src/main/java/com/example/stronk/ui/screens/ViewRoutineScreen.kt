@@ -132,7 +132,7 @@ fun ViewRoutineScreen(
                 }
                 Row() {
                     Text(text = "Fecha de creación: ", fontWeight = FontWeight.SemiBold)
-                    val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(state.routine.creationDate)).toString()
+                   val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(state.routine.creationDate).toString()
                     Text(text = date)
                 }
                 Text(
