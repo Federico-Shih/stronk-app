@@ -1,8 +1,9 @@
 package com.example.stronk.model
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import android.content.Context
+import android.content.Intent
+import androidx.compose.runtime.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.stronk.state.*
@@ -159,8 +160,14 @@ class ViewRoutineViewModel : ViewModel() {
         //TODO: rate routine in database
     }
 
-    fun shareRoutine() {
-
+    fun shareRoutine(context: Context) {
+        val intent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, "https://www.stronk.com/routines/${uiState.routine.id}")
+            type = "text/plain"
+        }
+        val shareIntent = Intent.createChooser(intent, null)
+        context.startActivity(shareIntent)
     }
 
     fun showRatingDialog() {

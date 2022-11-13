@@ -49,7 +49,8 @@ fun ExecutingCycles(
     nextCycle: CycleInfo?,
     currentExercise: Int,
     currentRepetition: Int,
-    shouldMoveScrolling: Boolean = false
+    shouldMoveScrolling: Boolean = false,
+    expandedExerciseVariant: ExerciseItemType = ExerciseItemType.EXPANDED,
 ) {
 
     val color = MaterialTheme.colors.primary
@@ -89,7 +90,8 @@ fun ExecutingCycles(
                 cycleReps = currentCycle.cycleReps,
                 currentExercise = currentExercise,
                 currentRepetition = currentRepetition,
-                shouldMoveScrolling = shouldMoveScrolling
+                shouldMoveScrolling = shouldMoveScrolling,
+                expandedExerciseVariant = expandedExerciseVariant
             )
             if (nextCycle != null) {
                 CollapsedCycle(
@@ -218,7 +220,8 @@ fun ExecuteCycle(
     cycleReps: Int,
     currentExercise: Int,
     currentRepetition: Int,
-    shouldMoveScrolling: Boolean = false
+    shouldMoveScrolling: Boolean = false,
+    expandedExerciseVariant: ExerciseItemType = ExerciseItemType.EXPANDED
 ) {
     val dashedStroke = Stroke(
         width = 4.dp.value,
@@ -293,7 +296,7 @@ fun ExecuteCycle(
                 for (ex in exList) {
                     ExerciseItem(
                         exercise = ex,
-                        variant = if (currentExercise == exList.indexOf(ex)) ExerciseItemType.EXPANDED else ExerciseItemType.NO_PIC,
+                        variant = if (currentExercise == exList.indexOf(ex)) expandedExerciseVariant else ExerciseItemType.NO_PIC,
                         shouldMoveScrolling = shouldMoveScrolling
                     )
                 }

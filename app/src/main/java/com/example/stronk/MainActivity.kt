@@ -1,5 +1,6 @@
 package com.example.stronk
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +23,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.example.stronk.network.SessionManager
 import com.example.stronk.model.ViewRoutineViewModel
 import com.example.stronk.network.RetrofitClient
@@ -37,6 +39,7 @@ import com.example.stronk.ui.screens.ViewRoutineScreen
 import com.example.stronk.ui.screens.myRoutinesScreen
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
+import androidx.compose.ui.platform.LocalContext
 
 enum class MainScreens(
     val label: Int = R.string.empty,
@@ -55,14 +58,14 @@ enum class MainScreens(
         val viewRoutineViewModel: ViewRoutineViewModel = onGetViewModel() as ViewRoutineViewModel
         val state = viewRoutineViewModel.uiState
         Row() {
-            //Text(text = state.routine.name, style = MaterialTheme.typography.h5)
+            val context = LocalContext.current
             IconButton(onClick = { viewRoutineViewModel.favRoutine() }) {
                 Icon(
                     imageVector = if(state.faved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                     contentDescription = "favorite",
                 )
             }
-            IconButton(onClick = { viewRoutineViewModel.shareRoutine() }) {
+            IconButton(onClick = { viewRoutineViewModel.shareRoutine(context) }) {
                 Icon(
                     imageVector = Icons.Filled.Share,
                     contentDescription = "share",
@@ -146,6 +149,12 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(
                                 route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
+                                deepLinks = listOf(
+                                  navDeepLink {
+                                      uriPattern = "https://www.stronk.com/routines/{routineId}"
+                                      action = Intent.ACTION_VIEW
+                                  }
+                                ),
                                 arguments = listOf(navArgument("routineId") {
                                     type = NavType.IntType
                                 })

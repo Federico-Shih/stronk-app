@@ -30,6 +30,10 @@ import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.ExInfo
 import com.example.stronk.ui.components.ClickableRatingBar
 import com.example.stronk.ui.components.CompleteRoutine
+import java.text.SimpleDateFormat
+import java.time.Instant
+import java.time.ZoneId
+import java.util.*
 
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
@@ -125,6 +129,11 @@ fun ViewRoutineScreen(
                             .wrapContentWidth()
                             .clickable { viewRoutineViewModel.showRatingDialog() }
                     )
+                }
+                Row() {
+                    Text(text = "Fecha de creación: ", fontWeight = FontWeight.SemiBold)
+                    val date = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(Date(state.routine.creationDate)).toString()
+                    Text(text = date)
                 }
                 Text(
                     text = "${stringResource(id = R.string.description)}:",
