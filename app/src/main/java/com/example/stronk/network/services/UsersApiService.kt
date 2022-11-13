@@ -1,4 +1,4 @@
-package com.example.stronk.network.datasource
+package com.example.stronk.network.services
 
 import com.example.stronk.network.dtos.LoginDTO
 import com.example.stronk.network.dtos.TokenData
@@ -9,12 +9,12 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface UsersApiService {
-    @POST("/users/login")
+    @POST("users/login")
     suspend fun login(@Body loginDTO: LoginDTO): Response<TokenData>
 
-    @GET("/users/current")
+    @GET("users/current")
     suspend fun current(): Response<UserData>
 
-    @POST("/users/logout")
-    suspend fun logout()
+    @POST("users/logout")
+    suspend fun logout(): Response<Unit>
 }

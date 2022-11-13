@@ -1,4 +1,4 @@
-package com.example.stronk.network.datasource
+package com.example.stronk.network.services
 
 import com.example.stronk.network.dtos.CycleData
 import com.example.stronk.network.dtos.ExerciseImageData
@@ -11,7 +11,7 @@ import retrofit2.http.Query
 
 
 interface RoutineApiService {
-    @GET("/routines")
+    @GET("routines")
     suspend fun getRoutines(
         @Query("categoryId") category: Int,
         @Query("userId") userId: Int,
@@ -24,10 +24,10 @@ interface RoutineApiService {
         @Query("direction") direction: String,
         ): Response<List<Paginated<RoutineData>>>
 
-    @GET("/routines/{id}")
+    @GET("routines/{id}")
     suspend fun getRoutine(@Path("id") id: Int): Response<RoutineData>
 
-    @GET("/users/current/routines")
+    @GET("users/current/routines")
     suspend fun getMyRoutines(
         @Query("difficulty") difficulty: Int,
         @Query("search") search: String,
@@ -37,7 +37,7 @@ interface RoutineApiService {
         @Query("direction") direction: String,
     ): Response<Paginated<RoutineData>>
 
-    @GET("/routines/{routineId}/cycles")
+    @GET("routines/{routineId}/cycles")
     suspend fun getCycles(
         @Path("routineId") routineId: Int,
         @Query("page") page: Int,
@@ -46,7 +46,7 @@ interface RoutineApiService {
         @Query("direction") direction: String
     ): Response<Paginated<CycleData>>
 
-    @GET("/exercises/{exerciseId}/images")
+    @GET("exercises/{exerciseId}/images")
     suspend fun getExercisesImages(
         @Path("exerciseId") exerciseId: Int,
         @Query("page") page: Int,

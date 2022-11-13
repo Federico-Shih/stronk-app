@@ -24,19 +24,11 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.example.stronk.network.SessionManager
+import com.example.stronk.model.LoginViewModel
 import com.example.stronk.model.ViewRoutineViewModel
-import com.example.stronk.network.RetrofitClient
-import com.example.stronk.network.datasource.CategoryApiService
-import com.example.stronk.network.datasource.FavouriteApiService
-import com.example.stronk.network.datasource.RoutineApiService
-import com.example.stronk.network.datasource.UsersApiService
 import com.example.stronk.ui.components.AppBar
 import com.example.stronk.ui.components.BottomBar
-import com.example.stronk.ui.screens.ExecuteRoutineScreen
-import com.example.stronk.ui.screens.ExploreScreen
-import com.example.stronk.ui.screens.ViewRoutineScreen
-import com.example.stronk.ui.screens.myRoutinesScreen
+import com.example.stronk.ui.screens.*
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.ui.platform.LocalContext
@@ -83,22 +75,9 @@ enum class MainScreens(
 class MainActivity : ComponentActivity() {
 
     private val bottomBarScreens = listOf(MainScreens.EXPLORE, MainScreens.ROUTINES)
-    private lateinit var sessionManager: SessionManager
-    private lateinit var retrofitClient: RetrofitClient
-    private lateinit var routineApiService: RoutineApiService
-    private lateinit var categoryApiService: CategoryApiService
-    private lateinit var usersApiService: UsersApiService
-    private lateinit var favouriteApiService: FavouriteApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        sessionManager = SessionManager(this)
-        retrofitClient = RetrofitClient(this)
-        routineApiService = retrofitClient.getRoutineApiService()
-        categoryApiService = retrofitClient.getCategoryApiService()
-        usersApiService = retrofitClient.getUsersApiService()
-        favouriteApiService = retrofitClient.getFavouriteApiService()
-
         setContent {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
@@ -135,7 +114,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = MainScreens.EXPLORE.name
+                            startDestination = MainScreens.AUTH.name
                         ) {
                             composable(route = MainScreens.EXPLORE.name) {
                                 ExploreScreen(onNavigateToViewRoutine = { routineId ->
@@ -175,6 +154,18 @@ class MainActivity : ComponentActivity() {
                             ) { backStackEntry ->
                                 ExecuteRoutineScreen(
                                     backStackEntry.arguments?.getInt("routineId") ?: 0
+                                )
+                            }
+                            composable(
+                                route = MainScreens.AUTH.name
+                            ) {
+                                val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModel.Factory)
+                                LoginScreen(
+                                    onSubmit = {
+                                        username, password ->
+                                        loginViewModel.login(username, password)
+                                    },
+                                    isAuthenticated = loginViewModel.uiState.isAuthenticated
                                 )
                             }
                         }

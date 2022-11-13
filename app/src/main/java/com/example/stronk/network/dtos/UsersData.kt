@@ -1,5 +1,6 @@
 package com.example.stronk.network.dtos
 
+import com.example.stronk.state.models.User
 import com.google.gson.annotations.SerializedName
 
 data class TokenData(
@@ -16,4 +17,14 @@ data class UserData(
     @SerializedName("email") val email: String,
     @SerializedName("phone") val phone: String,
     @SerializedName("avatarUrl") val avatarUrl: String
-)
+) {
+    fun asModel(): User {
+        return User(
+            id = id,
+            username = username,
+            birthdate = birthdate,
+            avatarUrl = avatarUrl,
+            email = email
+        )
+    }
+}
