@@ -25,6 +25,10 @@ import androidx.navigation.navArgument
 import com.example.stronk.network.SessionManager
 import com.example.stronk.model.ViewRoutineViewModel
 import com.example.stronk.network.RetrofitClient
+import com.example.stronk.network.datasource.CategoryApiService
+import com.example.stronk.network.datasource.FavouriteApiService
+import com.example.stronk.network.datasource.RoutineApiService
+import com.example.stronk.network.datasource.UsersApiService
 import com.example.stronk.ui.components.AppBar
 import com.example.stronk.ui.components.BottomBar
 import com.example.stronk.ui.screens.ExecuteRoutineScreen
@@ -78,12 +82,19 @@ class MainActivity : ComponentActivity() {
     private val bottomBarScreens = listOf(MainScreens.EXPLORE, MainScreens.ROUTINES)
     private lateinit var sessionManager: SessionManager
     private lateinit var retrofitClient: RetrofitClient
+    private lateinit var routineApiService: RoutineApiService
+    private lateinit var categoryApiService: CategoryApiService
+    private lateinit var usersApiService: UsersApiService
+    private lateinit var favouriteApiService: FavouriteApiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         sessionManager = SessionManager(this)
         retrofitClient = RetrofitClient(this)
-
+        routineApiService = retrofitClient.getRoutineApiService()
+        categoryApiService = retrofitClient.getCategoryApiService()
+        usersApiService = retrofitClient.getUsersApiService()
+        favouriteApiService = retrofitClient.getFavouriteApiService()
 
         setContent {
             val navController = rememberNavController()

@@ -2,7 +2,10 @@ package com.example.stronk.network
 
 import android.content.Context
 import com.example.stronk.BuildConfig
+import com.example.stronk.network.datasource.CategoryApiService
+import com.example.stronk.network.datasource.FavouriteApiService
 import com.example.stronk.network.datasource.RoutineApiService
+import com.example.stronk.network.datasource.UsersApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -29,5 +32,14 @@ class RetrofitClient(context: Context) {
 
     fun getRoutineApiService() : RoutineApiService {
         return retrofit.create(RoutineApiService::class.java)
+    }
+    fun getFavouriteApiService() : FavouriteApiService {
+        return retrofit.create(FavouriteApiService::class.java)
+    }
+    fun getUsersApiService() : UsersApiService {
+        return retrofit.create(UsersApiService::class.java)
+    }
+    fun getCategoryApiService() : CategoryApiService {
+        return retrofit.create(CategoryApiService::class.java)
     }
 }
