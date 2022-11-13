@@ -35,133 +35,150 @@ import com.example.stronk.ui.components.CompleteRoutine
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
-fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) -> Unit) {
-    val viewRoutineViewModel: ViewRoutineViewModel = viewModel()
-    viewRoutineViewModel.fetchRoutine(routineId)
+fun ViewRoutineScreen(
+    routineId: Int,
+    onNavigateToExecution: (routineId: Int) -> Unit,
+    viewRoutineViewModel: ViewRoutineViewModel
+) {
     val state = viewRoutineViewModel.uiState
+    viewRoutineViewModel.fetchRoutine(routineId)
 
-    Scaffold(floatingActionButton = {
-        FloatingActionButton(
-            onClick = { onNavigateToExecution(routineId) },
-            backgroundColor = MaterialTheme.colors.primary,
-            contentColor = MaterialTheme.colors.onPrimary,
-            modifier = Modifier.size(72.dp)
-        ) {
-            Icon(
-                Icons.Filled.PlayArrow,
-                contentDescription = "Play",
-                modifier = Modifier.size(48.dp)
-            )
-        }
-    }, modifier = Modifier.padding(10.dp)) {
+    if (state.loading) {
         Column(
-            modifier = Modifier
-                .padding(it)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = state.routine.name,
-                style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(bottom = 4.dp)
-            )
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                AsyncImage(
-                    model = state.routine.user.avatarUrl,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(32.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-                Text(
-                    text = stringResource(id = R.string.made_by_x, state.routine.user.username),
-                    modifier = Modifier.padding(start = 8.dp)
-                )
-            }
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.Top
-            ) {
-                Column() {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "${stringResource(id = R.string.category)}:",
-                            modifier = Modifier.padding(end = 10.dp),
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Chip(onClick = {}) {
-                            Text(text = state.routine.category)
-                        }
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "${stringResource(id = R.string.difficulty)}:",
-                            modifier = Modifier.padding(end = 10.dp),
-                            fontWeight = FontWeight.SemiBold
-                        )
-                        Chip(onClick = {}) {
-                            Text(text = state.routine.difficulty)
-                        }
-                    }
-                }
-                RatingCard(
-                    rating = state.routine.rating, modifier = Modifier
-                        .padding(top = 10.dp)
-                        .wrapContentWidth()
-                        .clickable { viewRoutineViewModel.showRatingDialog() }
-                )
-            }
-            Text(
-                text = "${stringResource(id = R.string.description)}:",
-                fontWeight = FontWeight.SemiBold
-            )
-            Text(text = state.routine.description)
-            CompleteRoutine(cycleList = state.cycles)
+            CircularProgressIndicator()
         }
-        if (state.showRatingDialog) {
-            Dialog(onDismissRequest = { viewRoutineViewModel.hideRatingDialog() }) {
-                var currentRate by remember { mutableStateOf(0) }
-                Card(backgroundColor = MaterialTheme.colors.background) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = "${stringResource(id = R.string.your_rating_for_this_routine)}:",
-                            style = MaterialTheme.typography.h6,
-                            modifier = Modifier.padding(bottom = 10.dp)
-                        )
-                        Row() {
-                            Text(text = "$currentRate", modifier = Modifier.padding(end = 10.dp))
-                            ClickableRatingBar(
-                                currentRating = currentRate,
-                                onRatingChange = { it -> currentRate = it },
-                                starsSize = 24
+    } else {
+        Scaffold(floatingActionButton = {
+            FloatingActionButton(
+                onClick = { onNavigateToExecution(routineId) },
+                backgroundColor = MaterialTheme.colors.primary,
+                contentColor = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.size(72.dp)
+            ) {
+                Icon(
+                    Icons.Filled.PlayArrow,
+                    contentDescription = "Play",
+                    modifier = Modifier.size(48.dp)
+                )
+            }
+        }, modifier = Modifier.padding(10.dp)) {
+            Column(
+                modifier = Modifier
+                    .padding(it)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Text(
+                    text = state.routine.name,
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(bottom = 4.dp)
+                )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    AsyncImage(
+                        model = state.routine.user.avatarUrl,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(32.dp)
+                            .clip(CircleShape),
+                        contentScale = ContentScale.Crop
+                    )
+                    Text(
+                        text = stringResource(id = R.string.made_by_x, state.routine.user.username),
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Column() {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "${stringResource(id = R.string.category)}:",
+                                modifier = Modifier.padding(end = 10.dp),
+                                fontWeight = FontWeight.SemiBold
                             )
-                        }
-                        Row(
-                            modifier = Modifier.padding(top = 10.dp),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Button(
-                                onClick = { viewRoutineViewModel.hideRatingDialog() },
-                                modifier = Modifier.padding(end = 10.dp)
-                            ) {
-                                Text(text = stringResource(id = R.string.cancel))
+                            Chip(onClick = {}) {
+                                Text(text = state.routine.category)
                             }
-                            Button(onClick = {
-                                viewRoutineViewModel.rateRoutine(currentRate)
-                                viewRoutineViewModel.hideRatingDialog()
-                            }) {
-                                Text(text = stringResource(id = R.string.ok))
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "${stringResource(id = R.string.difficulty)}:",
+                                modifier = Modifier.padding(end = 10.dp),
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Chip(onClick = {}) {
+                                Text(text = state.routine.difficulty)
                             }
                         }
                     }
+                    RatingCard(
+                        rating = state.routine.rating, modifier = Modifier
+                            .padding(top = 10.dp)
+                            .wrapContentWidth()
+                            .clickable { viewRoutineViewModel.showRatingDialog() }
+                    )
                 }
+                Text(
+                    text = "${stringResource(id = R.string.description)}:",
+                    fontWeight = FontWeight.SemiBold
+                )
+                Text(text = state.routine.description)
+                CompleteRoutine(cycleList = state.cycles)
+            }
+            if (state.showRatingDialog) {
+                Dialog(onDismissRequest = { viewRoutineViewModel.hideRatingDialog() }) {
+                    var currentRate by remember { mutableStateOf(0) }
+                    Card(backgroundColor = MaterialTheme.colors.background) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = "${stringResource(id = R.string.your_rating_for_this_routine)}:",
+                                style = MaterialTheme.typography.h6,
+                                modifier = Modifier.padding(bottom = 10.dp)
+                            )
+                            Row() {
+                                Text(
+                                    text = "$currentRate",
+                                    modifier = Modifier.padding(end = 10.dp)
+                                )
+                                ClickableRatingBar(
+                                    currentRating = currentRate,
+                                    onRatingChange = { it -> currentRate = it },
+                                    starsSize = 24
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.padding(top = 10.dp),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Button(
+                                    onClick = { viewRoutineViewModel.hideRatingDialog() },
+                                    modifier = Modifier.padding(end = 10.dp)
+                                ) {
+                                    Text(text = stringResource(id = R.string.cancel))
+                                }
+                                Button(onClick = {
+                                    viewRoutineViewModel.rateRoutine(currentRate)
+                                    viewRoutineViewModel.hideRatingDialog()
+                                }) {
+                                    Text(text = stringResource(id = R.string.ok))
+                                }
+                            }
+                        }
+                    }
 
+                }
             }
         }
     }
+
 
 }
 
@@ -172,6 +189,6 @@ fun ViewRoutineScreen(routineId: Int, onNavigateToExecution: (routineId: Int) ->
 @Composable
 fun ExampleRoutineView() {
     StronkTheme() {
-        ViewRoutineScreen(1, {})
+        ViewRoutineScreen(1, {}, viewModel())
     }
 }

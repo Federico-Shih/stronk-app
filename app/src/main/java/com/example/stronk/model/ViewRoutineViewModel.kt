@@ -4,12 +4,17 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.stronk.state.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class ViewRoutineViewModel : ViewModel() {
     var uiState by mutableStateOf(ViewRoutineState())
 
-    val routinePrueba = Routine(id = 1,
+    val routinePrueba = Routine(
+        id = 1,
         name = "Abdominales en 15 minutos!",
         description = "Este es un entrenamiento de abdominales que te ayudará a fortalecer tu abdomen y a quemar grasa abdominal.",
         creationDate = 34572452467,
@@ -124,9 +129,26 @@ class ViewRoutineViewModel : ViewModel() {
         )
     )
 
+    fun initialize() {
+        uiState = uiState.copy(
+            loading = true,
+            routine = Routine(0, "", "", 0, 0, "", User(0, "", "", "", 0), ""),
+            cycles = listOf(),
+            faved = false,
+            showRatingDialog = false,
+        )
+    }
+
     fun fetchRoutine(routineId: Int) {
         //TODO: fetch routine from database
-        uiState = uiState.copy(cycles = cycleListPrueba, routine = routinePrueba, faved = true)
+        viewModelScope.launch {
+            uiState = uiState.copy(cycles = cycleListPrueba, routine = routinePrueba, faved = true)
+            withContext(Dispatchers.IO) {
+                Thread.sleep(2000)
+            }
+            // cuando termina de cargar
+            uiState = uiState.copy(loading = false)
+        }
     }
 
     fun favRoutine() {

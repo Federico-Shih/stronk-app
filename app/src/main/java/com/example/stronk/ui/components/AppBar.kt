@@ -11,6 +11,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.MainScreens
 
 @Preview
@@ -20,7 +22,8 @@ fun AppBar(
     screen: String = "Hola",
     canGoBack: Boolean = false,
     goBack: () -> Unit = {},
-    TopRightButtons: @Composable () -> Unit = {}
+    TopRightButtons: @Composable (onGetViewModel: () -> ViewModel?) -> Unit = {},
+    onGetViewModel: () -> ViewModel? = { null }
 ) {
     TopAppBar(
         modifier = modifier
@@ -43,7 +46,7 @@ fun AppBar(
                 fontSize = 20.sp,
                 modifier = Modifier.padding(10.dp)
             )
-            TopRightButtons()
+            TopRightButtons(onGetViewModel)
         }
     }
 }
