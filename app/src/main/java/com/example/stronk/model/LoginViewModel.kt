@@ -27,6 +27,7 @@ class LoginViewModel(
     var uiState by mutableStateOf(LoginState(isAuthenticated = sessionManager.fetchAuthToken() != null))
         private set
 
+
     fun login(username: String, password: String) {
         loginJob?.cancel()
 
@@ -50,6 +51,7 @@ class LoginViewModel(
             }
         }
     }
+
 
     fun dismissMessage() {
         uiState = uiState.copy(apiState = ApiState(message = "", status = null))

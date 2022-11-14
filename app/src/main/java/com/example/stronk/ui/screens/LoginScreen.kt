@@ -127,7 +127,7 @@ fun LoginScreen(
             val actionLabel = stringResource(id = R.string.dismiss)
             LaunchedEffect(scaffoldState.snackbarHostState) {
                 val result = scaffoldState.snackbarHostState.showSnackbar(
-                    message = uiState.apiState.message!!,
+                    message = uiState.apiState.message,
                     actionLabel = actionLabel
                 )
                 when (result) {

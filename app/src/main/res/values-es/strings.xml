@@ -41,5 +41,5 @@
     <string name="loading_routine">Cargando Rutina</string>
     <string name="exit_confirmation">¿Está seguro que desea salir de la ejecución de rutina?</string>
     <string name="exit">Salir</string>
-
+    <string name="logout_button_label">Salir de sesión</string>
 </resources>

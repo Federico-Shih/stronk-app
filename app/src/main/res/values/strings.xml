@@ -40,4 +40,5 @@
     <string name="login_label">Log in to Stronk!</string>
     <string name="error_pass_user">Incorrect username/password</string>
     <string name="login_button_label">Log in</string>
+    <string name="logout_button_label">Log out</string>
 </resources>

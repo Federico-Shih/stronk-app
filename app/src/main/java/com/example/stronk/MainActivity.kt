@@ -1,6 +1,5 @@
 package com.example.stronk
 
-import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -40,8 +39,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.stronk.model.ApiStatus
 import com.example.stronk.model.MainViewModel
-import com.example.stronk.model.ExecuteViewModel
-import com.example.stronk.model.LoginViewModel.Companion.Factory
+import com.example.stronk.ui.components.ProfileButton
+
+@Composable
+fun MainNavbarButtons(onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) {
+    val userViewModel: MainViewModel = onGetViewModel() as MainViewModel
+    Row {
+        ProfileButton(
+            userViewModel.uiState
+        ) { route ->
+            navigateTo(route)
+            userViewModel.logout()
+        }
+    }
+}
 
 enum class MainScreens(
     val label: Int = R.string.empty,
@@ -52,10 +63,11 @@ enum class MainScreens(
     val hidesTopNav: Boolean = false,
 ) {
     AUTH(hidesBottomNav = true, hidesTopNav = true),
-    EXPLORE(R.string.explore_label, Icons.Filled.Search),
+    EXPLORE(R.string.explore_label, Icons.Filled.Search, topLeftButtons = { onGetViewModel, navigateTo -> MainNavbarButtons(onGetViewModel, navigateTo) }),
     ROUTINES(
         R.string.routines_label,
-        Icons.Filled.DirectionsRun
+        Icons.Filled.DirectionsRun,
+        topLeftButtons = { onGetViewModel, navigateTo -> MainNavbarButtons(onGetViewModel, navigateTo) }
     ),
     EXECUTE(hidesBottomNav = true, confirmationOnExit = true),
     VIEW_ROUTINE(topLeftButtons = { onGetViewModel, _ ->
@@ -217,6 +229,7 @@ class MainActivity : ComponentActivity() {
                                 LaunchedEffect(loginViewModel.uiState.apiState.status) {
                                     if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS)
                                     {
+                                        mainViewModel.fetchCurrentUser()
                                         navController.navigate(MainScreens.ROUTINES.name)
                                     }
                                 }

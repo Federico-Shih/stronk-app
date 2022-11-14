@@ -16,21 +16,27 @@ import java.net.URI
 import java.net.URL
 import java.util.*
 
-class RetrofitClient(context: Context) {
-    private var retrofit: Retrofit
+class RetrofitClient(val context: Context) {
+    @Volatile
+    private var retrofit: Retrofit? = null
 
-    init {
+    private fun getInstance(): Retrofit =
+        retrofit ?: synchronized(this) {
+            retrofit ?: buildRetrofit(context = context).also { retrofit = it }
+        }
+
+    private fun buildRetrofit(context: Context): Retrofit {
         val httpLoggingInterceptor = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
         val okHttpClient = OkHttpClient
             .Builder()
-            .addInterceptor(httpLoggingInterceptor)
             .addInterceptor(AuthInterceptor(context))
+            .addInterceptor(httpLoggingInterceptor)
             .build()
 
         val gson = GsonBuilder().registerTypeAdapter(Date::class.java, ApiDateTypeAdapter()).create()
 
-        retrofit = Retrofit.Builder()
+        return Retrofit.Builder()
             .baseUrl(BuildConfig.API_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(okHttpClient)
@@ -38,15 +44,15 @@ class RetrofitClient(context: Context) {
     }
 
     fun getRoutineApiService() : RoutineApiService {
-        return retrofit.create(RoutineApiService::class.java)
+        return getInstance().create(RoutineApiService::class.java)
     }
     fun getFavouriteApiService() : FavouriteApiService {
-        return retrofit.create(FavouriteApiService::class.java)
+        return getInstance().create(FavouriteApiService::class.java)
     }
     fun getUsersApiService() : UsersApiService {
-        return retrofit.create(UsersApiService::class.java)
+        return getInstance().create(UsersApiService::class.java)
     }
     fun getCategoryApiService() : CategoryApiService {
-        return retrofit.create(CategoryApiService::class.java)
+        return getInstance().create(CategoryApiService::class.java)
     }
 }
