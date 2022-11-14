@@ -9,9 +9,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
-import com.example.stronk.network.DataSourceException
-import com.example.stronk.network.dtos.Paginated
-import com.example.stronk.network.dtos.RoutineData
 import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.Category
 import com.example.stronk.state.ExploreState
@@ -61,8 +58,26 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
-    fun getMoreRoutines(routineIndex: Int) {
+    fun searchRoutines(search: String) {
 
+    }
+
+    fun getMoreRoutines(category: Pair<String, Int>) {
+        val categoryIndex = uiState.categories.indexOf(category)
+        val newRoutines = uiState.routineByCategory as List<MutableList<Routine>>
+        val pages = uiState.pages as MutableList<Int>
+        val isLastOne = uiState.isLastOne as MutableList<Boolean>
+        routinesJob = viewModelScope.launch {
+            runCatching {
+                routineRepository.getRoutines(size = 2, category = category.second, page = uiState.pages[categoryIndex]+1)
+            }.onSuccess { result ->
+                newRoutines[categoryIndex].addAll(result.content.map { it.asModel() } )
+                pages[categoryIndex]++
+                isLastOne[categoryIndex] = result.isLastPage
+                uiState = uiState.copy(routineByCategory = newRoutines, pages = pages, isLastOne = isLastOne)
+            }.onFailure { throw it }
+
+        }
     }
 
     private suspend fun getCategories() {

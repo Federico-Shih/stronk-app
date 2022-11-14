@@ -22,7 +22,8 @@ fun RoutineButtonGroup(
     routineList: List<Routine>,
     title: String,
     onNavigateToViewRoutine: (routineId: Int) -> Unit,
-    onGetMoreRoutines: () -> Unit
+    onGetMoreRoutines: () -> Unit,
+    showButton: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -30,19 +31,30 @@ fun RoutineButtonGroup(
         elevation = 10.dp
     ) {
         Column(verticalArrangement = Arrangement.Top) {
-            Row(horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth())
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            )
             {
                 Text(
                     title,
-                    modifier = Modifier.padding(start = 5.dp, top = 5.dp).alignByBaseline(),
+                    modifier = Modifier
+                        .padding(start = 5.dp, top = 5.dp)
+                        .alignByBaseline(),
                     style = MaterialTheme.typography.h4
                 )
-                Button(onClick = { onGetMoreRoutines() }, shape = CircleShape, modifier = Modifier.alignByBaseline()) {
-                    Text("Ver más")
+                if (showButton) {
+                    Button(
+                        onClick = { onGetMoreRoutines() },
+                        shape = CircleShape,
+                        modifier = Modifier.alignByBaseline()
+                    ) {
+                        Text("VER MÁS")
+                    }
                 }
             }
 
-            for (i in 0 until routineList.size step 2) {
+            for (i in routineList.indices step 2) {
                 Row(
                     modifier = Modifier
                         .height(IntrinsicSize.Min)
