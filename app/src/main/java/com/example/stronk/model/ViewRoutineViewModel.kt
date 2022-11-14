@@ -159,6 +159,8 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
                     }.onSuccess {
                         cycles ->
                         uiState = uiState.copy(routine = routineData.asModel(), cycles = cycles)
+                    }.onFailure {
+                        throw it
                     }
                 }
             }.onSuccess {
