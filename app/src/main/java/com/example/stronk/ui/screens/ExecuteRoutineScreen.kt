@@ -97,7 +97,7 @@ fun Tabs(pagerState: PagerState) {
 @ExperimentalFoundationApi
 @Composable
 fun TabsContent(pagerState: PagerState, routineId: Int) {
-    val executeViewModel: ExecuteViewModel = viewModel()
+    val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
     executeViewModel.executeRoutine(routineId)
     val coroutineScope = rememberCoroutineScope()
     LaunchedEffect(key1 = pagerState.currentPage) {
@@ -116,7 +116,7 @@ fun TabsContent(pagerState: PagerState, routineId: Int) {
 @Composable
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
-fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
+fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)) {
     val state = executeViewModel.uiState
     val windowInfo= rememberWindowInfo()
     val exercise:ExInfo= state.currentCycle.exList[state.exerciseIndex]
@@ -192,7 +192,7 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
 }
 
 @Composable
-fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel()) {
+fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)) {
     val state = executeViewModel.uiState
     val exercise:ExInfo= state.currentCycle.exList[state.exerciseIndex]
     val windowInfo= rememberWindowInfo()

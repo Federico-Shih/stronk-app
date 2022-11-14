@@ -22,7 +22,7 @@ import com.example.stronk.state.Routine
 
 @Composable
 fun myRoutinesScreen(onNavigateToViewRoutine: (routineId: Int) -> Unit) {
-  val myRoutinesViewModel:MyRoutinesViewModel = viewModel()
+  val myRoutinesViewModel:MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory)
   val state=myRoutinesViewModel.uiState
   myRoutinesViewModel.fetchFirstRoutines()//Busca las primeras rutinas si ya estan no hace nada
   Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {

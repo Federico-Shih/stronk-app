@@ -39,6 +39,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.stronk.model.ApiStatus
+import com.example.stronk.model.ExecuteViewModel
+import com.example.stronk.model.LoginViewModel.Companion.Factory
 
 enum class MainScreens(
     val label: Int = R.string.empty,
@@ -102,7 +104,7 @@ class MainActivity : ComponentActivity() {
             val backStackEntry by navController.currentBackStackEntryAsState()
             val currentRoute = backStackEntry?.destination?.route ?: INITIAL_ROUTE.name
             val currentScreen = MainScreens.valueOf(currentRoute.split("/")[0])
-            val viewRoutineViewModel: ViewRoutineViewModel = viewModel()
+            val viewRoutineViewModel: ViewRoutineViewModel = viewModel(factory = ViewRoutineViewModel.Factory)
             var showConfirmExitDialog by remember { mutableStateOf(false) }
             StronkTheme {
                 val scaffoldState: ScaffoldState = rememberScaffoldState()

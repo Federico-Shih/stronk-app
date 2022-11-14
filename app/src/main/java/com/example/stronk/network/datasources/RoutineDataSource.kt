@@ -17,14 +17,14 @@ class RoutineDataSource(private val routineApiService: RoutineApiService,private
                             difficulty: Int?=null,
                             score: Int?=null,
                             search: String?=null,
-                            age: Int?=null,
-                            ize: Int?=null,
+                            page: Int?=null,
+                            size: Int?=null,
                             orderBy: String?=null,
                             direction: String?=null
     ): List<Paginated<RoutineData>> {
 
       return handleApiResponse {
-            routineApiService.getRoutines(category, userId, difficulty, score, search, age, ize, orderBy, direction)
+            routineApiService.getRoutines(category, userId, difficulty, score, search, page, size, orderBy, direction)
         }
     }
     suspend fun getMyRoutines(difficulty: Int?=null,

@@ -205,6 +205,6 @@ fun ViewRoutineScreen(
 @Composable
 fun ExampleRoutineView() {
     StronkTheme() {
-        ViewRoutineScreen(1, {}, viewModel())
+        ViewRoutineScreen(1, {}, viewModel(factory = ViewRoutineViewModel.Factory))
     }
 }

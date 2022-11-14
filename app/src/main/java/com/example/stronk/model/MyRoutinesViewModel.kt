@@ -4,7 +4,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.stronk.StronkApplication
+import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.MyRoutinesState
 import com.example.stronk.state.Routine
 import com.example.stronk.state.User
@@ -13,7 +18,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 
-class MyRoutinesViewModel : ViewModel() {
+class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : ViewModel() {
     var uiState by mutableStateOf(MyRoutinesState())
         private set
 
@@ -67,6 +72,14 @@ class MyRoutinesViewModel : ViewModel() {
         }
         if (uiState.favouriteRoutinesPage== 0){
             uiState = uiState.copy(favouriteRoutines = routinesTest,favouriteRoutinesPage =1)
+        }
+    }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
+                MyRoutinesViewModel(application.routineRepository)
+            }
         }
     }
 }

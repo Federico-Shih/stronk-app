@@ -9,8 +9,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.stronk.StronkApplication
+import com.example.stronk.network.repositories.RoutineRepository
 
-class ExecuteViewModel : ViewModel() {
+class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewModel() {
     var uiState by mutableStateOf(ExecuteRoutineState())
 
     val cycleListPrueba = listOf(
@@ -146,6 +151,14 @@ class ExecuteViewModel : ViewModel() {
                 uiState.copy(exerciseIndex = uiState.cycles[uiState.cycleIndex].exList.size - 1, cycleRepetition = uiState.cycleRepetition - 1)
             } else {
                 uiState.copy(exerciseIndex = uiState.cycles[uiState.cycleIndex - 1].exList.size - 1, cycleRepetition = uiState.cycles[uiState.cycleIndex - 1].cycleReps - 1, cycleIndex = uiState.cycleIndex - 1)
+            }
+        }
+    }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
+                ExecuteViewModel(application.routineRepository)
             }
         }
     }

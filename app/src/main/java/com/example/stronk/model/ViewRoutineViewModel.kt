@@ -4,14 +4,19 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.runtime.*
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.stronk.StronkApplication
+import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.util.*
 
-class ViewRoutineViewModel : ViewModel() {
+class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : ViewModel() {
     var uiState by mutableStateOf(ViewRoutineState())
 
     val routinePrueba = Routine(
@@ -176,5 +181,13 @@ class ViewRoutineViewModel : ViewModel() {
 
     fun hideRatingDialog() {
         uiState = uiState.copy(showRatingDialog = false)
+    }
+    companion object {
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
+                ViewRoutineViewModel(application.routineRepository)
+            }
+        }
     }
 }
