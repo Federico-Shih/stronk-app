@@ -35,8 +35,8 @@ fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String,modif
     Card(modifier = modifierButton
         .padding(10.dp)
         .clickable { onNavigateToViewRoutine(RoutineID) }, elevation = 10.dp,
-        border= BorderStroke(2.dp, MaterialTheme.colors.primaryVariant),
-        shape= RoundedCornerShape(20.dp)
+        border = BorderStroke(2.dp, MaterialTheme.colors.primaryVariant),
+        shape = RoundedCornerShape(20.dp)
         ) {
         Box {
             Image(

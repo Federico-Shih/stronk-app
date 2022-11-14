@@ -12,21 +12,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stronk.R
 import com.example.stronk.RoutineButton
+import com.example.stronk.network.dtos.RoutineData
 import com.example.stronk.ui.theme.StronkTheme
 
 
 @Composable
-fun RoutineButtonGroup(listRow: List<String>, title: String)
+fun RoutineButtonGroup(routineList: List<RoutineData>, title: String, onNavigateToViewRoutine: (routineId: Int) -> Unit, onGetMoreRoutines: () -> Unit)
 {
     Card(modifier = Modifier
         .padding(15.dp),
         elevation = 10.dp) {
         Column( verticalArrangement = Arrangement.Top) {
             Text(title, modifier = Modifier.padding(start = 20.dp, top = 10.dp), style = MaterialTheme.typography.h4)
-            for (i in 1 until listRow.size step 2) {
+            for (i in 1 until routineList.size step 2) {
                 Row(
                     modifier = Modifier
-                        .padding(all = 8.dp)
                         .height(IntrinsicSize.Min)
                         .fillMaxWidth()
                         .wrapContentWidth(Alignment.Start),
@@ -38,13 +38,16 @@ fun RoutineButtonGroup(listRow: List<String>, title: String)
                             .fillMaxWidth(0.5f)
                             .height(200.dp)
                     ) {
+                        val current = routineList[i]
                         RoutineButton(
-                            RoutineID = 1,
+                            RoutineID = current.id,
+                            //TODO cambiar dependiendo de las categorías
                             RoutineImageID = R.drawable.abdos,
-                            RoutineName = (i).toString(),
+                            RoutineName = current.name,
                             modifierButton = Modifier
                                 .fillMaxWidth()
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            onNavigateToViewRoutine = onNavigateToViewRoutine
                         )
                     }
                     Column(
@@ -52,20 +55,23 @@ fun RoutineButtonGroup(listRow: List<String>, title: String)
                             .fillMaxWidth()
                             .height(200.dp)
                     ) {
+                        val current = routineList[i+1]
                         RoutineButton(
-                            RoutineID = 2,
+                            RoutineID = current.id,
+                            //TODO cambiar dependiendo de las categorías
                             RoutineImageID = R.drawable.abdos,
-                            RoutineName = (i+1).toString(),
+                            RoutineName = current.name,
                             modifierButton = Modifier
                                 .fillMaxWidth()
-                                .fillMaxHeight()
+                                .fillMaxHeight(),
+                            onNavigateToViewRoutine = onNavigateToViewRoutine
                         )
                     }
                 }
             }
             Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth())
             {
-                Button(onClick = { /*TODO*/ }, shape = CircleShape) {
+                Button(onClick = { onGetMoreRoutines() }, shape = CircleShape) {
                     Text("Ver más")
                 }
             }
@@ -73,16 +79,4 @@ fun RoutineButtonGroup(listRow: List<String>, title: String)
     }
 }
 
-@Composable
-@Preview
-fun PreviewGroup(listRow: List<String> = List(4){"$it"})
-{
-    StronkTheme {
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
-            Box {
-                RoutineButtonGroup(listRow, "Title")
-            }
-        }
-    }
-}
 
