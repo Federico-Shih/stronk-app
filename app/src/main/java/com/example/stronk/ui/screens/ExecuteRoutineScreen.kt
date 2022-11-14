@@ -25,10 +25,7 @@ import coil.compose.AsyncImage
 import com.example.stronk.R
 import com.example.stronk.model.ExecuteViewModel
 import com.example.stronk.state.*
-import com.example.stronk.ui.components.ExecutingCycles
-import com.example.stronk.ui.components.InfoCycle
-import com.example.stronk.ui.components.RoutineControls
-import com.example.stronk.ui.components.TitleAndSubtitle
+import com.example.stronk.ui.components.*
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.*
 import kotlinx.coroutines.launch
@@ -166,7 +163,8 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
                     nextCycle = state.nextCycle,
                     currentExercise = state.exerciseIndex,
                     currentRepetition = state.cycleRepetition,
-                    shouldMoveScrolling = state.page == 1
+                    shouldMoveScrolling = state.page == 1,
+                    expandedExerciseVariant = ExerciseItemType.EXPANDED_NO_PIC
                 )
             }
             Column(

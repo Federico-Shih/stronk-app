@@ -9,11 +9,11 @@ import retrofit2.http.Query
 
 interface FavouriteApiService {
     @GET("favourites")
-    fun getFavourites(@Query("page") page: Int?, @Query("size") size: Int?): Response<Paginated<RoutineData>>
+    suspend fun getFavourites(@Query("page") page: Int?, @Query("size") size: Int?): Response<Paginated<RoutineData>>
 
     @GET("favourites/{routineId}")
-    fun postFavouriteRoutine(@Path("routineId") routineId: Int): Response<Unit>
+    suspend fun postFavouriteRoutine(@Path("routineId") routineId: Int): Response<Unit>
 
     @GET("favourites/{routineId")
-    fun removeFavouriteRoutine(@Path("routineId") routineId: Int): Response<Any>
+    suspend fun removeFavouriteRoutine(@Path("routineId") routineId: Int): Response<Any>
 }

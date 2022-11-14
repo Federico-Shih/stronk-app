@@ -23,32 +23,25 @@ import com.example.stronk.ui.components.RoutineButtonGroup
 
 @Composable
 fun ExploreScreen(
-    onNavigateToViewRoutine: (routineId: Int) -> Unit
+    onNavigateToViewRoutine: (routineId: Int) -> Unit,
+    exploreViewModel: ExploreViewModel = viewModel(factory = ExploreViewModel.Factory)
 ) {
-    var exploreViewModel: ExploreViewModel? = null
-    var state: ExploreState?= null
-    if( exploreViewModel == null)
-    {
-        exploreViewModel = viewModel()
-        state = exploreViewModel.uiState
-        exploreViewModel.getInitialRoutines()
-    }
+    val state = exploreViewModel.uiState
 
-    if (state != null) {
-        LoadDependingContent(loadState = state.loadState) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                for(i in 0 until state.categories.size){
-                    val it = state.categories[i]
-                    RoutineButtonGroup(
-                        routineList = state.routineByCategory[i],
-                        title = it.first,
-                        onNavigateToViewRoutine = onNavigateToViewRoutine,
-                        onGetMoreRoutines = { exploreViewModel.getMoreRoutines(it.second) }
-                    )
-                }
+    LoadDependingContent(loadState = state.loadState) {
+        Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+            for (i in 0 until state.categories.size) {
+                val it = state.categories[i]
+                RoutineButtonGroup(
+                    routineList = state.routineByCategory[i],
+                    title = it.first,
+                    onNavigateToViewRoutine = onNavigateToViewRoutine,
+                    onGetMoreRoutines = { exploreViewModel.getMoreRoutines(it.second) }
+                )
             }
         }
     }
+
 }
 
 @Preview

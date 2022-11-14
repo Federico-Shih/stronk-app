@@ -2,6 +2,7 @@ package com.example.stronk.network.repositories
 
 import com.example.stronk.network.datasources.RoutineDataSource
 import com.example.stronk.network.dtos.CategoryData
+import com.example.stronk.network.dtos.Paginated
 import com.example.stronk.state.Category
 
 class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
@@ -25,7 +26,8 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
         page,
         size,
         orderBy,
-        direction)[0]
+        direction
+    )[0]
 
     suspend fun getRoutine(id: Int) = remoteDataSource.getRoutine(id)
 
@@ -54,20 +56,24 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
         direction: String? = null
     ) = remoteDataSource.getMyRoutines(difficulty, search, page, size, orderBy, direction)
 
-    suspend fun getFavouriteRoutines(page: Int? = null, size: Int? = null
+    suspend fun getFavouriteRoutines(
+        page: Int? = null, size: Int? = null
     ) = remoteDataSource.getFavourites(page, size)
 
     suspend fun favouriteRoutine(routineId: Int) = remoteDataSource.postFavouriteRoutine(routineId)
 
-    suspend fun unfavouriteRoutine(routineId: Int) = remoteDataSource.removeFavouriteRoutine(routineId)
+    suspend fun unfavouriteRoutine(routineId: Int) =
+        remoteDataSource.removeFavouriteRoutine(routineId)
 
-    suspend fun getCategories():List<Category>{
-        val out= mutableListOf<Category>()
-        do{
-            var aux = remoteDataSource.getCategories(page = out.size/10+1 ,size = 10)
-            var lastPage=aux.isLastPage
-            out.addAll(aux.content.map { Category(it.id,it.name,it.detail) })
-        }while(!lastPage)
+    suspend fun getCategories(): List<Category> {
+        val out = mutableListOf<Category>()
+        var aux: Paginated<CategoryData>
+        var lastPage: Boolean
+        do {
+            aux = remoteDataSource.getCategories(page = out.size / 10 + 1, size = 10)
+            lastPage = aux.isLastPage
+            out.addAll(aux.content.map { Category(it.id, it.name, it.detail) })
+        } while (!lastPage)
 
         return out
     }

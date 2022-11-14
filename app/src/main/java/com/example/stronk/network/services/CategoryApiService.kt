@@ -8,7 +8,7 @@ import retrofit2.http.Query
 
 interface CategoryApiService {
     @GET("categories")
-    fun getCategories(
+    suspend fun getCategories(
         @Query("search") search: String?,
         @Query("page") page: Int?,
         @Query("size") size: Int?,

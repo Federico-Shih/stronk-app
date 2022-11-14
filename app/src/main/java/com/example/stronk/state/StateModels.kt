@@ -4,7 +4,7 @@ import java.util.*
 
 data class User(val id: Int, val username: String, val gender: String, val avatarUrl: String,val email: String, val birthdate: Date)
 
-data class Category(val id: Int, val name: String, val detail: String)
+data class Category(val id: Int, val name: String, val detail: String?)
 
 data class UserRoutine(
     val id: Int,
