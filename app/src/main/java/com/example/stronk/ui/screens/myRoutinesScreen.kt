@@ -22,48 +22,73 @@ import com.example.stronk.state.Routine
 
 @Composable
 fun myRoutinesScreen(onNavigateToViewRoutine: (routineId: Int) -> Unit) {
-  val myRoutinesViewModel:MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory)
-  val state=myRoutinesViewModel.uiState
-  myRoutinesViewModel.fetchFirstRoutines()//Busca las primeras rutinas si ya estan no hace nada
-  Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
-    routineList(state.myRoutines, stringResource(R.string.MyRoutines),
-      { myRoutinesViewModel.moreMyRoutines()},onNavigateToViewRoutine)
-    routineList(state.favouriteRoutines, stringResource(R.string.FavRoutines),
-      { myRoutinesViewModel.moreFavouriteRoutines()},onNavigateToViewRoutine)
-  }
+    val myRoutinesViewModel: MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory)
+    val state = myRoutinesViewModel.uiState
+    myRoutinesViewModel.fetchFirstRoutines()//Busca las primeras rutinas si ya estan no hace nada
+    Column(modifier = Modifier
+      .fillMaxSize()
+      .verticalScroll(rememberScrollState())) {
+        routineList(state.myRoutines, stringResource(R.string.MyRoutines),
+            { myRoutinesViewModel.moreMyRoutines() }, onNavigateToViewRoutine
+        )
+        routineList(state.favouriteRoutines, stringResource(R.string.FavRoutines),
+            { myRoutinesViewModel.moreFavouriteRoutines() }, onNavigateToViewRoutine
+        )
+    }
 }
 
 @Composable
-fun routineList(routines:List<Routine> = listOf(),title:String="Rutinas",onShowMore:()->Unit={}, onNavigateToViewRoutine:(routineId:Int)->Unit={}){
-  Column(modifier = Modifier
-    .padding(10.dp)
-    .wrapContentHeight()
-    .fillMaxWidth()) {
-    Row(modifier = Modifier
-      .fillMaxWidth()
-      .padding(bottom = 5.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-      Text(
-        text = title,
-        style = MaterialTheme.typography.h5,
-        fontWeight = FontWeight.Bold,
-        modifier = Modifier.padding(bottom = 4.dp).alignByBaseline()
-      )
-      Button(onClick = {onShowMore()}, modifier = Modifier.alignByBaseline()) {
-        Text(text = stringResource(R.string.ShowMore),
-          style = MaterialTheme.typography.body1,
-          fontWeight = FontWeight.Bold)
-      }
-    }
-    Column(modifier=Modifier.fillMaxWidth().wrapContentHeight()) {
-      routines.forEach{routine->
-        RoutineButton(routine.id,R.drawable.abdos,routine.name, onNavigateToViewRoutine=onNavigateToViewRoutine,
-        modifierButton = Modifier
+fun routineList(
+    routines: List<Routine> = listOf(),
+    title: String = "Rutinas",
+    onShowMore: () -> Unit = {},
+    onNavigateToViewRoutine: (routineId: Int) -> Unit = {}
+) {
+    Column(
+        modifier = Modifier
+          .padding(10.dp)
+          .wrapContentHeight()
           .fillMaxWidth()
-          .height(150.dp).padding(bottom = 5.dp))
-      }
-    }
+    ) {
+        Row(
+            modifier = Modifier
+              .fillMaxWidth()
+              .padding(bottom = 5.dp), horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.h5,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                  .padding(bottom = 4.dp)
+                  .alignByBaseline()
+            )
+            Button(onClick = { onShowMore() }, modifier = Modifier.alignByBaseline()) {
+                Text(
+                    text = stringResource(R.string.ShowMore),
+                    style = MaterialTheme.typography.body1,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+        Column(modifier = Modifier
+          .fillMaxWidth()
+          .wrapContentHeight()) {
+            routines.forEach { routine ->
+                RoutineButton(
+                    routine.id,
+                    R.drawable.abdos,
+                    routine.name,
+                    onNavigateToViewRoutine = onNavigateToViewRoutine,
+                    modifierButton = Modifier
+                      .fillMaxWidth()
+                      .height(150.dp)
+                      .padding(bottom = 5.dp)
+                )
+            }
+        }
 
-  }
+    }
 
 }
 

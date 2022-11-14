@@ -1,9 +1,6 @@
 package com.example.stronk.network.services
 
-import com.example.stronk.network.dtos.CycleData
-import com.example.stronk.network.dtos.ExerciseImageData
-import com.example.stronk.network.dtos.Paginated
-import com.example.stronk.network.dtos.RoutineData
+import com.example.stronk.network.dtos.*
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -45,6 +42,15 @@ interface RoutineApiService {
         @Query("orderBy") orderBy: String?,
         @Query("direction") direction: String?,
     ): Response<Paginated<CycleData>>
+
+    @GET("cycles/{cycleId}/exercises")
+    suspend fun getExercisesFromCycle(
+        @Path("cycleId") cycleId: Int,
+        @Query("page") page: Int?,
+        @Query("size") size: Int?,
+        @Query("orderBy") orderBy: String?,
+        @Query("direction") direction: String?,
+    ): Response<Paginated<ExerciseCycleData>>
 
     @GET("exercises/{exerciseId}/images")
     suspend fun getExercisesImages(

@@ -146,14 +146,26 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
     }
 
     fun fetchRoutine(routineId: Int) {
-        //TODO: fetch routine from database
         viewModelScope.launch {
             uiState = uiState.copy(cycles = cycleListPrueba, routine = routinePrueba, faved = true)
-            withContext(Dispatchers.IO) {
-                Thread.sleep(500)
+
+            runCatching {
+                runCatching {
+                    routineRepository.getRoutine(routineId)
+                }.onSuccess {
+                    routineData ->
+                    runCatching {
+                        routineRepository.getRoutineCycles(routineData.id)
+                    }.onSuccess {
+                        cycles ->
+                        uiState = uiState.copy(routine = routineData.asModel(), cycles = cycles)
+                    }
+                }
+            }.onSuccess {
+                uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS, "OK"))
+            }.onFailure {
+                uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, it.message ?: "Unknown error"))
             }
-            // cuando termina de cargar
-            uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS, "OK"))
         }
     }
 
