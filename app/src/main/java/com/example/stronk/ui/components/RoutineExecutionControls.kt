@@ -32,12 +32,14 @@ fun RoutineControls(
     contentColor: Color = MaterialTheme.colors.onPrimary,
     onSkipPrevious: () -> Unit,
     onSkipNext: () -> Unit,
+    isFirstExercise: Boolean = false,
+    isLastExercise: Boolean = false,
 ) {
     var totalremainingMilliSeconds: Long by rememberSaveable { mutableStateOf(if (startingTimer != null) startingTimer * 1000L else 0L) }
     var timerRunning by remember { mutableStateOf(false) }
     var minutes: Long = (totalremainingMilliSeconds) / (1000 * 60)
     var seconds: Long = (totalremainingMilliSeconds / 1000) % 60
-    var changed:Boolean by remember { mutableStateOf(false) }
+    var changed: Boolean by remember { mutableStateOf(false) }
 
     /*TODO Temporizador Alerta */
 
@@ -47,7 +49,7 @@ fun RoutineControls(
             totalremainingMilliSeconds -= 100L
         }
     }
-    LaunchedEffect(key1=changed) {
+    LaunchedEffect(key1 = changed) {
         totalremainingMilliSeconds = if (startingTimer != null) {
             startingTimer * 1000L
         } else {
@@ -108,13 +110,16 @@ fun RoutineControls(
             IconButton(onClick = {
                 onSkipPrevious()
                 timerRunning = false
-                changed= !changed
-            }, modifier = Modifier.align(Alignment.CenterStart)) {
+                changed = !changed
+            },
+                modifier = Modifier.align(Alignment.CenterStart),
+                enabled = !isFirstExercise
+            ) {
                 Icon(
                     Icons.Filled.SkipPrevious,
                     contentDescription = null,
                     modifier = Modifier.size(50.dp),
-                    tint = contentColor
+                    tint = contentColor.copy(alpha = if (isFirstExercise) 0.5f else 1f)
                 )
             }
             if (startingTimer != null) {
@@ -128,7 +133,7 @@ fun RoutineControls(
                         }
 
                     },
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = Modifier.align(Alignment.Center),
                 ) {
                     val icon =
                         if (!timerRunning && totalremainingMilliSeconds > 0L) Icons.Filled.PlayArrow
@@ -146,19 +151,19 @@ fun RoutineControls(
                 onClick = {
                     onSkipNext()
                     timerRunning = false
-                    changed= !changed
+                    changed = !changed
                 },
-                modifier = Modifier.align(Alignment.CenterEnd)
+                modifier = Modifier.align(Alignment.CenterEnd),
+                enabled = !isLastExercise
             ) {
                 Icon(
                     Icons.Filled.SkipNext,
                     contentDescription = null,
                     modifier = Modifier.size(50.dp),
-                    tint = contentColor
+                    tint = contentColor.copy(alpha = if (isLastExercise) 0.5f else 1f)
                 )
             }
         }
-        //routineControls
     }
 }
 

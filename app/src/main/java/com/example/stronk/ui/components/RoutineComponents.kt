@@ -431,7 +431,7 @@ fun ExerciseItem(
 
     val bringIntoViewRequester = remember { BringIntoViewRequester() }
     val coroutineScope = rememberCoroutineScope()
-    val surroundings = Rect(0f, (-200).dp.value, 0f, 800.dp.value)
+    val surroundings = Rect(0f, (-200).dp.value, 0f, if(variant == ExerciseItemType.EXPANDED) 800.dp.value else 400.dp.value)
 
     Box(
         modifier = Modifier
