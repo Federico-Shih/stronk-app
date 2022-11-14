@@ -244,7 +244,7 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Exec
                 verticalArrangement = Arrangement.Center
             ) {
                 AsyncImage(
-                    model = exercise.imageUrl,
+                    model = exercise.imageUrl?:"",
                     contentDescription = null,
                     modifier = Modifier
                         .sizeIn(maxHeight = 160.dp)
@@ -304,7 +304,7 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Exec
                 verticalArrangement = Arrangement.Bottom
             ) {
                 AsyncImage(
-                    model = exercise.imageUrl,
+                    model = exercise.imageUrl?:"",//TODO imagen default
                     contentDescription = null,
                     modifier = Modifier
                         .sizeIn(maxHeight = 80.dp)

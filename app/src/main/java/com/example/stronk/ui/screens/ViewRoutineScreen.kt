@@ -83,7 +83,7 @@ fun ViewRoutineScreen(
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AsyncImage(
-                        model = state.routine.user?.avatarUrl,
+                        model = state.routine.user?.avatarUrl?:"",//TODO avatar default
                         contentDescription = null,
                         modifier = Modifier
                             .size(32.dp)
@@ -144,7 +144,7 @@ fun ViewRoutineScreen(
                     text = "${stringResource(id = R.string.description)}:",
                     fontWeight = FontWeight.SemiBold
                 )
-                Text(text = state.routine.description)
+                Text(text = state.routine.description?: "")
                 CompleteRoutine(cycleList = state.cycles)
             }
             if (state.showRatingDialog) {
