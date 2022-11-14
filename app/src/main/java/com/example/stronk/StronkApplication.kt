@@ -22,7 +22,7 @@ class StronkApplication : Application() {
         sessionManager = SessionManager(this)
         userRemoteDataSource = UserDataSource(sessionManager, retrofitClient.getUsersApiService())
         userRepository = UserRepository(remoteDataSource = userRemoteDataSource)
-        routineRemoteDataSource = RoutineDataSource(retrofitClient.getRoutineApiService(), retrofitClient.getFavouriteApiService())
+        routineRemoteDataSource = RoutineDataSource(retrofitClient.getRoutineApiService(), retrofitClient.getFavouriteApiService(), retrofitClient.getCategoryApiService())
         routineRepository = RoutineRepository(remoteDataSource = routineRemoteDataSource)
     }
 }

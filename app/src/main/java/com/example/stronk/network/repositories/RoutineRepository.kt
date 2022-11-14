@@ -1,6 +1,8 @@
 package com.example.stronk.network.repositories
 
 import com.example.stronk.network.datasources.RoutineDataSource
+import com.example.stronk.network.dtos.CategoryData
+import com.example.stronk.state.Category
 
 class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
 
@@ -59,5 +61,14 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
 
     suspend fun unfavouriteRoutine(routineId: Int) = remoteDataSource.removeFavouriteRoutine(routineId)
 
+    suspend fun getCategories():List<Category>{
+        val out= mutableListOf<Category>()
+        do{
+            var aux = remoteDataSource.getCategories(page = out.size/10+1 ,size = 10)
+            var lastPage=aux.isLastPage
+            out.addAll(aux.content.map { Category(it.id,it.name,it.detail) })
+        }while(!lastPage)
 
+        return out
+    }
 }

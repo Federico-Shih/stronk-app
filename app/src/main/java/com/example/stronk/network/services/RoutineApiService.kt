@@ -53,5 +53,5 @@ interface RoutineApiService {
         @Query("size") size: Int?,
         @Query("orderBy") orderBy: String?,
         @Query("direction") direction: String?,
-    ): Response<Paginated<List<ExerciseImageData>>>
+    ): Response<Paginated<ExerciseImageData>>
 }

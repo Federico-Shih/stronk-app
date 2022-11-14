@@ -1,16 +1,15 @@
 package com.example.stronk.network.datasources
 
 import com.example.stronk.network.RemoteDataSource
-import com.example.stronk.network.dtos.CycleData
-import com.example.stronk.network.dtos.ExerciseImageData
-import com.example.stronk.network.dtos.Paginated
-import com.example.stronk.network.dtos.RoutineData
+import com.example.stronk.network.dtos.*
+import com.example.stronk.network.services.CategoryApiService
 import com.example.stronk.network.services.FavouriteApiService
 import com.example.stronk.network.services.RoutineApiService
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-class RoutineDataSource(private val routineApiService: RoutineApiService, private val favouriteApiService: FavouriteApiService) : RemoteDataSource() {
+class RoutineDataSource(private val routineApiService: RoutineApiService,private val favouriteApiService: FavouriteApiService,
+private val categoryApiService: CategoryApiService) : RemoteDataSource() {
     //Si no se quiere usar el parametro no se usa y se manda null, el parametro es opcional
     suspend fun getRoutines(category: Int?=null,
                             userId: Int?=null,
@@ -59,7 +58,7 @@ class RoutineDataSource(private val routineApiService: RoutineApiService, privat
                                    size: Int?=null,
                                    orderBy: String?=null,
                                    direction: String?=null,
-    ):Paginated<List<ExerciseImageData>>{
+    ):Paginated<ExerciseImageData>{
         return handleApiResponse {
             routineApiService.getExercisesImages(exerciseId, page, size, orderBy, direction)
         }
@@ -77,6 +76,16 @@ class RoutineDataSource(private val routineApiService: RoutineApiService, privat
     suspend fun removeFavouriteRoutine(routineId: Int): Any {
         return handleApiResponse {
             favouriteApiService.removeFavouriteRoutine(routineId)
+        }
+    }
+    suspend fun getCategories(search: String?=null,
+                              page: Int?=null,
+                              size: Int?=null,
+                              orderBy: String?=null,
+                              direction: String?=null,
+    ):Paginated<CategoryData> {
+        return handleApiResponse {
+            categoryApiService.getCategories(search, page, size, orderBy, direction)
         }
     }
 
