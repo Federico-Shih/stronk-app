@@ -24,7 +24,7 @@ import com.example.stronk.state.LoginState
 
 @Composable
 fun LoginScreen(
-    onSubmit: (username: String, password: String) -> Unit = { _, _ -> {} },
+    onSubmit: (username: String, password: String) -> Unit,
     uiState: LoginState = LoginState(),
     scaffoldState: ScaffoldState,
     dismissMessage: () -> Unit

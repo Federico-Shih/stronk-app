@@ -15,6 +15,7 @@ class StronkApplication : Application() {
     lateinit var userRepository: UserRepository
     lateinit var routineRemoteDataSource:RoutineDataSource
     lateinit var routineRepository: RoutineRepository
+
     override fun onCreate() {
         super.onCreate()
         val retrofitClient = RetrofitClient(this)

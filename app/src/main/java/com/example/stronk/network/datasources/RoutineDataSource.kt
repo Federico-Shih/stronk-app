@@ -10,7 +10,7 @@ import com.example.stronk.network.services.RoutineApiService
 import retrofit2.http.Path
 import retrofit2.http.Query
 
-class RoutineDataSource(private val routineApiService: RoutineApiService,private val favouriteApiService: FavouriteApiService) : RemoteDataSource() {
+class RoutineDataSource(private val routineApiService: RoutineApiService, private val favouriteApiService: FavouriteApiService) : RemoteDataSource() {
     //Si no se quiere usar el parametro no se usa y se manda null, el parametro es opcional
     suspend fun getRoutines(category: Int?=null,
                             userId: Int?=null,

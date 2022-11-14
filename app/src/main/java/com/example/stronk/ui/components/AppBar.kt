@@ -14,16 +14,20 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.MainScreens
+import com.example.stronk.model.LoginViewModel
 
-@Preview
 @Composable
 fun AppBar(
     modifier: Modifier = Modifier,
     screen: String = "Hola",
     canGoBack: Boolean = false,
     goBack: () -> Unit = {},
-    TopRightButtons: @Composable (onGetViewModel: () -> ViewModel?) -> Unit = {},
-    onGetViewModel: () -> ViewModel? = { null }
+    TopRightButtons: @Composable (
+        onGetViewModel: () -> ViewModel?,
+        navigateTo: (String) -> Unit
+    ) -> Unit,
+    onGetViewModel: () -> ViewModel? = { null },
+    navigateTo: (String) -> Unit
 ) {
     TopAppBar(
         modifier = modifier
@@ -48,7 +52,7 @@ fun AppBar(
                 modifier = Modifier.padding(10.dp),
                 color = MaterialTheme.colors.onPrimary
             )
-            TopRightButtons(onGetViewModel)
+            TopRightButtons(onGetViewModel, navigateTo)
         }
     }
 }

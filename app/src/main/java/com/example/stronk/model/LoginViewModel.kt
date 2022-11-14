@@ -12,8 +12,6 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
 import com.example.stronk.network.DataSourceException
 import com.example.stronk.network.SessionManager
-import com.example.stronk.network.services.UsersApiService
-import com.example.stronk.network.dtos.LoginDTO
 import com.example.stronk.network.repositories.UserRepository
 import com.example.stronk.state.LoginState
 import kotlinx.coroutines.Job

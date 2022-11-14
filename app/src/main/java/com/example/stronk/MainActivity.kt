@@ -39,6 +39,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.stronk.model.ApiStatus
+import com.example.stronk.model.MainViewModel
 import com.example.stronk.model.ExecuteViewModel
 import com.example.stronk.model.LoginViewModel.Companion.Factory
 
@@ -46,7 +47,7 @@ enum class MainScreens(
     val label: Int = R.string.empty,
     val icon: ImageVector = Icons.Filled.Article,
     val hidesBottomNav: Boolean = false,
-    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?) -> Unit = {},
+    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) -> Unit = { _, _ -> {}},
     val confirmationOnExit: Boolean = false,
     val hidesTopNav: Boolean = false,
 ) {
@@ -57,7 +58,7 @@ enum class MainScreens(
         Icons.Filled.DirectionsRun
     ),
     EXECUTE(hidesBottomNav = true, confirmationOnExit = true),
-    VIEW_ROUTINE(topLeftButtons = { onGetViewModel ->
+    VIEW_ROUTINE(topLeftButtons = { onGetViewModel, _ ->
         val viewRoutineViewModel: ViewRoutineViewModel = onGetViewModel() as ViewRoutineViewModel
         val state = viewRoutineViewModel.uiState
         Row() {
@@ -94,16 +95,16 @@ enum class MainScreens(
 class MainActivity : ComponentActivity() {
 
     private val bottomBarScreens = listOf(MainScreens.EXPLORE, MainScreens.ROUTINES)
-    private val INITIAL_ROUTE = MainScreens.AUTH
-
+    private val initialRoute = MainScreens.AUTH
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = backStackEntry?.destination?.route ?: INITIAL_ROUTE.name
+            val currentRoute = backStackEntry?.destination?.route ?: initialRoute.name
             val currentScreen = MainScreens.valueOf(currentRoute.split("/")[0])
+            val mainViewModel: MainViewModel = viewModel(factory = MainViewModel.Factory)
             val viewRoutineViewModel: ViewRoutineViewModel = viewModel(factory = ViewRoutineViewModel.Factory)
             var showConfirmExitDialog by remember { mutableStateOf(false) }
             StronkTheme {
@@ -124,8 +125,13 @@ class MainActivity : ComponentActivity() {
                                 TopRightButtons = currentScreen.topLeftButtons,
                                 onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) {
                                     { viewRoutineViewModel }
+                                } else if (currentScreen in bottomBarScreens) {
+                                    { mainViewModel }
                                 } else {
                                     { null }
+                                },
+                                navigateTo = {
+                                    navController.navigate(it)
                                 }
                             )
                         }
@@ -151,7 +157,7 @@ class MainActivity : ComponentActivity() {
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = INITIAL_ROUTE.name
+                            startDestination = initialRoute.name
                         ) {
                             composable(route = MainScreens.EXPLORE.name) {
                                 ExploreScreen(onNavigateToViewRoutine = { routineId ->
