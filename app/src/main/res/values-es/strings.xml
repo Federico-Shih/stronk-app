@@ -30,7 +30,13 @@
     <string name="cancel">Cancelar</string>
     <string name="ShowMore">Ver más</string>
     <string name="MyRoutines">Mis Rutinas</string>
-    <string name="FavRoutines">Rutinas Favoritas</string>
+    <string name="FavRoutines">Rutinas Favoritas</string>ya
+    <string name="dismiss">Cerrar</string>
+    <string name="password_label">Contraseña</string>
+    <string name="username_label">Nombre de usuario</string>
+    <string name="login_label">Inicie sesión a Stronk!</string>
+    <string name="error_pass_user">Usuario/contraseña incorrecta</string>
+    <string name="login_button_label">Iniciar sesión</string>
     <string name="creation_date">Fecha de Creación</string>
     <string name="loading_routine">Cargando Rutina</string>
     <string name="exit_confirmation">¿Está seguro que desea salir de la ejecución de rutina?</string>

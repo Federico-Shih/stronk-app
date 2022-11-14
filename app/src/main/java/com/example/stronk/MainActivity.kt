@@ -12,6 +12,10 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -34,15 +38,17 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import com.example.stronk.model.ApiStatus
 
 enum class MainScreens(
     val label: Int = R.string.empty,
     val icon: ImageVector = Icons.Filled.Article,
     val hidesBottomNav: Boolean = false,
     val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?) -> Unit = {},
-    val confirmationOnExit: Boolean = false
+    val confirmationOnExit: Boolean = false,
+    val hidesTopNav: Boolean = false,
 ) {
-    AUTH,
+    AUTH(hidesBottomNav = true, hidesTopNav = true),
     EXPLORE(R.string.explore_label, Icons.Filled.Search),
     ROUTINES(
         R.string.routines_label,
@@ -54,7 +60,7 @@ enum class MainScreens(
         val state = viewRoutineViewModel.uiState
         Row() {
             val context = LocalContext.current
-            if (viewRoutineViewModel.uiState.loadState.status == com.example.stronk.model.ApiStatus.SUCCESS) {
+            if (viewRoutineViewModel.uiState.loadState.status == ApiStatus.SUCCESS) {
                 IconButton(onClick = { viewRoutineViewModel.favRoutine() }) {
                     Icon(
                         imageVector = if (state.faved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
@@ -86,6 +92,7 @@ enum class MainScreens(
 class MainActivity : ComponentActivity() {
 
     private val bottomBarScreens = listOf(MainScreens.EXPLORE, MainScreens.ROUTINES)
+    private val INITIAL_ROUTE = MainScreens.AUTH
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -93,30 +100,33 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val backStackEntry by navController.currentBackStackEntryAsState()
-            val currentRoute = backStackEntry?.destination?.route ?: MainScreens.EXPLORE.name
+            val currentRoute = backStackEntry?.destination?.route ?: INITIAL_ROUTE.name
             val currentScreen = MainScreens.valueOf(currentRoute.split("/")[0])
             val viewRoutineViewModel: ViewRoutineViewModel = viewModel()
             var showConfirmExitDialog by remember { mutableStateOf(false) }
             StronkTheme {
+                val scaffoldState: ScaffoldState = rememberScaffoldState()
                 Scaffold(
                     topBar = {
-                        AppBar(
-                            screen = stringResource(id = currentScreen.label),
-                            canGoBack = currentScreen !in bottomBarScreens,
-                            goBack = {
-                                if (!currentScreen.confirmationOnExit) {
-                                    navController.popBackStack()
+                        if (!currentScreen.hidesTopNav) {
+                            AppBar(
+                                screen = stringResource(id = currentScreen.label),
+                                canGoBack = currentScreen !in bottomBarScreens,
+                                goBack = {
+                                    if (!currentScreen.confirmationOnExit) {
+                                        navController.popBackStack()
+                                    } else {
+                                        showConfirmExitDialog = true
+                                    }
+                                },
+                                TopRightButtons = currentScreen.topLeftButtons,
+                                onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) {
+                                    { viewRoutineViewModel }
                                 } else {
-                                    showConfirmExitDialog = true
+                                    { null }
                                 }
-                            },
-                            TopRightButtons = currentScreen.topLeftButtons,
-                            onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) {
-                                { viewRoutineViewModel }
-                            } else {
-                                { null }
-                            }
-                        )
+                            )
+                        }
                     },
                     bottomBar = {
                         if (!currentScreen.hidesBottomNav) {
@@ -125,19 +135,21 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate(name)
                                 },
                                 currentRoute = currentRoute,
-                                screenList = bottomBarScreens
+                                screenList = bottomBarScreens.toList()
                             )
                         }
-                    }
+                    },
+                    scaffoldState = scaffoldState
                 ) {
                     Column(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(bottom = it.calculateBottomPadding())
+                            .padding(bottom = it.calculateBottomPadding()),
+                        horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         NavHost(
                             navController = navController,
-                            startDestination = MainScreens.AUTH.name
+                            startDestination = INITIAL_ROUTE.name
                         ) {
                             composable(route = MainScreens.EXPLORE.name) {
                                 ExploreScreen(onNavigateToViewRoutine = { routineId ->
@@ -188,8 +200,18 @@ class MainActivity : ComponentActivity() {
                                     onSubmit = { username, password ->
                                         loginViewModel.login(username, password)
                                     },
-                                    isAuthenticated = loginViewModel.uiState.isAuthenticated
+                                    dismissMessage = {
+                                        loginViewModel.dismissMessage()
+                                    },
+                                    uiState = loginViewModel.uiState,
+                                    scaffoldState = scaffoldState
                                 )
+                                LaunchedEffect(loginViewModel.uiState.apiState.status) {
+                                    if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS)
+                                    {
+                                        navController.navigate(MainScreens.ROUTINES.name)
+                                    }
+                                }
                             }
                         }
                     }

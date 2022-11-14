@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.network.DataSourceException
 import com.example.stronk.network.SessionManager
 import com.example.stronk.network.services.UsersApiService
 import com.example.stronk.network.dtos.LoginDTO
@@ -39,9 +40,21 @@ class LoginViewModel(
                 uiState = uiState.copy(apiState = ApiState(ApiStatus.SUCCESS), isAuthenticated = true)
             }.onFailure {
                 error ->
-                uiState = uiState.copy(apiState = ApiState(ApiStatus.FAILURE, error.message ?: "Unknown error"))
+                if (error is DataSourceException)
+                {
+                    when (error.code) {
+                        4 -> {
+                            uiState = uiState.copy(isWrongPasswordOrUser = true)
+                        }
+                    }
+                    uiState = uiState.copy(apiState = ApiState(ApiStatus.FAILURE, error.message ?: "Unknown error"))
+                }
             }
         }
+    }
+
+    fun dismissMessage() {
+        uiState = uiState.copy(apiState = ApiState(message = "", status = null))
     }
 
     companion object {

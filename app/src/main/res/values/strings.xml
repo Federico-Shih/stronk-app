@@ -34,5 +34,10 @@
     <string name="loading_routine">Loading Routine</string>
     <string name="exit_confirmation">Are you sure you want to exit this routine execution?</string>
     <string name="exit">Exit</string>
-
+    <string name="dismiss">Close</string>
+    <string name="password_label">Password</string>
+    <string name="username_label">Username</string>
+    <string name="login_label">Log in to Stronk!</string>
+    <string name="error_pass_user">Incorrect username/password</string>
+    <string name="login_button_label">Log in</string>
 </resources>

@@ -137,7 +137,7 @@ fun ViewRoutineScreen(
                     val date = SimpleDateFormat(
                         "dd/MM/yyyy",
                         Locale.getDefault()
-                    ).format(Date(state.routine.creationDate)).toString()
+                    ).format(state.routine.creationDate).toString()
                     Text(text = date)
                 }
                 Text(

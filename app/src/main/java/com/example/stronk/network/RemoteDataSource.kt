@@ -13,10 +13,11 @@ data class NetworkError(
 )
 
 class DataSourceException(
-    code: Int,
+    val code: Int,
     message: String,
-    details: List<String>?
-) : Exception(message)
+    val details: List<String>?
+) : Exception(message) {
+}
 
 abstract class RemoteDataSource {
     suspend fun <T : Any> handleApiResponse(
@@ -31,9 +32,12 @@ abstract class RemoteDataSource {
             response.errorBody()?.let {
                 val gson = Gson()
                 val error = gson.fromJson<NetworkError>(it.string(), object: TypeToken<NetworkError?>() {}.type)
+                println(error)
                 throw DataSourceException(error.code, error.description, error.details)
             }
             throw DataSourceException(UNEXPECTED_ERROR_CODE, "Missing Error", null)
+        } catch (e: DataSourceException) {
+          throw e
         } catch (e: IOException) {
             throw DataSourceException(CONNECTION_ERROR_CODE, "Connection Error", getDetailsFromException(e))
         } catch (e: java.lang.Exception) {
