@@ -83,7 +83,7 @@ fun ViewRoutineScreen(
                 )
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     AsyncImage(
-                        model = state.routine.user.avatarUrl,
+                        model = state.routine.user?.avatarUrl,
                         contentDescription = null,
                         modifier = Modifier
                             .size(32.dp)
@@ -91,7 +91,7 @@ fun ViewRoutineScreen(
                         contentScale = ContentScale.Crop
                     )
                     Text(
-                        text = stringResource(id = R.string.made_by_x, state.routine.user.username),
+                        text = stringResource(id = R.string.made_by_x, if(state.routine.user==null) "" else state.routine.user.username),
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
@@ -108,7 +108,7 @@ fun ViewRoutineScreen(
                                 fontWeight = FontWeight.SemiBold
                             )
                             Chip(onClick = {}) {
-                                Text(text = state.routine.category)
+                                Text(text = state.routine.category.name)
                             }
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {

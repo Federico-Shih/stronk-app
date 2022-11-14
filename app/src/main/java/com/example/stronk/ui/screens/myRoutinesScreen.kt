@@ -19,76 +19,63 @@ import com.example.stronk.model.MyRoutinesViewModel
 import com.example.stronk.network.services.FavouriteApiService
 import com.example.stronk.network.services.RoutineApiService
 import com.example.stronk.state.Routine
+import com.example.stronk.ui.components.LoadDependingContent
 
 @Composable
-fun myRoutinesScreen(onNavigateToViewRoutine: (routineId: Int) -> Unit) {
-    val myRoutinesViewModel: MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory)
-    val state = myRoutinesViewModel.uiState
-    myRoutinesViewModel.fetchFirstRoutines()//Busca las primeras rutinas si ya estan no hace nada
-    Column(modifier = Modifier
-      .fillMaxSize()
-      .verticalScroll(rememberScrollState())) {
-        routineList(state.myRoutines, stringResource(R.string.MyRoutines),
-            { myRoutinesViewModel.moreMyRoutines() }, onNavigateToViewRoutine
-        )
-        routineList(state.favouriteRoutines, stringResource(R.string.FavRoutines),
-            { myRoutinesViewModel.moreFavouriteRoutines() }, onNavigateToViewRoutine
-        )
+fun myRoutinesScreen(onNavigateToViewRoutine: (routineId: Int) -> Unit,
+                     myRoutinesViewModel:MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory)
+) {
+  val state=myRoutinesViewModel.uiState
+
+  Column(modifier = Modifier
+    .fillMaxSize()
+    .verticalScroll(rememberScrollState())) {
+    LoadDependingContent(loadState = state.loadState) {
+      routineList(state.myRoutines, stringResource(R.string.MyRoutines),
+        { myRoutinesViewModel.moreMyRoutines()},onNavigateToViewRoutine)
+      routineList(state.favouriteRoutines, stringResource(R.string.FavRoutines),
+        { myRoutinesViewModel.moreFavouriteRoutines()},onNavigateToViewRoutine)
     }
+
+  }
 }
 
 @Composable
-fun routineList(
-    routines: List<Routine> = listOf(),
-    title: String = "Rutinas",
-    onShowMore: () -> Unit = {},
-    onNavigateToViewRoutine: (routineId: Int) -> Unit = {}
-) {
-    Column(
+fun routineList(routines:List<Routine> = listOf(),title:String="Rutinas",onShowMore:()->Unit={}, onNavigateToViewRoutine:(routineId:Int)->Unit={}){
+  Column(modifier = Modifier
+    .padding(10.dp)
+    .wrapContentHeight()
+    .fillMaxWidth()) {
+    Row(modifier = Modifier
+      .fillMaxWidth()
+      .padding(bottom = 5.dp), horizontalArrangement = Arrangement.SpaceBetween) {
+      Text(
+        text = title,
+        style = MaterialTheme.typography.h5,
+        fontWeight = FontWeight.Bold,
         modifier = Modifier
-          .padding(10.dp)
-          .wrapContentHeight()
-          .fillMaxWidth()
-    ) {
-        Row(
-            modifier = Modifier
-              .fillMaxWidth()
-              .padding(bottom = 5.dp), horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier
-                  .padding(bottom = 4.dp)
-                  .alignByBaseline()
-            )
-            Button(onClick = { onShowMore() }, modifier = Modifier.alignByBaseline()) {
-                Text(
-                    text = stringResource(R.string.ShowMore),
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-        }
-        Column(modifier = Modifier
-          .fillMaxWidth()
-          .wrapContentHeight()) {
-            routines.forEach { routine ->
-                RoutineButton(
-                    routine.id,
-                    R.drawable.abdos,
-                    routine.name,
-                    onNavigateToViewRoutine = onNavigateToViewRoutine,
-                    modifierButton = Modifier
-                      .fillMaxWidth()
-                      .height(150.dp)
-                      .padding(bottom = 5.dp)
-                )
-            }
-        }
-
+          .padding(bottom = 4.dp)
+          .alignByBaseline()
+      )
+      Button(onClick = {onShowMore()}, modifier = Modifier.alignByBaseline()) {
+        Text(text = stringResource(R.string.ShowMore),
+          style = MaterialTheme.typography.body1,
+          fontWeight = FontWeight.Bold)
+      }
     }
+    Column(modifier= Modifier
+      .fillMaxWidth()
+      .wrapContentHeight()) {
+      routines.forEach{ routine->
+        RoutineButton(routine.id,R.drawable.abdos,routine.name, onNavigateToViewRoutine=onNavigateToViewRoutine,
+        modifierButton = Modifier
+          .fillMaxWidth()
+          .height(150.dp)
+          .padding(bottom = 5.dp))
+      }
+    }
+
+  }
 
 }
 

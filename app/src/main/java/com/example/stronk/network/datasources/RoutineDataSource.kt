@@ -24,7 +24,7 @@ class RoutineDataSource(
         size: Int? = null,
         orderBy: String? = null,
         direction: String? = null
-    ): List<Paginated<RoutineData>> {
+    ): Paginated<RoutineData> {
 
         return handleApiResponse {
             routineApiService.getRoutines(

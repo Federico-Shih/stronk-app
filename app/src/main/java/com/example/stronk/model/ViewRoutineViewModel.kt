@@ -25,8 +25,8 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
         description = "Este es un entrenamiento de abdominales que te ayudará a fortalecer tu abdomen y a quemar grasa abdominal.",
         creationDate = Date(34572452467),
         rating = 4,
-        user = UserRoutine(1, "Juan", "Helicóptero", "https://picsum.photos/100", Date(34572452467)),
-        category = "Full Body",
+        user = UserRoutine(1, "Juan", "https://picsum.photos/100", Date(34572452467)),
+        category = Category(1,"FullBody",null),
         difficulty = "Advanced"
     )
 
@@ -137,7 +137,7 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
 
     fun initialize() {
         uiState = uiState.copy(
-            routine = Routine(0, "", "", Date(0), 0, "", UserRoutine(0, "", "", "", Date(0)), ""),
+            routine = Routine(0, "", "", Date(0), 0, "", UserRoutine(0, "", "", Date(0)), Category(0,"",null)),
             loadState = ApiState(ApiStatus.LOADING, ""),
             cycles = listOf(),
             faved = false,

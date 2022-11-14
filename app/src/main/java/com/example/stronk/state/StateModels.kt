@@ -16,7 +16,6 @@ data class Category(val id: Int, val name: String, val detail: String?)
 data class UserRoutine(
     val id: Int,
     val username: String,
-    val gender: String,
     val avatarUrl: String,
     val date: Date
 )
@@ -28,8 +27,8 @@ data class Routine(
     val creationDate: Date,
     val rating: Int,
     val difficulty: String,
-    val user: UserRoutine,
-    val category: String
+    val user: UserRoutine?,
+    val category: Category
 )
 
 data class ExInfo(
@@ -40,8 +39,4 @@ data class ExInfo(
     val description: String
 )
 
-data class CycleInfo(
-    val name: String,
-    val exList: List<ExInfo>,
-    val cycleReps: Int
-)
+data class CycleInfo(val name: String, val exList: List<ExInfo>, val cycleReps: Int)

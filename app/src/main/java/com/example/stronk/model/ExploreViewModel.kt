@@ -32,7 +32,7 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
     fun getInitialRoutines() {
 
         val isLastOne: MutableList<Boolean> = mutableListOf()
-        val allRoutines: MutableList<List<RoutineData>> = mutableListOf()
+        val allRoutines: MutableList<List<Routine>> = mutableListOf()
         routinesJob = viewModelScope.launch {
             runCatching {
                 getCategories()
@@ -40,7 +40,7 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
                     runCatching {
                         routineRepository.getRoutines(size = 2, category = it.second)
                     }.onSuccess { result ->
-                        allRoutines.add(result.content)
+                        allRoutines.add(result.content.map { it.asModel() })
                         isLastOne.add(result.isLastPage)
                     }.onFailure { throw it }
                 }
@@ -54,7 +54,7 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
                 uiState = uiState.copy(
                     loadState = ApiState(
                         ApiStatus.FAILURE,
-                        "Falló el fetch ${it.message}"
+                        "Falló el fetch de Rutinas ${it.message}"
                     )
                 )
             }

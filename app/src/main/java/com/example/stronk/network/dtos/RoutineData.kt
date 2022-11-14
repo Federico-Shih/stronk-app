@@ -17,24 +17,23 @@ enum class ExerciseType {
 data class RoutineUserData(
     @SerializedName("id") val id: Int,
     @SerializedName("username") val username: String,
-    @SerializedName("gender") val gender: String,
     @SerializedName("avatarUrl") val avatarUrl: String,
     @SerializedName("date") val date: Date
 ) {
     fun asModel(): UserRoutine {
-        return UserRoutine(id, username, gender, avatarUrl, date)
+        return UserRoutine(id, username, avatarUrl, date)
     }
 }
 
 data class RoutineData(
     @SerializedName("id") val id: Int,
     @SerializedName("name") val name: String,
-    @SerializedName("description") val description: String,
-    @SerializedName("creationDate") val creationDate: Date,
-    @SerializedName("rating") val rating: Int,
+    @SerializedName("detail") val description: String,
+    @SerializedName("date") val creationDate: Date,
+    @SerializedName("score") val rating: Int,
     @SerializedName("difficulty") val difficulty: String,
-    @SerializedName("user") val user: RoutineUserData,
-    @SerializedName("category") val category: String
+    @SerializedName("user") val user: RoutineUserData?,
+    @SerializedName("category") val category: CategoryData
 ) {
     fun asModel(): Routine {
         return Routine(
@@ -44,8 +43,8 @@ data class RoutineData(
             creationDate,
             rating,
             difficulty,
-            user.asModel(),
-            category
+            user?.asModel(),
+            category.asModel()
         )
     }
 }

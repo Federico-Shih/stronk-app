@@ -32,7 +32,7 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
         size,
         orderBy,
         direction
-    )[0]
+    )
 
     suspend fun getRoutine(id: Int) = remoteDataSource.getRoutine(id)
 
@@ -102,7 +102,7 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
         var aux: Paginated<CategoryData>
         var lastPage: Boolean
         do {
-            aux = remoteDataSource.getCategories(page = out.size / 10 + 1, size = 10)
+            aux = remoteDataSource.getCategories(page = out.size / 10, size = 10)
             lastPage = aux.isLastPage
             out.addAll(aux.content.map { Category(it.id, it.name, it.detail) })
         } while (!lastPage)

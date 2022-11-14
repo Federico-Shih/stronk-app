@@ -19,7 +19,7 @@ interface RoutineApiService {
         @Query("size") size: Int?,
         @Query("orderBy") orderBy: String?,
         @Query("direction") direction: String?,
-        ): Response<List<Paginated<RoutineData>>>
+        ): Response<Paginated<RoutineData>>
 
     @GET("routines/{id}")
     suspend fun getRoutine(@Path("id") id: Int): Response<RoutineData>
