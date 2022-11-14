@@ -41,4 +41,6 @@
     <string name="error_pass_user">Incorrect username/password</string>
     <string name="login_button_label">Log in</string>
     <string name="logout_button_label">Log out</string>
+    <string name="finish">Finish</string>
+    <string name="congrats_routine_end">Good Job! You completed this routine!</string>
 </resources>

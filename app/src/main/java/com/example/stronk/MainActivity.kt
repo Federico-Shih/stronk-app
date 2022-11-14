@@ -208,7 +208,10 @@ class MainActivity : ComponentActivity() {
                                 })
                             ) { backStackEntry ->
                                 ExecuteRoutineScreen(
-                                    backStackEntry.arguments?.getInt("routineId") ?: 0
+                                    routineId = backStackEntry.arguments?.getInt("routineId") ?: 0,
+                                    onGoBack = {
+                                        navController.popBackStack()
+                                    }
                                 )
                             }
                             composable(

@@ -154,6 +154,10 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
             }
         }
     }
+
+    fun finish() {
+        uiState = uiState.copy(finished = true)
+    }
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

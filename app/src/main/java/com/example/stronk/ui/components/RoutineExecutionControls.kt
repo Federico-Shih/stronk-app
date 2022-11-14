@@ -32,6 +32,7 @@ fun RoutineControls(
     contentColor: Color = MaterialTheme.colors.onPrimary,
     onSkipPrevious: () -> Unit,
     onSkipNext: () -> Unit,
+    onFinishExecution: () -> Unit,
     isFirstExercise: Boolean = false,
     isLastExercise: Boolean = false,
 ) {
@@ -147,22 +148,40 @@ fun RoutineControls(
                     )
                 }
             }
-            IconButton(
-                onClick = {
-                    onSkipNext()
-                    timerRunning = false
-                    changed = !changed
-                },
-                modifier = Modifier.align(Alignment.CenterEnd),
-                enabled = !isLastExercise
-            ) {
-                Icon(
-                    Icons.Filled.SkipNext,
-                    contentDescription = null,
-                    modifier = Modifier.size(50.dp),
-                    tint = contentColor.copy(alpha = if (isLastExercise) 0.5f else 1f)
-                )
+            if(!isLastExercise) {
+                IconButton(
+                    onClick = {
+                        onSkipNext()
+                        timerRunning = false
+                        changed = !changed
+                    },
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                ) {
+                    Icon(
+                        Icons.Filled.SkipNext,
+                        contentDescription = null,
+                        modifier = Modifier.size(50.dp),
+                        tint = contentColor
+                    )
+                }
+            } else {
+                IconButton(
+                    onClick = {
+                        onFinishExecution()
+                        timerRunning = false
+                        changed = !changed
+                    },
+                    modifier = Modifier.align(Alignment.CenterEnd),
+                ) {
+                    Icon(
+                        Icons.Filled.TaskAlt,
+                        contentDescription = null,
+                        modifier = Modifier.size(42.dp),
+                        tint = contentColor
+                    )
+                }
             }
+
         }
     }
 }
@@ -173,7 +192,7 @@ fun RoutineControlsPreview() {
     StronkTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Column(modifier = Modifier.fillMaxWidth()) {
-                RoutineControls(startingTimer = 15, reps = 10, onSkipNext = {}, onSkipPrevious = {})
+                RoutineControls(startingTimer = 15, reps = 10, onSkipNext = {}, onSkipPrevious = {}, onFinishExecution = {})
             }
 
         }

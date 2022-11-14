@@ -21,6 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.stronk.R
@@ -35,11 +37,11 @@ import kotlinx.coroutines.launch
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun ExecuteRoutineScreen(routineId: Int) {
+fun ExecuteRoutineScreen(routineId: Int, onGoBack: () -> Unit) {
     val pagerState = rememberPagerState(pageCount = 2)
     Column {
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState, routineId = routineId)
+        TabsContent(pagerState = pagerState, routineId = routineId, onGoBack = onGoBack)
     }
 }
 
@@ -89,7 +91,7 @@ fun Tabs(pagerState: PagerState) {
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun TabsContent(pagerState: PagerState, routineId: Int) {
+fun TabsContent(pagerState: PagerState, routineId: Int, onGoBack: () -> Unit) {
     val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
     executeViewModel.executeRoutine(routineId)
     val coroutineScope = rememberCoroutineScope()
@@ -102,6 +104,30 @@ fun TabsContent(pagerState: PagerState, routineId: Int) {
         when (page) {
             0 -> DetailedScreen(executeViewModel)
             1 -> ResumedScreen(executeViewModel)
+        }
+    }
+    if(executeViewModel.uiState.finished) {
+        Dialog(onDismissRequest = { onGoBack() }, properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
+            Card(
+                backgroundColor = MaterialTheme.colors.background,
+                contentColor = MaterialTheme.colors.onBackground,
+            ) {
+                Column(modifier = Modifier.padding(16.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.congrats_routine_end),
+                        style = MaterialTheme.typography.h6,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                        Button(onClick = {
+                            onGoBack()
+                        }) {
+                            Text(text = stringResource(id = R.string.finish).uppercase())
+                        }
+                    }
+
+                }
+            }
         }
     }
 }
@@ -134,6 +160,7 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
                     reps = state.currentCycle.exList[state.exerciseIndex].reps,
                     onSkipPrevious = { executeViewModel.previous() },
                     onSkipNext = { executeViewModel.next() },
+                    onFinishExecution = { executeViewModel.finish() },
                     isFirstExercise = !state.hasPrevious,
                     isLastExercise = !state.hasNext,
                 )
@@ -209,6 +236,7 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
                     reps = state.currentCycle.exList[state.exerciseIndex].reps,
                     onSkipPrevious = { executeViewModel.previous() },
                     onSkipNext = { executeViewModel.next() },
+                    onFinishExecution = { executeViewModel.finish() },
                     contentColor = MaterialTheme.colors.onBackground,
                     backgroundColor = MaterialTheme.colors.background,
                     isFirstExercise = !state.hasPrevious,
@@ -231,6 +259,7 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Exec
                 reps = state.currentCycle.exList[state.exerciseIndex].reps,
                 onSkipPrevious = { executeViewModel.previous() },
                 onSkipNext = { executeViewModel.next() },
+                onFinishExecution = { executeViewModel.finish() },
                 isFirstExercise = !state.hasPrevious,
                 isLastExercise = !state.hasNext,
             )
@@ -315,6 +344,7 @@ fun DetailedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Exec
                     reps = state.currentCycle.exList[state.exerciseIndex].reps,
                     onSkipPrevious = { executeViewModel.previous() },
                     onSkipNext = { executeViewModel.next() },
+                    onFinishExecution = { executeViewModel.finish() },
                     contentColor = MaterialTheme.colors.onBackground,
                     backgroundColor = MaterialTheme.colors.background,
                     isFirstExercise = !state.hasPrevious,
