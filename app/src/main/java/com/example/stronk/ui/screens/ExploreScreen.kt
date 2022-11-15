@@ -7,7 +7,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Filter
+import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,14 +39,13 @@ fun ExploreScreen(
                 SearchBar(
                     value = "",
                     label = stringResource(id = R.string.search_for_routines),
-                    onValueChanged = { s -> exploreViewModel.searchRoutines(s) },
-                    modifier = Modifier.fillMaxWidth(0.9f))
+                    onValueChanged = { s -> exploreViewModel.searchRoutines(s) })
                 Button(onClick = {} )
                 {
                     Icon(
-                        Icons.Filled.Filter,
+                        Icons.Filled.FilterAlt,
                         contentDescription = "Filter",
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        modifier = Modifier.size(ButtonDefaults.IconSize).align(Alignment.CenterVertically)
                     )
                 }
             }
