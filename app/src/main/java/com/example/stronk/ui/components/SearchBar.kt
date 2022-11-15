@@ -16,12 +16,16 @@ fun SearchBar(
     label: String,
     onValueChanged: (String) -> Unit
 ) {
+
+    var textValue = value
+
     OutlinedTextField(
         modifier = modifier
             .fillMaxWidth(.9f),
-        value = value,
-        onValueChange = { query ->
-            onValueChanged(query)
+        value = textValue,
+        onValueChange = {
+            textValue = it
+            onValueChanged(it)
         },
         label = { Text(text = label) },
         textStyle = MaterialTheme.typography.subtitle1,

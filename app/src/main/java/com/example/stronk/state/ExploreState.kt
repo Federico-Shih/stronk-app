@@ -13,6 +13,8 @@ data class CategoryInfo(
 
 data class ExploreState(
     val categories: List<CategoryInfo> = listOf(),
+    val searchedRoutines: List<Routine> = listOf(),
     val loadState: ApiState = ApiState(ApiStatus.LOADING, ""),
-    val search: String = "",
 )
+
+val ExploreState.isSearching: Boolean get() = searchedRoutines.isNotEmpty()

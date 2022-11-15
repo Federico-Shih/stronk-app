@@ -44,4 +44,7 @@
     <string name="logout_button_label">Cerrar sesión</string>
     <string name="finish">Finalizar</string>
     <string name="congrats_routine_end">¡Buen Trabajo! Has finalizado esta rutina</string>
+    <string name="show_more">Ver más</string>
+    <string name="searching">Buscando</string>
+    <string name="search_for_routines">Buscar Rutinas</string>
 </resources>

@@ -9,14 +9,17 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.stronk.MainScreens
+import com.example.stronk.R
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.state.ExploreState
+import com.example.stronk.state.isSearching
 import com.example.stronk.ui.components.LoadDependingContent
 import com.example.stronk.ui.components.RoutineButtonGroup
 import com.example.stronk.ui.components.SearchBar
@@ -33,7 +36,7 @@ fun ExploreScreen(
             Row(modifier = Modifier.fillMaxWidth()) {
                 SearchBar(
                     value = "",
-                    label = "Buscar Rutinas",
+                    label = stringResource(id = R.string.search_for_routines),
                     onValueChanged = { s -> exploreViewModel.searchRoutines(s) },
                     modifier = Modifier.fillMaxWidth(0.9f))
                 Button(onClick = {} )
@@ -45,15 +48,27 @@ fun ExploreScreen(
                     )
                 }
             }
-            state.categories.forEach() { category ->
-                if (category.routines.isNotEmpty()) {
-                    RoutineButtonGroup(
-                        routineList = category.routines,
-                        title = category.name,
-                        onNavigateToViewRoutine = onNavigateToViewRoutine,
-                        onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
-                        showButton = !category.isLastPage
-                    )
+            if(state.isSearching)
+            {
+                RoutineButtonGroup(
+                    routineList = state.searchedRoutines,
+                    title = stringResource(id = R.string.searching),
+                    onNavigateToViewRoutine = onNavigateToViewRoutine,
+                    onGetMoreRoutines = { /* Para qué, que no aparezca directamente */ },
+                    showButton = false
+                )
+            }
+            else {
+                state.categories.forEach() { category ->
+                    if (category.routines.isNotEmpty()) {
+                        RoutineButtonGroup(
+                            routineList = category.routines,
+                            title = category.name,
+                            onNavigateToViewRoutine = onNavigateToViewRoutine,
+                            onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
+                            showButton = !category.isLastPage
+                        )
+                    }
                 }
             }
         }

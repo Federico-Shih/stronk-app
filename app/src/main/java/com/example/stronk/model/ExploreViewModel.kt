@@ -64,7 +64,17 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
     }
 
     fun searchRoutines(search: String) {
-
+        if(search.isNotEmpty()) {
+            routinesJob = viewModelScope.launch {
+                runCatching {
+                    routineRepository.getRoutines(size = 10, page = 0, search = search)
+                }.onSuccess { result ->
+                    uiState = uiState.copy(searchedRoutines = result.content.map { it.asModel() })
+                }
+            }
+        } else{
+            uiState = uiState.copy(searchedRoutines = listOf())
+        }
     }
 
     fun getMoreRoutines(categoryId: Int) {

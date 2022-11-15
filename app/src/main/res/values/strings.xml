@@ -43,4 +43,7 @@
     <string name="logout_button_label">Log out</string>
     <string name="finish">Finish</string>
     <string name="congrats_routine_end">Good Job! You completed this routine!</string>
+    <string name="show_more">Show more</string>
+    <string name="searching">Searching</string>
+    <string name="search_for_routines">Search For Routines</string>
 </resources>

@@ -6,6 +6,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.stronk.R
 import com.example.stronk.RoutineButton
@@ -44,7 +45,7 @@ fun RoutineButtonGroup(
                         shape = CircleShape,
                         modifier = Modifier.alignByBaseline()
                     ) {
-                        Text("VER MÁS")
+                        Text(stringResource(id = R.string.show_more).uppercase())
                     }
                 }
             }
@@ -58,9 +59,10 @@ fun RoutineButtonGroup(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 )
                 {
+                    val onlyOne = (i+1<routineList.size)
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(0.5f)
+                            .fillMaxWidth(if(onlyOne) 0.5f else 1f)
                             .height(200.dp)
                     ) {
                         val current = routineList[i]
@@ -80,7 +82,7 @@ fun RoutineButtonGroup(
                             .fillMaxWidth()
                             .height(200.dp)
                     ) {
-                        if (i + 1 < routineList.size) {
+                        if (!onlyOne) {
                             val current = routineList[i + 1]
                             RoutineButton(
                                 RoutineID = current.id,
