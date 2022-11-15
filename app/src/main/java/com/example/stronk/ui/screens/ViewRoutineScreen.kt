@@ -16,6 +16,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,7 +54,7 @@ fun ViewRoutineScreen(
     viewRoutineViewModel: ViewRoutineViewModel
 ) {
     val state = viewRoutineViewModel.uiState
-    LaunchedEffect(key1 = routineId) {
+    rememberSaveable {
         viewRoutineViewModel.initialize()
         viewRoutineViewModel.fetchRoutine(routineId)
     }

@@ -27,8 +27,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.example.stronk.model.LoginViewModel
-import com.example.stronk.model.ViewRoutineViewModel
 import com.example.stronk.ui.components.AppBar
 import com.example.stronk.ui.components.BottomBar
 import com.example.stronk.ui.screens.*
@@ -37,8 +35,7 @@ import com.google.accompanist.pager.ExperimentalPagerApi
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.example.stronk.model.ApiStatus
-import com.example.stronk.model.MainViewModel
+import com.example.stronk.model.*
 import com.example.stronk.ui.components.ProfileButton
 
 @Composable
@@ -118,6 +115,7 @@ class MainActivity : ComponentActivity() {
             val currentScreen = MainScreens.valueOf(currentRoute.split("/")[0])
             val mainViewModel: MainViewModel = viewModel(factory = MainViewModel.Factory)
             val viewRoutineViewModel: ViewRoutineViewModel = viewModel(factory = ViewRoutineViewModel.Factory)
+            val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
             var showConfirmExitDialog by remember { mutableStateOf(false) }
             StronkTheme {
                 val scaffoldState: ScaffoldState = rememberScaffoldState()
@@ -219,7 +217,7 @@ class MainActivity : ComponentActivity() {
                                     routineId = backStackEntry.arguments?.getInt("routineId") ?: 0,
                                     onGoBack = {
                                         navController.popBackStack()
-                                    }
+                                    },
                                 )
                             }
                             composable(

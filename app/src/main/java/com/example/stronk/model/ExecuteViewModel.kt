@@ -22,7 +22,7 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
     var uiState by mutableStateOf(ExecuteRoutineState())
     var fetchJob: Job? = null
 
-    fun executeRoutine(id: Int) {
+    fun executeRoutine(id: Int) : Boolean {
         uiState = uiState.copy(loadState = ApiState(ApiStatus.LOADING))
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
@@ -35,7 +35,8 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                 runCatching {
                     routineRepository.getRoutineCycles(id)
                 }.onSuccess { cycles ->
-                    uiState = uiState.copy(cycles = cycles, loadState = ApiState(ApiStatus.SUCCESS))
+                    val firstNonEmptyCycle = cycles.indexOfFirst { it.exList.isNotEmpty() }
+                    uiState = uiState.copy(cycles = cycles, loadState = ApiState(ApiStatus.SUCCESS), cycleIndex = firstNonEmptyCycle)
                 }
             }.onFailure {
                 uiState = uiState.copy(
@@ -46,6 +47,7 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                 )
             }
         }
+        return true
     }
 
     fun setPage(page: Int) {
@@ -63,7 +65,7 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                     uiState.copy(
                         exerciseIndex = 0,
                         cycleRepetition = 0,
-                        cycleIndex = uiState.cycleIndex + 1
+                        cycleIndex = uiState.cycles.subList(uiState.cycleIndex + 1, uiState.cycles.size).indexOfFirst { it.exList.isNotEmpty() } + uiState.cycleIndex + 1
                     )
                 }
         }
@@ -79,10 +81,11 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                     cycleRepetition = uiState.cycleRepetition - 1
                 )
             } else {
+                val prevCycleIndex = uiState.cycles.subList(0, uiState.cycleIndex).indexOfLast { it.exList.isNotEmpty() }
                 uiState.copy(
-                    exerciseIndex = uiState.cycles[uiState.cycleIndex - 1].exList.size - 1,
-                    cycleRepetition = uiState.cycles[uiState.cycleIndex - 1].cycleReps - 1,
-                    cycleIndex = uiState.cycleIndex - 1
+                    exerciseIndex = uiState.cycles[prevCycleIndex].exList.size - 1,
+                    cycleRepetition = uiState.cycles[prevCycleIndex].cycleReps - 1,
+                    cycleIndex = prevCycleIndex
                 )
             }
         }

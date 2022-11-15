@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 //import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,6 +28,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.stronk.R
 import com.example.stronk.model.ExecuteViewModel
+import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.state.*
 import com.example.stronk.ui.components.*
 import com.example.stronk.ui.theme.StronkTheme
@@ -37,11 +39,11 @@ import kotlinx.coroutines.launch
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun ExecuteRoutineScreen(routineId: Int, onGoBack: () -> Unit) {
+fun ExecuteRoutineScreen(routineId: Int, onGoBack: () -> Unit, executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)) {
     val pagerState = rememberPagerState(pageCount = 2)
     Column {
         Tabs(pagerState = pagerState)
-        TabsContent(pagerState = pagerState, routineId = routineId, onGoBack = onGoBack)
+        TabsContent(pagerState = pagerState, routineId = routineId, onGoBack = onGoBack, executeViewModel = executeViewModel)
     }
 }
 
@@ -91,9 +93,10 @@ fun Tabs(pagerState: PagerState) {
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun TabsContent(pagerState: PagerState, routineId: Int, onGoBack: () -> Unit) {
-    val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
-    executeViewModel.executeRoutine(routineId)
+fun TabsContent(pagerState: PagerState, routineId: Int, onGoBack: () -> Unit, executeViewModel: ExecuteViewModel) {
+    rememberSaveable {
+        executeViewModel.executeRoutine(routineId)
+    }
     val coroutineScope = rememberCoroutineScope()
     LoadDependingContent(loadState = executeViewModel.uiState.loadState) {
         if (executeViewModel.uiState.emptyRoutine) {
@@ -198,7 +201,9 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
                     color = MaterialTheme.colors.onPrimary,
                     modifier = Modifier.padding(top = 8.dp, start = 20.dp, bottom = 8.dp),
                     fontSize = 14.sp,
-                    fontWeight = FontWeight.Light
+                    fontWeight = FontWeight.Light,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
                 RoutineControls(
                     startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
@@ -220,9 +225,9 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
 
                 ) {
                 ExecutingCycles(
-                    prevCycle = state.previousCycle,
+                    prevCycle = state.previousNonEmptyCycle,
                     currentCycle = state.currentCycle,
-                    nextCycle = state.nextCycle,
+                    nextCycle = state.nextNonEmptyCycle,
                     currentExercise = state.exerciseIndex,
                     currentRepetition = state.cycleRepetition,
                     shouldMoveScrolling = state.page == 1
@@ -243,9 +248,9 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
                     .padding(10.dp),
             ) {
                 ExecutingCycles(
-                    prevCycle = state.previousCycle,
+                    prevCycle = state.previousNonEmptyCycle,
                     currentCycle = state.currentCycle,
-                    nextCycle = state.nextCycle,
+                    nextCycle = state.nextNonEmptyCycle,
                     currentExercise = state.exerciseIndex,
                     currentRepetition = state.cycleRepetition,
                     shouldMoveScrolling = state.page == 1,

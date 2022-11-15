@@ -58,10 +58,11 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
         }
     }
 
-    fun fetchRoutine(routineId: Int) {
+    fun fetchRoutine(routineId: Int) : Boolean {
         viewModelScope.launch {
             forceFetchRoutine(routineId)
         }
+        return true
     }
 
     fun toggleFavourite() {

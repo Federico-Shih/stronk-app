@@ -13,6 +13,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
@@ -45,7 +46,9 @@ fun TitleAndSubtitle(
                     .fillMaxWidth()
                     .padding(5.dp),
                 color = MaterialTheme.colors.onBackground,
-                fontWeight = FontWeight(600)
+                fontWeight = FontWeight(600),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
             Divider(
                 color = MaterialTheme.colors.onBackground, thickness = 2.dp,
@@ -97,7 +100,8 @@ fun InfoCycle(
             Text(
                 color = MaterialTheme.colors.onSecondary,
                 fontWeight = FontWeight.Normal,
-                text = stringResource(R.string.current_cycle)
+                text = stringResource(R.string.current_cycle),
+                modifier = Modifier.padding(end = 5.dp)
             )
             Text(
                 color = MaterialTheme.colors.onSecondary,
@@ -107,7 +111,9 @@ fun InfoCycle(
                     currentCycle,
                     currentCycleRepetition,
                     cycleRepetitions
-                )
+                ),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
         Spacer(modifier = Modifier.height(10.dp))
@@ -125,12 +131,15 @@ fun InfoCycle(
             Text(
                 color = MaterialTheme.colors.onSecondary,
                 fontWeight = FontWeight.Normal,
-                text = stringResource(R.string.next_exercise)
+                text = stringResource(R.string.next_exercise),
+                modifier = Modifier.padding(end = 5.dp)
             )
             Text(
                 color = MaterialTheme.colors.onSecondary,
                 fontWeight = FontWeight.Bold,
-                text = nextExer
+                text = nextExer,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
             )
         }
     }

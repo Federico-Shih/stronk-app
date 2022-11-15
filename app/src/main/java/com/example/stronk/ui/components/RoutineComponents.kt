@@ -158,7 +158,7 @@ fun CollapsedCycle(title: String, cycleReps: Int, label: String) {
         Row(
             modifier = Modifier
                 .align(Alignment.CenterStart)
-                .padding(bottom = 0.dp, start = 20.dp)
+                .padding(bottom = 2.dp, start = 16.dp)
                 .zIndex(1f)
         )
         {
@@ -232,7 +232,8 @@ fun ExecuteCycle(
     val color = MaterialTheme.colors.primary
     Box(
         modifier = Modifier
-            .wrapContentSize()
+            .wrapContentHeight()
+            .fillMaxWidth()
             .padding(10.dp)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
@@ -321,7 +322,8 @@ fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
     val color = MaterialTheme.colors.primary
     Box(
         modifier = Modifier
-            .wrapContentSize()
+            .wrapContentHeight()
+            .fillMaxWidth()
             .padding(10.dp)
     ) {
         Canvas(modifier = Modifier.matchParentSize()) {
@@ -334,7 +336,7 @@ fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
         Row(
             modifier = Modifier
                 .align(Alignment.BottomStart)
-                .padding(bottom = 25.dp, start = 22.dp)
+                .padding(bottom = 22.dp, start = 22.dp)
                 .zIndex(1f)
         )
         {
@@ -378,7 +380,7 @@ fun Cycle(title: String, exList: List<ExInfo>, cycleReps: Int) {
                     text = title,
                     style = MaterialTheme.typography.h6,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 32.dp, bottom = 10.dp)
+                    modifier = Modifier.padding(start = 42.dp, bottom = 10.dp)
                 )
                 for (ex in exList) {
                     ExerciseItem(ex, ExerciseItemType.REGULAR)
