@@ -28,13 +28,19 @@ fun SearchBar(
         value = text.value,
         onValueChange = {
             text.value = it
-            onValueChanged(it.text)
+            if(text.value.text.isEmpty() || text.value.text.length > 2)
+                onValueChanged(it.text)
         },
         label = { Text(label) },
         textStyle = MaterialTheme.typography.subtitle1,
         trailingIcon = {
-            IconButton(onClick = { text.value = TextFieldValue("") }) {
-                Icon(imageVector = Icons.Filled.Close, contentDescription = stringResource(R.string.clear))
+            if(text.value.text.isNotEmpty()) {
+                IconButton(onClick = { text.value = TextFieldValue(""); onValueChanged("") }) {
+                    Icon(
+                        imageVector = Icons.Filled.Close,
+                        contentDescription = stringResource(R.string.clear)
+                    )
+                }
             }
         },
     )

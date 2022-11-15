@@ -48,7 +48,7 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(5.dp))
         Divider(
-            color = Color.Black, thickness = 10.dp,
+            color = MaterialTheme.colors.primary, thickness = 10.dp,
             modifier = Modifier
                 .fillMaxWidth(0.15F)
                 .padding(start = 10.dp, bottom = 3.dp)
@@ -67,6 +67,11 @@ fun LoginScreen(
             label = { Text(stringResource(id = R.string.username_label)) },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             isError = isError,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                unfocusedBorderColor = MaterialTheme.colors.secondary,
+                errorBorderColor = MaterialTheme.colors.error
+            )
         )
         OutlinedTextField(
             value = password,
@@ -83,6 +88,11 @@ fun LoginScreen(
             visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             isError = isError,
+            colors = TextFieldDefaults.outlinedTextFieldColors(
+                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                unfocusedBorderColor = MaterialTheme.colors.secondary,
+                errorBorderColor = MaterialTheme.colors.error
+            ),
             trailingIcon = {
                 val image = if (passwordVisible)
                     Icons.Filled.Visibility
@@ -119,7 +129,10 @@ fun LoginScreen(
             Text(stringResource(id = R.string.login_button_label).uppercase())
         }
         if (uiState.apiState.status == ApiStatus.LOADING) {
-            Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 CircularProgressIndicator()
             }
         }

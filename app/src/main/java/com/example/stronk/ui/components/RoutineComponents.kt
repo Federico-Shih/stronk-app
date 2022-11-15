@@ -584,7 +584,7 @@ fun RatingCard(rating: Int, modifier: Modifier) {
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(end = 10.dp)
             )
-            RatingBar(rating = rating, stars = 5, starsColor = MaterialTheme.colors.primary)
+            RatingBar(rating = rating, stars = 5, starsColor = MaterialTheme.colors.secondary)
         }
     }
 }

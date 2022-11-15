@@ -58,4 +58,5 @@
     <string name="full_body">Full Body</string>
     <string name="back">Espalda</string>
     <string name="nothing_found">¡No Se Encontró Ninguna Rutina!</string>
+    <string name="filter">Filtros</string>
 </resources>

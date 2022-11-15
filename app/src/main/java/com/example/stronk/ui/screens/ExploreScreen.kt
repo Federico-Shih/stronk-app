@@ -8,6 +8,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,17 +39,13 @@ fun ExploreScreen(
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
             Row(modifier = Modifier.fillMaxWidth()) {
                 SearchBar(
-                    value = "",
                     label = stringResource(id = R.string.search_for_routines),
                     onValueChanged = { s -> exploreViewModel.searchRoutines(s) })
-                Button(onClick = {/* aparecen los fitros posibles */} )
-                {
+
+                IconButton(onClick = { /* exploreViewModel.filterRoutines() */ }, modifier = Modifier.align(Alignment.CenterVertically).size(70.dp)) {
                     Icon(
-                        Icons.Filled.FilterAlt,
-                        contentDescription = "Filter",
-                        modifier = Modifier
-                            .size(4.dp /*fijarte si está bien este tamaño*/)
-                            .align(Alignment.CenterVertically)
+                        imageVector = if(state.searching/*cambiar a state.filtering*/){ Icons.Outlined.FilterAlt} else { Icons.Filled.FilterAlt },
+                        contentDescription = stringResource(id = R.string.filter)
                     )
                 }
             }

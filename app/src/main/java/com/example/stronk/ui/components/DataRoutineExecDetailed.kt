@@ -98,13 +98,13 @@ fun InfoCycle(
         ) {
 
             Text(
-                color = MaterialTheme.colors.onSecondary,
+                color = MaterialTheme.colors.onSurface,
                 fontWeight = FontWeight.Normal,
                 text = stringResource(R.string.current_cycle),
                 modifier = Modifier.padding(end = 5.dp)
             )
             Text(
-                color = MaterialTheme.colors.onSecondary,
+                color = MaterialTheme.colors.onSurface,
                 fontWeight = FontWeight.Bold,
                 text = String.format(
                     "%s (%d/%d)",
@@ -129,13 +129,13 @@ fun InfoCycle(
         ) {
 
             Text(
-                color = MaterialTheme.colors.onSecondary,
+                color = MaterialTheme.colors.onSurface,
                 fontWeight = FontWeight.Normal,
                 text = stringResource(R.string.next_exercise),
                 modifier = Modifier.padding(end = 5.dp)
             )
             Text(
-                color = MaterialTheme.colors.onSecondary,
+                color = MaterialTheme.colors.onSurface,
                 fontWeight = FontWeight.Bold,
                 text = nextExer,
                 maxLines = 1,

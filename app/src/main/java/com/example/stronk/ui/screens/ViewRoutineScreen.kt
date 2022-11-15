@@ -66,8 +66,8 @@ fun ViewRoutineScreen(
             Scaffold(floatingActionButton = {
                 FloatingActionButton(
                     onClick = { onNavigateToExecution(routineId) },
-                    backgroundColor = MaterialTheme.colors.primary,
-                    contentColor = MaterialTheme.colors.onPrimary,
+                    backgroundColor = MaterialTheme.colors.secondary,
+                    contentColor = MaterialTheme.colors.onSecondary,
                     modifier = Modifier.size(72.dp)
                 ) {
                     Icon(
