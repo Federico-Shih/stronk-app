@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +22,7 @@ import com.example.stronk.MainScreens
 import com.example.stronk.R
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.state.ExploreState
-import com.example.stronk.state.isSearching
+import com.example.stronk.state.foundSomething
 import com.example.stronk.ui.components.LoadDependingContent
 import com.example.stronk.ui.components.RoutineButtonGroup
 import com.example.stronk.ui.components.SearchBar
@@ -40,24 +41,32 @@ fun ExploreScreen(
                     value = "",
                     label = stringResource(id = R.string.search_for_routines),
                     onValueChanged = { s -> exploreViewModel.searchRoutines(s) })
-                Button(onClick = {} )
+                Button(onClick = {/* aparecen los fitros posibles */} )
                 {
                     Icon(
                         Icons.Filled.FilterAlt,
                         contentDescription = "Filter",
-                        modifier = Modifier.size(ButtonDefaults.IconSize).align(Alignment.CenterVertically)
+                        modifier = Modifier
+                            .size(4.dp /*fijarte si está bien este tamaño*/)
+                            .align(Alignment.CenterVertically)
                     )
                 }
             }
-            if(state.isSearching)
+            if(state.searching)
             {
-                RoutineButtonGroup(
-                    routineList = state.searchedRoutines,
-                    title = stringResource(id = R.string.searching),
-                    onNavigateToViewRoutine = onNavigateToViewRoutine,
-                    onGetMoreRoutines = { /* Para qué, que no aparezca directamente */ },
-                    showButton = false
-                )
+                if(state.foundSomething) {
+                    RoutineButtonGroup(
+                        routineList = state.searchedRoutines,
+                        title = stringResource(id = R.string.searching),
+                        onNavigateToViewRoutine = onNavigateToViewRoutine,
+                        onGetMoreRoutines = { /* Para qué, que no aparezca directamente */ },
+                        showButton = false
+                    )
+                }
+                else
+                {
+                    Text(stringResource(id = R.string.nothing_found), modifier = Modifier.padding(10.dp))
+                }
             }
             else {
                 state.categories.forEach() { category ->

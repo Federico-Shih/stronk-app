@@ -61,7 +61,7 @@ fun RoutineButtonGroup(
                     val onlyOne = i+1 >= routineList.size
                     Column(
                         modifier = Modifier
-                            .fillMaxWidth(if(onlyOne) 0.5f else 1f)
+                            .fillMaxWidth(if(!onlyOne) 0.5f else 1f)
                             .height(200.dp)
                     ) {
                         val current = routineList[i]

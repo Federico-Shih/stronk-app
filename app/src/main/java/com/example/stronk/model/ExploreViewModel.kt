@@ -69,11 +69,11 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
                 runCatching {
                     routineRepository.getRoutines(size = 10, page = 0, search = search)
                 }.onSuccess { result ->
-                    uiState = uiState.copy(searchedRoutines = result.content.map { it.asModel() })
+                    uiState = uiState.copy(searchedRoutines = result.content.map { it.asModel() }, searching = true)
                 }
             }
         } else{
-            uiState = uiState.copy(searchedRoutines = listOf())
+            uiState = uiState.copy(searchedRoutines = listOf(), searching = false)
         }
     }
 

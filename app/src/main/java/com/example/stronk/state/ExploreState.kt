@@ -15,6 +15,7 @@ data class ExploreState(
     val categories: List<CategoryInfo> = listOf(),
     val searchedRoutines: List<Routine> = listOf(),
     val loadState: ApiState = ApiState(ApiStatus.LOADING, ""),
+    val searching: Boolean = false,
 )
 
-val ExploreState.isSearching: Boolean get() = searchedRoutines.isNotEmpty()
+val ExploreState.foundSomething: Boolean get() = searchedRoutines.isNotEmpty()

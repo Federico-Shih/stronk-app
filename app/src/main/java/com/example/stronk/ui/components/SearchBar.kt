@@ -3,6 +3,7 @@ package com.example.stronk.ui.components
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -15,16 +16,15 @@ import com.example.stronk.R
 @Composable
 fun SearchBar(
     modifier: Modifier = Modifier,
-    value: String,
     label: String,
     onValueChanged: (String) -> Unit
 ) {
 
-    val text = remember { mutableStateOf(TextFieldValue("Text"))}
+    val text = remember { mutableStateOf(TextFieldValue(""))}
 
     OutlinedTextField(
         modifier = modifier
-            .fillMaxWidth(.9f),
+            .fillMaxWidth(.85f),
         value = text.value,
         onValueChange = {
             text.value = it
@@ -33,8 +33,8 @@ fun SearchBar(
         label = { Text(label) },
         textStyle = MaterialTheme.typography.subtitle1,
         trailingIcon = {
-            IconButton(onClick = {  }) {
-                Icon(imageVector = Icons.Filled.Search, contentDescription = stringResource(R.string.clear))
+            IconButton(onClick = { text.value = TextFieldValue("") }) {
+                Icon(imageVector = Icons.Filled.Close, contentDescription = stringResource(R.string.clear))
             }
         },
     )

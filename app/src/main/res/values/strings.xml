@@ -56,4 +56,5 @@
     <string name="chest">Chest</string>
     <string name="full_body">Full Body</string>
     <string name="back">Back</string>
+    <string name="nothing_found">No Routines Found</string>
 </resources>
