@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
 import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.Category
+import com.example.stronk.state.CategoryInfo
 import com.example.stronk.state.ExploreState
 import com.example.stronk.state.Routine
 import kotlinx.coroutines.Job
@@ -35,16 +36,20 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
                 getCategories()
                 uiState.categories.forEach {
                     runCatching {
-                        routineRepository.getRoutines(size = 2, category = it.second)
+                        routineRepository.getRoutines(size = 2, category = it.id)
                     }.onSuccess { result ->
-                        allRoutines.add(result.content.map { it.asModel() })
-                        isLastOne.add(result.isLastPage)
+                        val newCategoryInfoList = uiState.categories
+                        val index = newCategoryInfoList.indexOf(it)
+                        newCategoryInfoList[index].routines.addAll(result.content.map { it.asModel() })
+                        newCategoryInfoList[index].isLastPage = result.isLastPage
+                        newCategoryInfoList[index].pages = 1
+                        uiState = uiState.copy(
+                            categories = newCategoryInfoList
+                        )
                     }.onFailure { throw it }
                 }
             }.onSuccess {
                 uiState = uiState.copy(
-                    routineByCategory = allRoutines,
-                    isLastOne = isLastOne,
                     loadState = ApiState(ApiStatus.SUCCESS)
                 )
             }.onFailure {
@@ -62,19 +67,21 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
 
     }
 
-    fun getMoreRoutines(category: Pair<String, Int>) {
-        val categoryIndex = uiState.categories.indexOf(category)
-        val newRoutines = uiState.routineByCategory as List<MutableList<Routine>>
-        val pages = uiState.pages as MutableList<Int>
-        val isLastOne = uiState.isLastOne as MutableList<Boolean>
+    fun getMoreRoutines(categoryId: Int) {
+        val category = uiState.categories.find { c -> c.id == categoryId } ?: uiState.categories[0]
         routinesJob = viewModelScope.launch {
             runCatching {
-                routineRepository.getRoutines(size = 2, category = category.second, page = uiState.pages[categoryIndex]+1)
+                routineRepository.getRoutines(size = 2, category = category.id, page = category.pages)
             }.onSuccess { result ->
-                newRoutines[categoryIndex].addAll(result.content.map { it.asModel() } )
-                pages[categoryIndex]++
-                isLastOne[categoryIndex] = result.isLastPage
-                uiState = uiState.copy(routineByCategory = newRoutines, pages = pages, isLastOne = isLastOne)
+                val newCategoryInfoList = uiState.categories
+                val index = newCategoryInfoList.indexOf(category)
+                newCategoryInfoList[index].routines.addAll(result.content.map { it.asModel() })
+                newCategoryInfoList[index].isLastPage = result.isLastPage
+                newCategoryInfoList[index].pages += 1
+                uiState = uiState.copy(
+                    categories = newCategoryInfoList,
+                    loadState = ApiState(ApiStatus.SUCCESS, "lol") //esta linea NO está al pedo
+                )
             }.onFailure { throw it }
 
         }
@@ -85,12 +92,11 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         runCatching {
             categories = routineRepository.getCategories()
         }.onSuccess {
-            val listCatIds: MutableList<Pair<String, Int>> = mutableListOf()
+            val newCategoryInfoList: MutableList<CategoryInfo> = mutableListOf()
             categories?.forEach {
-                listCatIds.add(Pair(it.name, it.id))
+                newCategoryInfoList.add(CategoryInfo(it.id, it.name, 0, mutableListOf(), false))
             }
-            val array = IntArray(listCatIds.size) { 0 }
-            uiState = uiState.copy(categories = listCatIds, pages = array.toList())
+            uiState = uiState.copy(categories = newCategoryInfoList)
         }.onFailure { throw it }
 
     }

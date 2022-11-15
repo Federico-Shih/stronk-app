@@ -45,15 +45,16 @@ fun ExploreScreen(
                     )
                 }
             }
-            for (i in 0 until state.categories.size) {
-                val it = state.categories[i]
-                RoutineButtonGroup(
-                    routineList = state.routineByCategory[i],
-                    title = it.first,
-                    onNavigateToViewRoutine = onNavigateToViewRoutine,
-                    onGetMoreRoutines = { exploreViewModel.getMoreRoutines(it) },
-                    showButton = !state.isLastOne[i]
-                )
+            state.categories.forEach() { category ->
+                if (category.routines.isNotEmpty()) {
+                    RoutineButtonGroup(
+                        routineList = category.routines,
+                        title = category.name,
+                        onNavigateToViewRoutine = onNavigateToViewRoutine,
+                        onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
+                        showButton = !category.isLastPage
+                    )
+                }
             }
         }
     }

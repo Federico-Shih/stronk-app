@@ -3,11 +3,16 @@ package com.example.stronk.state
 import com.example.stronk.model.ApiState
 import com.example.stronk.model.ApiStatus
 
+data class CategoryInfo(
+    val id: Int,
+    val name: String,
+    var pages: Int,
+    val routines: MutableList<Routine>,
+    var isLastPage: Boolean
+)
+
 data class ExploreState(
-    val routineByCategory: List<List<Routine>> = listOf(),
-    val categories: List<Pair<String, Int>> = listOf(),
-    val pages: List<Int> = listOf(),
-    val isLastOne: List<Boolean> = listOf(),
+    val categories: List<CategoryInfo> = listOf(),
     val loadState: ApiState = ApiState(ApiStatus.LOADING, ""),
     val search: String = "",
 )
