@@ -32,16 +32,17 @@ fun myRoutinesScreen(onNavigateToViewRoutine: (routineId: Int) -> Unit,
     .verticalScroll(rememberScrollState())) {
     LoadDependingContent(loadState = state.loadState) {
       routineList(state.myRoutines, stringResource(R.string.MyRoutines),
-        { myRoutinesViewModel.moreMyRoutines()},onNavigateToViewRoutine)
+        { myRoutinesViewModel.moreMyRoutines()},onNavigateToViewRoutine,state.isLastPageMyRoutines)
       routineList(state.favouriteRoutines, stringResource(R.string.FavRoutines),
-        { myRoutinesViewModel.moreFavouriteRoutines()},onNavigateToViewRoutine)
+        { myRoutinesViewModel.moreFavouriteRoutines()},onNavigateToViewRoutine,state.isLastPageFav)
     }
 
   }
 }
 
 @Composable
-fun routineList(routines:List<Routine> = listOf(),title:String="Rutinas",onShowMore:()->Unit={}, onNavigateToViewRoutine:(routineId:Int)->Unit={}){
+fun routineList(routines:List<Routine> = listOf(),title:String="Rutinas",onShowMore:()->Unit={}, onNavigateToViewRoutine:(routineId:Int)->Unit={},
+isLastPage:Boolean=false) {
   Column(modifier = Modifier
     .padding(10.dp)
     .wrapContentHeight()
@@ -57,10 +58,12 @@ fun routineList(routines:List<Routine> = listOf(),title:String="Rutinas",onShowM
           .padding(bottom = 4.dp)
           .alignByBaseline()
       )
-      Button(onClick = {onShowMore()}, modifier = Modifier.alignByBaseline()) {
-        Text(text = stringResource(R.string.ShowMore),
-          style = MaterialTheme.typography.body1,
-          fontWeight = FontWeight.Bold)
+      if(!isLastPage) {
+        Button(onClick = {onShowMore()}, modifier = Modifier.alignByBaseline()) {
+          Text(text = stringResource(R.string.ShowMore),
+            style = MaterialTheme.typography.body1,
+            fontWeight = FontWeight.Bold)
+        }
       }
     }
     Column(modifier= Modifier

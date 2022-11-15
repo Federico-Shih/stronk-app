@@ -24,7 +24,9 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
     var uiState by mutableStateOf(MyRoutinesState())
         private set
 
-    private var fetchJob:Job? = null
+    private var fetchJob: Job? = null
+    private val favoritePageSize = 3
+    private val myRoutinesPageSize = 3
 
     init {
         fetchFirstRoutines()
@@ -44,8 +46,8 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
 //            "Abdominales"),
 //        )
 
-    fun moreFavouriteRoutines(){
-        if(uiState.isLastPageFav){
+    fun moreFavouriteRoutines() {
+        if (uiState.isLastPageFav) {
             return
         }
         var routineList = uiState.favouriteRoutines
@@ -53,19 +55,33 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
         fetchJob = viewModelScope.launch {
 
             runCatching {
-                routineRepository.getFavouriteRoutines(page= if(routineList.size%3==0) uiState.favouriteRoutinesPage+1 else uiState.favouriteRoutinesPage , size=3)
+                routineRepository.getFavouriteRoutines(
+                    page = uiState.favouriteRoutinesPage,
+                    size = favoritePageSize
+                )
             }.onSuccess { routines ->
-                val auxRoutines= ( if(routineList.size%3!=0) routineList.slice(0 until ( routineList.size- routineList.size%3) ) else routineList) + routines.content.map { it.asModel() }
-                uiState = uiState.copy(favouriteRoutines = auxRoutines, favouriteRoutinesPage = auxRoutines.size/3 , isLastPageFav = routines.isLastPage, loadState = ApiState(ApiStatus.SUCCESS))
-            }.onFailure { e->
-                uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "Falló el fetch de myRoutines ${e.message}"))
+                val auxRoutines =
+                    (if (routineList.size % favoritePageSize != 0) routineList.slice(0 until (routineList.size - routineList.size % favoritePageSize)) else routineList) + routines.content.map { it.asModel() }
+                uiState = uiState.copy(
+                    favouriteRoutines = auxRoutines,
+                    favouriteRoutinesPage = auxRoutines.size / favoritePageSize,
+                    isLastPageFav = routines.isLastPage,
+                    loadState = ApiState(ApiStatus.SUCCESS,"")
+                )
+            }.onFailure { e ->
+                uiState = uiState.copy(
+                    loadState = ApiState(
+                        ApiStatus.FAILURE,
+                        "Falló el fetch de myRoutines ${e.message}"
+                    )
+                )
                 return@launch
             }
         }
     }
 
-    fun moreMyRoutines(){
-        if(uiState.isLastPageMyRoutines){
+    fun moreMyRoutines() {
+        if (uiState.isLastPageMyRoutines) {
             return
         }
         var routineList = uiState.myRoutines
@@ -73,62 +89,79 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
         fetchJob = viewModelScope.launch {
 
             runCatching {
-                routineRepository.getMyRoutines(page= if(routineList.size%3==0) uiState.myRoutinesPage+1 else uiState.myRoutinesPage , size=3)
+                routineRepository.getMyRoutines(
+                    page = uiState.myRoutinesPage,
+                    size = myRoutinesPageSize
+                )
             }.onSuccess { routines ->
-                val auxRoutines=(if(routineList.size%3!=0) routineList.slice(0 until ( routineList.size- routineList.size%3) ) else routineList) + routines.content.map { it.asModel() }
-                uiState = uiState.copy(myRoutines = auxRoutines, myRoutinesPage = auxRoutines.size/3 , isLastPageMyRoutines = routines.isLastPage, loadState = ApiState(ApiStatus.SUCCESS))
-            }.onFailure { e->
-                uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "Falló el fetch de myRoutines ${e.message}"))
+                val auxRoutines =
+                    (if (routineList.size % myRoutinesPageSize != 0) routineList.slice(0 until (routineList.size - routineList.size % myRoutinesPageSize)) else routineList) + routines.content.map { it.asModel() }
+                uiState = uiState.copy(
+                    myRoutines = auxRoutines,
+                    myRoutinesPage = auxRoutines.size / myRoutinesPageSize,
+                    isLastPageMyRoutines = routines.isLastPage,
+                    loadState = ApiState(ApiStatus.SUCCESS,"")
+                )
+            }.onFailure { e ->
+                uiState = uiState.copy(
+                    loadState = ApiState(
+                        ApiStatus.FAILURE,
+                        "Falló el fetch de myRoutines ${e.message}"
+                    )
+                )
                 return@launch
             }
         }
     }
-    fun fetchFirstRoutines(){
+
+    fun fetchFirstRoutines() {
         fetchJob?.cancel()
-        if(uiState.myRoutines.isNotEmpty() || uiState.favouriteRoutines.isNotEmpty()){
+        if (uiState.myRoutines.isNotEmpty() || uiState.favouriteRoutines.isNotEmpty()) {
             return
         }
         fetchJob = viewModelScope.launch {
-                runCatching {
-                    routineRepository.getMyRoutines(page = 0, size = 3)
-                }.onSuccess { routines ->
-                    uiState = uiState.copy(
-                        myRoutines = routines.content.map { it.asModel() },
-                        myRoutinesPage = 1,
-                        isLastPageMyRoutines = routines.isLastPage
+            runCatching {
+                routineRepository.getMyRoutines(page = 0, size = myRoutinesPageSize)
+            }.onSuccess { routines ->
+                uiState = uiState.copy(
+                    myRoutines = routines.content.map { it.asModel() },
+                    myRoutinesPage = 1,
+                    isLastPageMyRoutines = routines.isLastPage
+                )
+            }.onFailure { e ->
+                uiState = uiState.copy(
+                    loadState = ApiState(
+                        ApiStatus.FAILURE,
+                        "Falló el fetch de myRoutines ${e.message}"
                     )
-                }.onFailure { e ->
-                    uiState = uiState.copy(
-                        loadState = ApiState(
-                            ApiStatus.FAILURE,
-                            "Falló el fetch de myRoutines ${e.message}"
-                        )
+                )
+                return@launch
+            }
+            runCatching {
+                routineRepository.getFavouriteRoutines(page = 0, size = favoritePageSize)
+            }.onSuccess { routines ->
+                uiState = uiState.copy(
+                    favouriteRoutines = routines.content.map { it.asModel() },
+                    favouriteRoutinesPage = 1,
+                    isLastPageFav = routines.isLastPage,
+                    loadState = ApiState(ApiStatus.SUCCESS)
+                )
+            }.onFailure { e ->
+                uiState = uiState.copy(
+                    loadState = ApiState(
+                        ApiStatus.FAILURE,
+                        "Falló el fetch de Favorites ${e.message}"
                     )
-                    return@launch
-                }
-                runCatching {
-                    routineRepository.getFavouriteRoutines(page = 0, size = 3)
-                }.onSuccess { routines ->
-                    uiState = uiState.copy(
-                        favouriteRoutines = routines.content.map { it.asModel() },
-                        favouriteRoutinesPage = 1,
-                        isLastPageFav = routines.isLastPage,
-                        loadState = ApiState(ApiStatus.SUCCESS)
-                    )
-                }.onFailure { e ->
-                    uiState = uiState.copy(
-                        loadState = ApiState(
-                            ApiStatus.FAILURE,
-                            "Falló el fetch de Favorites ${e.message}"
-                        )
-                    )
-                }
+                )
+            }
         }
     }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
+                val application =
+                    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
                 MyRoutinesViewModel(application.routineRepository)
             }
         }
