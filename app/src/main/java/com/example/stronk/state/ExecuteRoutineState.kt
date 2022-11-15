@@ -10,6 +10,7 @@ data class ExecuteRoutineState(
     val cycleRepetition: Int = 0,
     val cycleIndex: Int = 0,
     val exerciseIndex: Int = 0,
+    val page: Int = 0,
     val finished: Boolean = false
 )
 

@@ -48,6 +48,10 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
+    fun setPage(page: Int) {
+        uiState = uiState.copy(page = page)
+    }
+
     fun next() {
         if (uiState.hasNext) {
             uiState =
