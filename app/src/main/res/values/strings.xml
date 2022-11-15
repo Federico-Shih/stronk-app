@@ -46,4 +46,5 @@
     <string name="show_more">Show more</string>
     <string name="searching">Searching</string>
     <string name="search_for_routines">Search For Routines</string>
+    <string name="empty_routine_msg">Oh no! It seems this routine is empty, come back when the creator has added new exercises</string>
 </resources>

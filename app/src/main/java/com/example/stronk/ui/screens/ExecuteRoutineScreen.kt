@@ -95,18 +95,7 @@ fun TabsContent(pagerState: PagerState, routineId: Int, onGoBack: () -> Unit) {
     val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
     executeViewModel.executeRoutine(routineId)
     val coroutineScope = rememberCoroutineScope()
-    LaunchedEffect(key1 = pagerState.currentPage) {
-        coroutineScope.launch {
-            executeViewModel.setPage(pagerState.currentPage)
-        }
-    }
-    HorizontalPager(state = pagerState) { page ->
-        when (page) {
-            0 -> DetailedScreen(executeViewModel)
-            1 -> ResumedScreen(executeViewModel)
-        }
-    }
-    if(executeViewModel.uiState.finished) {
+    if(executeViewModel.uiState.emptyRoutine) {
         Dialog(onDismissRequest = { onGoBack() }, properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
             Card(
                 backgroundColor = MaterialTheme.colors.background,
@@ -114,7 +103,7 @@ fun TabsContent(pagerState: PagerState, routineId: Int, onGoBack: () -> Unit) {
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
-                        text = stringResource(id = R.string.congrats_routine_end),
+                        text = stringResource(id = R.string.empty_routine_msg),
                         style = MaterialTheme.typography.h6,
                         modifier = Modifier.padding(bottom = 10.dp)
                     )
@@ -122,13 +111,49 @@ fun TabsContent(pagerState: PagerState, routineId: Int, onGoBack: () -> Unit) {
                         Button(onClick = {
                             onGoBack()
                         }) {
-                            Text(text = stringResource(id = R.string.finish).uppercase())
+                            Text(text = stringResource(id = R.string.exit).uppercase())
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        LaunchedEffect(key1 = pagerState.currentPage) {
+            coroutineScope.launch {
+                executeViewModel.setPage(pagerState.currentPage)
+            }
+        }
+        HorizontalPager(state = pagerState) { page ->
+            when (page) {
+                0 -> DetailedScreen(executeViewModel)
+                1 -> ResumedScreen(executeViewModel)
+            }
+        }
+        if(executeViewModel.uiState.finished) {
+            Dialog(onDismissRequest = { onGoBack() }, properties = DialogProperties(dismissOnBackPress = false, dismissOnClickOutside = false)) {
+                Card(
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.onBackground,
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = stringResource(id = R.string.congrats_routine_end),
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(bottom = 10.dp)
+                        )
+                        Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                            Button(onClick = {
+                                onGoBack()
+                            }) {
+                                Text(text = stringResource(id = R.string.finish).uppercase())
+                            }
                         }
                     }
                 }
             }
         }
     }
+
 }
 
 @Composable

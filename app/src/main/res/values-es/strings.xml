@@ -47,4 +47,5 @@
     <string name="show_more">Ver más</string>
     <string name="searching">Buscando</string>
     <string name="search_for_routines">Buscar Rutinas</string>
+    <string name="empty_routine_msg">¡Rayos! Parece que esta rutina esta vacía, vuelva cuando su creador haya agregado algún ejercicio</string>
 </resources>

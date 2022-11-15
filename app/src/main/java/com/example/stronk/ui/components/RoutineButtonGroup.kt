@@ -59,7 +59,7 @@ fun RoutineButtonGroup(
                     horizontalArrangement = Arrangement.SpaceEvenly
                 )
                 {
-                    val onlyOne = (i+1<routineList.size)
+                    val onlyOne = i+1 >= routineList.size
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(if(onlyOne) 0.5f else 1f)
