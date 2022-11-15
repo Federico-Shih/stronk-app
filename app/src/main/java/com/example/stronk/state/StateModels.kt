@@ -1,5 +1,7 @@
 package com.example.stronk.state
 
+import androidx.compose.ui.res.stringResource
+import com.example.stronk.R
 import java.util.*
 
 data class User(
@@ -12,6 +14,15 @@ data class User(
 )
 
 data class Category(val id: Int, val name: String, val detail: String?)
+
+val Category.nameStringResourceId : Int get() = when (name) {
+    "Abdominales" -> R.string.abs
+    "Brazos" -> R.string.arms
+    "Espalda" -> R.string.back
+    "Piernas" -> R.string.legs
+    "Pecho" -> R.string.chest
+    else -> R.string.full_body
+}
 
 data class UserRoutine(
     val id: Int,
@@ -30,6 +41,12 @@ data class Routine(
     val user: UserRoutine?,
     val category: Category
 )
+
+val Routine.difficultyStringResourceId : Int get() = when (difficulty) {
+    "beginner" -> R.string.beginner
+    "intermediate" -> R.string.intermediate
+    else -> R.string.advanced
+}
 
 data class ExInfo(
     val name: String,

@@ -116,7 +116,7 @@ fun LoginScreen(
             onClick = { onSubmit(email, password) },
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
-            Text(stringResource(id = R.string.login_button_label))
+            Text(stringResource(id = R.string.login_button_label).uppercase())
         }
         if (uiState.apiState.status == ApiStatus.LOADING) {
             Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {

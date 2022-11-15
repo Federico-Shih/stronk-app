@@ -32,9 +32,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
 import com.example.stronk.model.ApiStatus
 import com.example.stronk.model.ViewRoutineViewModel
-import com.example.stronk.state.CycleInfo
-import com.example.stronk.state.ExInfo
-import com.example.stronk.state.ViewRoutineState
+import com.example.stronk.state.*
 import com.example.stronk.ui.components.*
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -121,7 +119,7 @@ fun ViewRoutineScreen(
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Chip(onClick = {}) {
-                                    Text(text = state.routine.category.name)
+                                    Text(text = stringResource(id = state.routine.category.nameStringResourceId))
                                 }
                             }
                             Row(verticalAlignment = Alignment.CenterVertically) {
@@ -131,7 +129,7 @@ fun ViewRoutineScreen(
                                     fontWeight = FontWeight.SemiBold
                                 )
                                 Chip(onClick = {}) {
-                                    Text(text = state.routine.difficulty)
+                                    Text(text = stringResource(id = state.routine.difficultyStringResourceId))
                                 }
                             }
                         }
@@ -189,13 +187,13 @@ fun ViewRoutineScreen(
                                         onClick = { viewRoutineViewModel.hideRatingDialog() },
                                         modifier = Modifier.padding(end = 10.dp)
                                     ) {
-                                        Text(text = stringResource(id = R.string.cancel))
+                                        Text(text = stringResource(id = R.string.cancel).uppercase())
                                     }
                                     Button(onClick = {
                                         viewRoutineViewModel.rateRoutine(currentRate)
                                         viewRoutineViewModel.hideRatingDialog()
                                     }) {
-                                        Text(text = stringResource(id = R.string.ok))
+                                        Text(text = stringResource(id = R.string.ok).uppercase())
                                     }
                                 }
                             }

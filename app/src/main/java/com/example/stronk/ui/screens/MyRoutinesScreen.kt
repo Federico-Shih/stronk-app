@@ -89,7 +89,7 @@ fun RoutinesList(
             if (!isLastPage) {
                 Button(onClick = { onShowMore() }, modifier = Modifier.alignByBaseline()) {
                     Text(
-                        text = stringResource(R.string.ShowMore),
+                        text = stringResource(R.string.ShowMore).uppercase(),
                         style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.Bold
                     )

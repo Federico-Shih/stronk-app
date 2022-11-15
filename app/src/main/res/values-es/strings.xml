@@ -48,4 +48,13 @@
     <string name="searching">Buscando</string>
     <string name="search_for_routines">Buscar Rutinas</string>
     <string name="empty_routine_msg">¡Rayos! Parece que esta rutina esta vacía, vuelva cuando su creador haya agregado algún ejercicio</string>
+    <string name="beginner">Principiante</string>
+    <string name="intermediate">Intermedio</string>
+    <string name="advanced">Avanzado</string>
+    <string name="abs">Abdominales</string>
+    <string name="legs">Piernas</string>
+    <string name="arms">Arms</string>
+    <string name="chest">Pecho</string>
+    <string name="full_body">Full Body</string>
+    <string name="back">Espalda</string>
 </resources>

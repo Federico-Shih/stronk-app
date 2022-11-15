@@ -42,7 +42,6 @@ fun RoutineButtonGroup(
                 if (showButton) {
                     Button(
                         onClick = { onGetMoreRoutines() },
-                        shape = CircleShape,
                         modifier = Modifier.alignByBaseline()
                     ) {
                         Text(stringResource(id = R.string.show_more).uppercase())

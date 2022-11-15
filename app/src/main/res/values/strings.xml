@@ -47,4 +47,13 @@
     <string name="searching">Searching</string>
     <string name="search_for_routines">Search For Routines</string>
     <string name="empty_routine_msg">Oh no! It seems this routine is empty, come back when the creator has added new exercises</string>
+    <string name="beginner">Beginner</string>
+    <string name="intermediate">Intermediate</string>
+    <string name="advanced">Advanced</string>
+    <string name="abs">Abs</string>
+    <string name="legs">Legs</string>
+    <string name="arms">Arms</string>
+    <string name="chest">Chest</string>
+    <string name="full_body">Full Body</string>
+    <string name="back">Back</string>
 </resources>
