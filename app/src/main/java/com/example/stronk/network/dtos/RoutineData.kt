@@ -1,6 +1,5 @@
 package com.example.stronk.network.dtos
 
-import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.Routine
 import com.example.stronk.state.UserRoutine
 import com.google.gson.annotations.SerializedName
@@ -79,3 +78,4 @@ data class ExerciseImageData(
     @SerializedName("number") val number: Int,
     @SerializedName("url") val url: String
 )
+

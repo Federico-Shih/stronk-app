@@ -143,7 +143,8 @@ class MainActivity : ComponentActivity() {
                                     { null }
                                 },
                                 navigateTo = {
-                                    navController.navigate(it)
+                                    dest ->
+                                    navController.navigate(dest)
                                 }
                             )
                         }
@@ -152,9 +153,16 @@ class MainActivity : ComponentActivity() {
                         if (!currentScreen.hidesBottomNav) {
                             BottomBar(
                                 onNavClick = { name ->
-                                    navController.navigate(name)
+                                    if (name != currentScreen.name)
+                                    {
+                                        navController.navigate(name) {
+                                            popUpTo(name) {
+                                                inclusive = true
+                                            }
+                                        }
+                                    }
                                 },
-                                currentRoute = currentRoute,
+                                currentRoute = currentScreen.name,
                                 screenList = bottomBarScreens.toList()
                             )
                         }

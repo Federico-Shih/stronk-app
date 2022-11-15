@@ -1,10 +1,7 @@
 package com.example.stronk.network.repositories
 
 import com.example.stronk.network.datasources.RoutineDataSource
-import com.example.stronk.network.dtos.CategoryData
-import com.example.stronk.network.dtos.CycleData
-import com.example.stronk.network.dtos.Paginated
-import com.example.stronk.network.dtos.RoutineData
+import com.example.stronk.network.dtos.*
 import com.example.stronk.state.Category
 import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.ExInfo
@@ -102,6 +99,8 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
     suspend fun getFavouriteRoutines(
         page: Int? = null, size: Int? = null
     ) = remoteDataSource.getFavourites(page, size)
+
+    suspend fun rateRoutine(routineId: Int, rating: RatingDTO) = remoteDataSource.rateRoutine(routineId, rating)
 
     suspend fun getAllFavouriteRoutines(): List<RoutineData> {
         if (userFavourites.isEmpty() || refresh) {

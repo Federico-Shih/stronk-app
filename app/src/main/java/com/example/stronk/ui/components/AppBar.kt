@@ -66,7 +66,8 @@ fun BottomBar(
 ) {
     BottomAppBar(
         backgroundColor = MaterialTheme.colors.primary,
-        contentColor = MaterialTheme.colors.onPrimary
+        contentColor = MaterialTheme.colors.onPrimary,
+        modifier = modifier
     ) {
         screenList.forEach {
             BottomNavigationItem(

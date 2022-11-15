@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.network.dtos.RatingDTO
 import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.*
 import kotlinx.coroutines.launch
@@ -27,35 +28,39 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
         )
     }
 
+    suspend fun forceFetchRoutine(routineId: Int) {
+        runCatching {
+            runCatching {
+                routineRepository.getRoutine(routineId)
+            }.onSuccess {
+                    routineData ->
+                runCatching {
+                    routineRepository.getRoutineCycles(routineData.id)
+                }.onSuccess {
+                        cycles ->
+                    uiState = uiState.copy(routine = routineData.asModel(), cycles = cycles)
+                }.onFailure {
+                    throw it
+                }
+            }
+            runCatching {
+                routineRepository.getAllFavouriteRoutines()
+            }.onSuccess {
+                    favourites ->
+                if (favourites.any { favourite -> favourite.id == routineId }) {
+                    uiState = uiState.copy(faved = true)
+                }
+            }
+        }.onSuccess {
+            uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS, "OK"))
+        }.onFailure {
+            uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, it.message ?: "Unknown error"))
+        }
+    }
+
     fun fetchRoutine(routineId: Int) {
         viewModelScope.launch {
-            runCatching {
-                runCatching {
-                    routineRepository.getRoutine(routineId)
-                }.onSuccess {
-                    routineData ->
-                    runCatching {
-                        routineRepository.getRoutineCycles(routineData.id)
-                    }.onSuccess {
-                        cycles ->
-                        uiState = uiState.copy(routine = routineData.asModel(), cycles = cycles)
-                    }.onFailure {
-                        throw it
-                    }
-                }
-                runCatching {
-                    routineRepository.getAllFavouriteRoutines()
-                }.onSuccess {
-                    favourites ->
-                    if (favourites.any { favourite -> favourite.id == routineId }) {
-                        uiState = uiState.copy(faved = true)
-                    }
-                }
-            }.onSuccess {
-                uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS, "OK"))
-            }.onFailure {
-                uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, it.message ?: "Unknown error"))
-            }
+            forceFetchRoutine(routineId)
         }
     }
 
@@ -63,23 +68,29 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
         viewModelScope.launch {
             runCatching {
                 if (uiState.faved) {
-                    println("It is faved")
                     routineRepository.unfavouriteRoutine(uiState.routine.id)
                 } else {
-                    println("It is not faved")
                     routineRepository.favouriteRoutine(uiState.routine.id)
                 }
             }.onSuccess {
                 uiState = uiState.copy(faved = !uiState.faved)
             }.onFailure {
-                println(it)
                 uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, message = it.message ?: "Unknown error"))
             }
         }
     }
 
     fun rateRoutine(rating: Int) {
-        //TODO: rate routine in database
+        viewModelScope.launch {
+            uiState = uiState.copy(loadState = ApiState(ApiStatus.LOADING))
+            runCatching {
+                routineRepository.rateRoutine(uiState.routine.id, RatingDTO(rating))
+            }.onSuccess {
+                uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS))
+            }.onFailure {
+                uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, it.message ?: "Unknown error"))
+            }
+        }
     }
 
     fun shareRoutine(context: Context) {

@@ -124,4 +124,5 @@ class RoutineDataSource(
         }
     }
 
+    suspend fun rateRoutine(routineId: Int, rating: RatingDTO) = handleApiResponse { routineApiService.rateRoutine(routineId, rating) }
 }
