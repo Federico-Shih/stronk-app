@@ -125,7 +125,6 @@ fun TabsContent(pagerState: PagerState, routineId: Int, onGoBack: () -> Unit) {
                             Text(text = stringResource(id = R.string.finish).uppercase())
                         }
                     }
-
                 }
             }
         }
@@ -365,5 +364,4 @@ fun PreviewDetailedScreen() {
     StronkTheme {
         DetailedScreen()
     }
-
 }

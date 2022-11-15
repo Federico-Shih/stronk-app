@@ -1,6 +1,10 @@
 package com.example.stronk.state
 
+import com.example.stronk.model.ApiState
+import com.example.stronk.model.ApiStatus
+
 data class ExecuteRoutineState(
+    val loadState: ApiState = ApiState(ApiStatus.LOADING),
     val executingRoutine: Routine? = null,
     val cycles: List<CycleInfo> = listOf(),
     val cycleRepetition: Int = 0,
