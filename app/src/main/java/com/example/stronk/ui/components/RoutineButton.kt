@@ -1,8 +1,5 @@
 package com.example.stronk
 
-import android.graphics.BlurMaskFilter
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,33 +21,45 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.stronk.ui.theme.StronkTheme
 
 @Composable
-fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String,modifierButton: Modifier = Modifier, onNavigateToViewRoutine: (routineId: Int) -> Unit={}) {
+fun RoutineButton(
+    RoutineID: Int,
+    RoutineImageID: Int,
+    RoutineName: String,
+    modifier: Modifier = Modifier,
+    onNavigateToViewRoutine: (routineId: Int) -> Unit = {}
+) {
     val image: Painter = painterResource(id = RoutineImageID)
-    Card(modifier = modifierButton
-        .padding(10.dp)
-        .clickable { onNavigateToViewRoutine(RoutineID) }, elevation = 10.dp,
+    Card(
+        modifier = modifier
+            .padding(10.dp)
+            .clickable { onNavigateToViewRoutine(RoutineID) }, elevation = 10.dp,
         border = BorderStroke(2.dp, MaterialTheme.colors.primaryVariant),
         shape = RoundedCornerShape(20.dp)
-        ) {
+    ) {
         Box {
             Image(
-                painter = image, contentDescription = stringResource(R.string.category_representing_image),
+                painter = image,
+                contentDescription = stringResource(R.string.category_representing_image),
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.matchParentSize(),
                 alignment = Alignment.Center,
             )
-            Box(modifier = Modifier.background(
-                Brush.verticalGradient(
-                    0.6F to Color.Transparent,
-                    0.7F to Color.Black.copy(alpha = 0.2F),
-                    1F to Color.Black.copy(alpha = 0.9F)
-                )).matchParentSize())
+            Box(
+                modifier = Modifier
+                    .background(
+                        Brush.verticalGradient(
+                            0.6F to Color.Transparent,
+                            0.7F to Color.Black.copy(alpha = 0.2F),
+                            1F to Color.Black.copy(alpha = 0.9F)
+                        )
+                    )
+                    .matchParentSize()
+            )
             Text(
                 text = RoutineName, fontSize = 20.sp, modifier = Modifier
                     .fillMaxWidth()
@@ -68,11 +77,14 @@ fun RoutineButton(RoutineID: Int, RoutineImageID: Int, RoutineName: String,modif
 
 @Preview(showBackground = true)
 @Composable
-fun RoutineButtonPreview(listRow: List<String> = List(20){"$it"}) {
+fun RoutineButtonPreview(listRow: List<String> = List(20) { "$it" }) {
     StronkTheme {
         Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
             Box {
-                Column(modifier= Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceEvenly) {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.SpaceEvenly
+                ) {
                     Row(
                         modifier = Modifier
                             .padding(all = 8.dp)
@@ -81,26 +93,30 @@ fun RoutineButtonPreview(listRow: List<String> = List(20){"$it"}) {
                             .wrapContentWidth(Alignment.Start),
                         horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
-                        Column(modifier = Modifier
-                            .fillMaxWidth(0.5f)
-                            .height(200.dp)) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .height(200.dp)
+                        ) {
                             RoutineButton(
                                 RoutineID = 1,
                                 RoutineImageID = R.drawable.abdos,
                                 RoutineName = "Abdominales en 15 minutos",
-                                modifierButton = Modifier
+                                modifier = Modifier
                                     .fillMaxWidth()
                                     .fillMaxHeight()
                             )
                         }
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .height(200.dp)){
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(200.dp)
+                        ) {
                             RoutineButton(
                                 RoutineID = 1,
                                 RoutineImageID = R.drawable.abdos,
                                 RoutineName = "Abdominales en 15 minutos",
-                                modifierButton = Modifier
+                                modifier = Modifier
                                     .fillMaxWidth()
                                     .fillMaxHeight()
                             )
@@ -110,7 +126,7 @@ fun RoutineButtonPreview(listRow: List<String> = List(20){"$it"}) {
                         RoutineID = 1,
                         RoutineImageID = R.drawable.abdos,
                         RoutineName = "Abdominales en 15 minutos",
-                        modifierButton = Modifier
+                        modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
                     )

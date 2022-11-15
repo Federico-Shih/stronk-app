@@ -99,46 +99,50 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
         }
     }
 
+    suspend fun forceFetchRoutines() {
+        runCatching {
+            routineRepository.getMyRoutines(page = 0, size = myRoutinesPageSize)
+        }.onSuccess { routines ->
+            uiState = uiState.copy(
+                myRoutines = routines.content.map { it.asModel() },
+                myRoutinesPage = 1,
+                isLastPageMyRoutines = routines.isLastPage
+            )
+        }.onFailure { e ->
+            uiState = uiState.copy(
+                loadState = ApiState(
+                    ApiStatus.FAILURE,
+                    "Falló el fetch de myRoutines ${e.message}"
+                )
+            )
+            return
+        }
+        runCatching {
+            routineRepository.getFavouriteRoutines(page = 0, size = favoritePageSize)
+        }.onSuccess { routines ->
+            uiState = uiState.copy(
+                favouriteRoutines = routines.content.map { it.asModel() },
+                favouriteRoutinesPage = 1,
+                isLastPageFav = routines.isLastPage,
+                loadState = ApiState(ApiStatus.SUCCESS)
+            )
+        }.onFailure { e ->
+            uiState = uiState.copy(
+                loadState = ApiState(
+                    ApiStatus.FAILURE,
+                    "Falló el fetch de Favorites ${e.message}"
+                )
+            )
+        }
+    }
+
     fun fetchFirstRoutines() {
-        fetchJob?.cancel()
         if (uiState.myRoutines.isNotEmpty() || uiState.favouriteRoutines.isNotEmpty()) {
             return
         }
+        fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
-            runCatching {
-                routineRepository.getMyRoutines(page = 0, size = myRoutinesPageSize)
-            }.onSuccess { routines ->
-                uiState = uiState.copy(
-                    myRoutines = routines.content.map { it.asModel() },
-                    myRoutinesPage = 1,
-                    isLastPageMyRoutines = routines.isLastPage
-                )
-            }.onFailure { e ->
-                uiState = uiState.copy(
-                    loadState = ApiState(
-                        ApiStatus.FAILURE,
-                        "Falló el fetch de myRoutines ${e.message}"
-                    )
-                )
-                return@launch
-            }
-            runCatching {
-                routineRepository.getFavouriteRoutines(page = 0, size = favoritePageSize)
-            }.onSuccess { routines ->
-                uiState = uiState.copy(
-                    favouriteRoutines = routines.content.map { it.asModel() },
-                    favouriteRoutinesPage = 1,
-                    isLastPageFav = routines.isLastPage,
-                    loadState = ApiState(ApiStatus.SUCCESS)
-                )
-            }.onFailure { e ->
-                uiState = uiState.copy(
-                    loadState = ApiState(
-                        ApiStatus.FAILURE,
-                        "Falló el fetch de Favorites ${e.message}"
-                    )
-                )
-            }
+            forceFetchRoutines()
         }
     }
 

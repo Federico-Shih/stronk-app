@@ -177,7 +177,7 @@ class MainActivity : ComponentActivity() {
                                 })
                             }
                             composable(route = MainScreens.ROUTINES.name) {
-                                myRoutinesScreen(onNavigateToViewRoutine = { routineId ->
+                                MyRoutinesScreen(onNavigateToViewRoutine = { routineId ->
                                     navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
                                 })
                             }
