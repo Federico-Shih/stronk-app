@@ -102,16 +102,14 @@ class RoutineDataSource(
         }
     }
 
-    suspend fun postFavouriteRoutine(routineId: Int): Unit {
+    suspend fun postFavouriteRoutine(routineId: Int) {
         return handleApiResponse {
             favouriteApiService.postFavouriteRoutine(routineId)
         }
     }
 
-    suspend fun removeFavouriteRoutine(routineId: Int): Any {
-        return handleApiResponse {
-            favouriteApiService.removeFavouriteRoutine(routineId)
-        }
+    suspend fun removeFavouriteRoutine(routineId: Int) {
+        favouriteApiService.removeFavouriteRoutine(routineId)
     }
 
     suspend fun getCategories(

@@ -4,13 +4,21 @@ import com.example.stronk.network.datasources.RoutineDataSource
 import com.example.stronk.network.dtos.CategoryData
 import com.example.stronk.network.dtos.CycleData
 import com.example.stronk.network.dtos.Paginated
+import com.example.stronk.network.dtos.RoutineData
 import com.example.stronk.state.Category
 import com.example.stronk.state.CycleInfo
 import com.example.stronk.state.ExInfo
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
+    private val mutex = Mutex()
+
+    private var userFavourites: List<RoutineData> = mutableListOf()
+    private var refresh = false
 
     private val pageSize = 50
+    private val favouritesSize = 200
 
     suspend fun getRoutines(
         page: Int? = null,
@@ -41,14 +49,17 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
     ): List<CycleInfo> {
         val cycleList = mutableListOf<CycleInfo>()
         val res = remoteDataSource.getCycles(id, page = 0, size = pageSize, null, null)
-        val cycleData = res.content
+        val cycleData = res.content.sortedBy { cycle -> cycle.order }
 
         for (cycle in cycleData) {
             val exerciseInfo: MutableList<ExInfo> = mutableListOf()
             val exercises =
-                remoteDataSource.getExercisesFromCycle(cycle.id, page = 0, pageSize, null, null)
-
-            for (exData in exercises.content) {
+                remoteDataSource
+                    .getExercisesFromCycle(
+                        cycle.id, page = 0, pageSize, null, null
+                    )
+            val content = exercises.content.sortedBy { exercise -> exercise.order }
+            for (exData in content) {
                 val images = getExerciseImages(exData.exercise.id)
                 var imageUrl: String? = null // TODO: Poner imagen default
                 if (images.content.isNotEmpty()) {
@@ -75,7 +86,7 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
         return cycleList
     }
 
-    suspend fun getExerciseImages(
+    private suspend fun getExerciseImages(
         exerciseId: Int,
     ) = remoteDataSource.getExercisesImages(exerciseId, 0, 1)
 
@@ -92,10 +103,33 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
         page: Int? = null, size: Int? = null
     ) = remoteDataSource.getFavourites(page, size)
 
-    suspend fun favouriteRoutine(routineId: Int) = remoteDataSource.postFavouriteRoutine(routineId)
+    suspend fun getAllFavouriteRoutines(): List<RoutineData> {
+        if (userFavourites.isEmpty() || refresh) {
+            val favourites = remoteDataSource.getFavourites(0, favouritesSize).content
+            mutex.withLock {
+                userFavourites = favourites
+                refresh = false
+            }
+        }
+        return mutex.withLock {
+            userFavourites
+        }
+    }
 
-    suspend fun unfavouriteRoutine(routineId: Int) =
+    suspend fun favouriteRoutine(routineId: Int) {
+        remoteDataSource.postFavouriteRoutine(routineId)
+        mutex.withLock {
+            refresh = true
+        }
+    }
+
+    suspend fun unfavouriteRoutine(routineId: Int) {
         remoteDataSource.removeFavouriteRoutine(routineId)
+
+        mutex.withLock {
+            refresh = true
+        }
+    }
 
     suspend fun getCategories(): List<Category> {
         val out = mutableListOf<Category>()

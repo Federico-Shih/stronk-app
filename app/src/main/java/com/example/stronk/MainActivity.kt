@@ -76,7 +76,7 @@ enum class MainScreens(
         Row() {
             val context = LocalContext.current
             if (viewRoutineViewModel.uiState.loadState.status == ApiStatus.SUCCESS) {
-                IconButton(onClick = { viewRoutineViewModel.favRoutine() }) {
+                IconButton(onClick = { viewRoutineViewModel.toggleFavourite() }) {
                     Icon(
                         imageVector = if (state.faved) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
                         contentDescription = "favorite",

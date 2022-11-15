@@ -32,28 +32,13 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
         fetchFirstRoutines()
     }
 
-//    val routinesTest= listOf<Routine>(Routine(id=1,name="Abdos en 15mins",
-//        "abods", Date(165432697),4,"Avanzado",
-//        UserRoutine(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",Date(165432697)),
-//        "Abdominales"),
-//        Routine(id=2,name="Abdos en 15mins",
-//            "abods",Date(165432697),4,"Avanzado",
-//            UserRoutine(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",Date(165432697)),
-//            "Abdominales"),
-//        Routine(id=3,name="Abdos en 15mins",
-//            "abods",Date(165432697),4,"Avanzado",
-//            UserRoutine(1,"Jorge","M","https://i.pinimg.com/originals/7a/0d/0d/7a0d0d8b1b0c1b0c1b0c1b0c1b0c1b0c.jpg",Date(165432697)),
-//            "Abdominales"),
-//        )
-
     fun moreFavouriteRoutines() {
         if (uiState.isLastPageFav) {
             return
         }
-        var routineList = uiState.favouriteRoutines
+        val routineList = uiState.favouriteRoutines
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
-
             runCatching {
                 routineRepository.getFavouriteRoutines(
                     page = uiState.favouriteRoutinesPage,
@@ -84,7 +69,7 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
         if (uiState.isLastPageMyRoutines) {
             return
         }
-        var routineList = uiState.myRoutines
+        val routineList = uiState.myRoutines
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
 

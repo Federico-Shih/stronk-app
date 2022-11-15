@@ -38,6 +38,7 @@ abstract class RemoteDataSource {
         } catch (e: DataSourceException) {
           throw e
         } catch (e: IOException) {
+            println(e)
             throw DataSourceException(CONNECTION_ERROR_CODE, "Connection Error", getDetailsFromException(e))
         } catch (e: java.lang.Exception) {
             throw DataSourceException(UNEXPECTED_ERROR_CODE, e.message ?: "Unexpected Error", getDetailsFromException(e))
