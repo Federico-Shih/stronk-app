@@ -22,6 +22,7 @@ import com.example.stronk.RoutineButton
 import com.example.stronk.model.MyRoutinesViewModel
 import com.example.stronk.state.Routine
 import com.example.stronk.ui.components.LoadDependingContent
+import com.example.stronk.ui.components.Refreshable
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
@@ -31,20 +32,8 @@ fun MyRoutinesScreen(
     myRoutinesViewModel: MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory)
 ) {
     val state = myRoutinesViewModel.uiState
-    var refreshing by remember { mutableStateOf(false) }
-    val refreshScope = rememberCoroutineScope()
-    fun refresh() = refreshScope.launch {
-        refreshing = true
-        myRoutinesViewModel.forceFetchRoutines()
-        refreshing = false
-    }
 
-    val pullRefreshState = rememberPullRefreshState(
-        refreshing,
-        ::refresh
-    )
-
-    Box(Modifier.pullRefresh(pullRefreshState)) {
+    Refreshable(refreshFunction = { myRoutinesViewModel.forceFetchRoutines() }) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -67,11 +56,6 @@ fun MyRoutinesScreen(
                 )
             }
         }
-        PullRefreshIndicator(
-            refreshing = refreshing, state = pullRefreshState, Modifier.align(
-                Alignment.TopCenter
-            )
-        )
     }
 }
 
