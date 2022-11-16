@@ -50,47 +50,49 @@ fun ExecuteRoutineScreen(
     val state = executeViewModel.uiState
     val windowInfo = rememberWindowInfo()
     Scaffold(bottomBar = {
-        if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact){
+        if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact||windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded){
             if (state.loadState.status == ApiStatus.SUCCESS) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
                 ) {
-                    if (pagerState.currentPage == 1) {
-                        Text(
-                            text = String.format(
-                                "%s: %s (%d/%d)",
-                                stringResource(id = R.string.current_cycle),
-                                state.currentCycle.name,
-                                state.cycleRepetition + 1,
-                                state.currentCycle.cycleReps
-                            ),
-                            color = MaterialTheme.colors.onBackground,
-                            modifier = Modifier
-                                .padding(
-                                    top = 0.dp,
-                                    start = 0.dp,
-                                    bottom = 0.dp
-                                )
-                                .align(Alignment.CenterHorizontally),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Light,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                    if (!executeViewModel.uiState.emptyRoutine) {
+                        if (pagerState.currentPage == 1) {
+                            Text(
+                                text = String.format(
+                                    "%s: %s (%d/%d)",
+                                    stringResource(id = R.string.current_cycle),
+                                    state.currentCycle.name,
+                                    state.cycleRepetition + 1,
+                                    state.currentCycle.cycleReps
+                                ),
+                                color = MaterialTheme.colors.onBackground,
+                                modifier = Modifier
+                                    .padding(
+                                        top = 0.dp,
+                                        start = 0.dp,
+                                        bottom = 0.dp
+                                    )
+                                    .align(Alignment.CenterHorizontally),
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Light,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
+                        RoutineControls(
+                            startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
+                            reps = state.currentCycle.exList[state.exerciseIndex].reps,
+                            onSkipPrevious = { executeViewModel.previous() },
+                            onSkipNext = { executeViewModel.next() },
+                            onFinishExecution = { executeViewModel.finish() },
+                            contentColor = MaterialTheme.colors.onBackground,
+                            backgroundColor = MaterialTheme.colors.background,
+                            isFirstExercise = !state.hasPrevious,
+                            isLastExercise = !state.hasNext,
                         )
                     }
-                    RoutineControls(
-                        startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
-                        reps = state.currentCycle.exList[state.exerciseIndex].reps,
-                        onSkipPrevious = { executeViewModel.previous() },
-                        onSkipNext = { executeViewModel.next() },
-                        onFinishExecution = { executeViewModel.finish() },
-                        contentColor = MaterialTheme.colors.onBackground,
-                        backgroundColor = MaterialTheme.colors.background,
-                        isFirstExercise = !state.hasPrevious,
-                        isLastExercise = !state.hasNext,
-                    )
                 }
 
             }
@@ -98,7 +100,7 @@ fun ExecuteRoutineScreen(
     }) {
         Column {
             Tabs(pagerState = pagerState)
-            if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact) {
+            if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact||windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded) {
                 TabsContent(
                     pagerState = pagerState,
                     routineId = routineId,
@@ -127,50 +129,53 @@ fun ExecuteRoutineScreen(
                                 .fillMaxHeight()
                                 .weight(0.7f)
                         ) {
-                            val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
-                            if (pagerState.currentPage == 0) {
-                                AsyncImage(
-                                    model = exercise.imageUrl ?: "",//TODO imagen default
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .sizeIn(maxHeight = 80.dp)
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .padding(10.dp)
-                                        .align(Alignment.CenterHorizontally)
-                                )
-                            } else {
-                                TitleAndSubtitle(MainText = exercise.name, MainFontSize = 30.sp)
-                                Text(
-                                    text = String.format(
-                                        "%s: %s (%d/%d)",
-                                        stringResource(id = R.string.current_cycle),
-                                        state.currentCycle.name,
-                                        state.cycleRepetition + 1,
-                                        state.currentCycle.cycleReps
-                                    ),
-                                    color = MaterialTheme.colors.onBackground,
-                                    modifier = Modifier.padding(
-                                        top = 0.dp,
-                                        start = 0.dp,
-                                        bottom = 0.dp
-                                    ),
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Light,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
+                            if (!executeViewModel.uiState.emptyRoutine) {
+                                val exercise: ExInfo =
+                                    state.currentCycle.exList[state.exerciseIndex]
+                                if (pagerState.currentPage == 0) {
+                                    AsyncImage(
+                                        model = exercise.imageUrl ?: "",//TODO imagen default
+                                        contentDescription = null,
+                                        modifier = Modifier
+                                            .sizeIn(maxHeight = 80.dp)
+                                            .clip(RoundedCornerShape(10.dp))
+                                            .padding(10.dp)
+                                            .align(Alignment.CenterHorizontally)
+                                    )
+                                } else {
+                                    TitleAndSubtitle(MainText = exercise.name, MainFontSize = 30.sp)
+                                    Text(
+                                        text = String.format(
+                                            "%s: %s (%d/%d)",
+                                            stringResource(id = R.string.current_cycle),
+                                            state.currentCycle.name,
+                                            state.cycleRepetition + 1,
+                                            state.currentCycle.cycleReps
+                                        ),
+                                        color = MaterialTheme.colors.onBackground,
+                                        modifier = Modifier.padding(
+                                            top = 0.dp,
+                                            start = 0.dp,
+                                            bottom = 0.dp
+                                        ),
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.Light,
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                }
+                                RoutineControls(
+                                    startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
+                                    reps = state.currentCycle.exList[state.exerciseIndex].reps,
+                                    onSkipPrevious = { executeViewModel.previous() },
+                                    onSkipNext = { executeViewModel.next() },
+                                    onFinishExecution = { executeViewModel.finish() },
+                                    contentColor = MaterialTheme.colors.onBackground,
+                                    backgroundColor = MaterialTheme.colors.background,
+                                    isFirstExercise = !state.hasPrevious,
+                                    isLastExercise = !state.hasNext,
                                 )
                             }
-                            RoutineControls(
-                                startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
-                                reps = state.currentCycle.exList[state.exerciseIndex].reps,
-                                onSkipPrevious = { executeViewModel.previous() },
-                                onSkipNext = { executeViewModel.next() },
-                                onFinishExecution = { executeViewModel.finish() },
-                                contentColor = MaterialTheme.colors.onBackground,
-                                backgroundColor = MaterialTheme.colors.background,
-                                isFirstExercise = !state.hasPrevious,
-                                isLastExercise = !state.hasNext,
-                            )
                         }
                     }
                 }
@@ -282,8 +287,8 @@ fun TabsContent(
                         .fillMaxSize()
                 ) {
                     when (page) {
-                        0 -> DetailedScreen(executeViewModel,windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact)
-                        1 -> ResumedScreen(executeViewModel, windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact)
+                        0 -> DetailedScreen(executeViewModel,windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded)
+                        1 -> ResumedScreen(executeViewModel, windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded)
                     }
                 }
             }
