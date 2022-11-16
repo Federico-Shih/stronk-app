@@ -52,8 +52,12 @@ fun ExecuteRoutineScreen(
     Scaffold(bottomBar = {
         if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact){
             if (state.loadState.status == ApiStatus.SUCCESS) {
-                Column(modifier=Modifier.fillMaxWidth().wrapContentHeight()){
-                    if (pagerState.currentPage == 1){
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                ) {
+                    if (pagerState.currentPage == 1) {
                         Text(
                             text = String.format(
                                 "%s: %s (%d/%d)",
@@ -63,11 +67,13 @@ fun ExecuteRoutineScreen(
                                 state.currentCycle.cycleReps
                             ),
                             color = MaterialTheme.colors.onBackground,
-                            modifier = Modifier.padding(
-                                top = 0.dp,
-                                start = 0.dp,
-                                bottom = 0.dp
-                            ).align(Alignment.CenterHorizontally),
+                            modifier = Modifier
+                                .padding(
+                                    top = 0.dp,
+                                    start = 0.dp,
+                                    bottom = 0.dp
+                                )
+                                .align(Alignment.CenterHorizontally),
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Light,
                             maxLines = 1,
@@ -89,16 +95,86 @@ fun ExecuteRoutineScreen(
 
             }
         }
-    }){
+    }) {
         Column {
             Tabs(pagerState = pagerState)
-            TabsContent(
-                pagerState = pagerState,
-                routineId = routineId,
-                onGoBack = onGoBack,
-                executeViewModel = executeViewModel,
-                modifier= Modifier.padding(it)
-            )
+            if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact) {
+                TabsContent(
+                    pagerState = pagerState,
+                    routineId = routineId,
+                    onGoBack = onGoBack,
+                    executeViewModel = executeViewModel,
+                    modifier = Modifier.padding(it)
+                )
+            } else {
+                Row(modifier = Modifier.fillMaxSize()) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
+                    ) {
+                        TabsContent(
+                            pagerState = pagerState,
+                            routineId = routineId,
+                            onGoBack = onGoBack,
+                            executeViewModel = executeViewModel,
+                            modifier = Modifier.padding(it)
+                        )
+                    }
+                    if (state.loadState.status == ApiStatus.SUCCESS) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .weight(0.7f)
+                        ) {
+                            val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
+                            if (pagerState.currentPage == 0) {
+                                AsyncImage(
+                                    model = exercise.imageUrl ?: "",//TODO imagen default
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .sizeIn(maxHeight = 80.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .padding(10.dp)
+                                        .align(Alignment.CenterHorizontally)
+                                )
+                            } else {
+                                TitleAndSubtitle(MainText = exercise.name, MainFontSize = 30.sp)
+                                Text(
+                                    text = String.format(
+                                        "%s: %s (%d/%d)",
+                                        stringResource(id = R.string.current_cycle),
+                                        state.currentCycle.name,
+                                        state.cycleRepetition + 1,
+                                        state.currentCycle.cycleReps
+                                    ),
+                                    color = MaterialTheme.colors.onBackground,
+                                    modifier = Modifier.padding(
+                                        top = 0.dp,
+                                        start = 0.dp,
+                                        bottom = 0.dp
+                                    ),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.Light,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                            RoutineControls(
+                                startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
+                                reps = state.currentCycle.exList[state.exerciseIndex].reps,
+                                onSkipPrevious = { executeViewModel.previous() },
+                                onSkipNext = { executeViewModel.next() },
+                                onFinishExecution = { executeViewModel.finish() },
+                                contentColor = MaterialTheme.colors.onBackground,
+                                backgroundColor = MaterialTheme.colors.background,
+                                isFirstExercise = !state.hasPrevious,
+                                isLastExercise = !state.hasNext,
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
@@ -154,7 +230,7 @@ fun TabsContent(
     routineId: Int,
     onGoBack: () -> Unit,
     executeViewModel: ExecuteViewModel,
-    modifier: Modifier= Modifier
+    modifier: Modifier = Modifier
 ) {
     rememberSaveable {
         executeViewModel.executeRoutine(routineId)
@@ -201,122 +277,58 @@ fun TabsContent(
                 }
             }
             HorizontalPager(state = pagerState) { page ->
-                if (windowInfo.screenWidthInfo is WindowInfo.WindowType.Compact) {
-
-                    Column(
-                            modifier = modifier
-                                .fillMaxSize()
-                        ) {
-                            when (page) {
-                                0 -> DetailedScreen(executeViewModel)
-                                1 -> ResumedScreen(executeViewModel)
-                            }
-                        }
-
-
-                } else {
-                    Row(modifier = modifier.fillMaxSize()) {
-                        Column(modifier= Modifier
-                            .fillMaxHeight()
-                            .weight(1f)) {
-                            when (page) {
-                                0 -> DetailedScreen(executeViewModel,false)
-                                1 -> ResumedScreen(executeViewModel)
-                            }
-                        }
-                        Column(modifier = Modifier
-                            .fillMaxHeight()
-                            .weight(0.8f)) {
-                            val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
-                            if (page == 0) {
-                                AsyncImage(
-                                    model = exercise.imageUrl ?: "",//TODO imagen default
-                                    contentDescription = null,
-                                    modifier = Modifier
-                                        .sizeIn(maxHeight = 80.dp)
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .padding(10.dp)
-                                        .align(Alignment.CenterHorizontally)
-                                )
-                            } else {
-                                TitleAndSubtitle(MainText = exercise.name, MainFontSize = 30.sp)
-                                Text(
-                                    text = String.format(
-                                        "%s: %s (%d/%d)",
-                                        stringResource(id = R.string.current_cycle),
-                                        state.currentCycle.name,
-                                        state.cycleRepetition + 1,
-                                        state.currentCycle.cycleReps
-                                    ),
-                                    color = MaterialTheme.colors.onBackground,
-                                    modifier = Modifier.padding(
-                                        top = 0.dp,
-                                        start = 0.dp,
-                                        bottom = 0.dp
-                                    ),
-                                    fontSize = 14.sp,
-                                    fontWeight = FontWeight.Light,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            }
-                            RoutineControls(
-                                startingTimer = state.currentCycle.exList[state.exerciseIndex].duration?.toLong(),
-                                reps = state.currentCycle.exList[state.exerciseIndex].reps,
-                                onSkipPrevious = { executeViewModel.previous() },
-                                onSkipNext = { executeViewModel.next() },
-                                onFinishExecution = { executeViewModel.finish() },
-                                contentColor = MaterialTheme.colors.onBackground,
-                                backgroundColor = MaterialTheme.colors.background,
-                                isFirstExercise = !state.hasPrevious,
-                                isLastExercise = !state.hasNext,
-                            )
-                        }
+                Column(
+                    modifier = modifier
+                        .fillMaxSize()
+                ) {
+                    when (page) {
+                        0 -> DetailedScreen(executeViewModel,windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact)
+                        1 -> ResumedScreen(executeViewModel, windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact)
                     }
                 }
-                if (executeViewModel.uiState.finished) {
-                    Dialog(
-                        onDismissRequest = { onGoBack() },
-                        properties = DialogProperties(
-                            dismissOnBackPress = false,
-                            dismissOnClickOutside = false
+            }
+        }
+        if (executeViewModel.uiState.finished) {
+            Dialog(
+                onDismissRequest = { onGoBack() },
+                properties = DialogProperties(
+                    dismissOnBackPress = false,
+                    dismissOnClickOutside = false
+                )
+            ) {
+                Card(
+                    backgroundColor = MaterialTheme.colors.background,
+                    contentColor = MaterialTheme.colors.onBackground,
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = stringResource(id = R.string.congrats_routine_end),
+                            style = MaterialTheme.typography.h6,
+                            modifier = Modifier.padding(bottom = 10.dp)
                         )
-                    ) {
-                        Card(
-                            backgroundColor = MaterialTheme.colors.background,
-                            contentColor = MaterialTheme.colors.onBackground,
+                        Row(
+                            horizontalArrangement = Arrangement.End,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = stringResource(id = R.string.congrats_routine_end),
-                                    style = MaterialTheme.typography.h6,
-                                    modifier = Modifier.padding(bottom = 10.dp)
-                                )
-                                Row(
-                                    horizontalArrangement = Arrangement.End,
-                                    modifier = Modifier.fillMaxWidth()
-                                ) {
-                                    Button(onClick = {
-                                        onGoBack()
-                                    }) {
-                                        Text(text = stringResource(id = R.string.finish).uppercase())
-                                    }
-                                }
+                            Button(onClick = {
+                                onGoBack()
+                            }) {
+                                Text(text = stringResource(id = R.string.finish).uppercase())
                             }
                         }
                     }
                 }
             }
         }
-
-
     }
 }
+
 
 @Composable
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
-fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)) {
+fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory),
+shouldShowImage: Boolean = true) {
     val state = executeViewModel.uiState
     val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
     Column(
@@ -332,7 +344,9 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
             nextCycle = state.nextNonEmptyCycle,
             currentExercise = state.exerciseIndex,
             currentRepetition = state.cycleRepetition,
-            shouldMoveScrolling = state.page == 1
+            shouldMoveScrolling = state.page == 1,
+            expandedExerciseVariant = if(!shouldShowImage)ExerciseItemType.EXPANDED_NO_PIC else
+                ExerciseItemType.EXPANDED,
         )
     }
 
@@ -341,17 +355,18 @@ fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = Execu
 @Composable
 fun DetailedScreen(
     executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory),
-    showImage: Boolean = true
+    shouldshowImage: Boolean = true
 ) {
     val state = executeViewModel.uiState
     val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
     Column(
         modifier = Modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        if (showImage) {
+        if (shouldshowImage) {
             AsyncImage(
                 model = exercise.imageUrl ?: "",
                 contentDescription = null,
