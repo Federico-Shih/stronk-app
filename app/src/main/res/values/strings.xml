@@ -58,4 +58,7 @@
     <string name="back">Back</string>
     <string name="nothing_found">No Routines Found</string>
     <string name="filter">Filters</string>
+    <string name="no_routines_message">No routines were found</string>
+    <string name="no_my_routines">You haven\'t created any routines yet</string>
+    <string name="no_fav_routines">You don\'t have any favourite routines yet</string>
 </resources>

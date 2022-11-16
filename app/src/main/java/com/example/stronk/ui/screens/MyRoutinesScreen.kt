@@ -3,27 +3,24 @@ package com.example.stronk.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.Button
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material.*
+import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AssignmentLate
+import androidx.compose.material.icons.filled.Feedback
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
-import com.example.stronk.RoutineButton
+import com.example.stronk.ui.components.RoutineButton
 import com.example.stronk.model.MyRoutinesViewModel
 import com.example.stronk.state.Routine
 import com.example.stronk.ui.components.LoadDependingContent
 import com.example.stronk.ui.components.Refreshable
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -45,14 +42,17 @@ fun MyRoutinesScreen(
                     stringResource(R.string.MyRoutines),
                     { myRoutinesViewModel.moreMyRoutines() },
                     onNavigateToViewRoutine,
-                    state.isLastPageMyRoutines
+                    state.isLastPageMyRoutines,
+                    stringResource(id = R.string.no_my_routines)
                 )
+                Divider()
                 RoutinesList(
                     state.favouriteRoutines,
                     stringResource(R.string.FavRoutines),
                     { myRoutinesViewModel.moreFavouriteRoutines() },
                     onNavigateToViewRoutine,
-                    state.isLastPageFav
+                    state.isLastPageFav,
+                    stringResource(id = R.string.no_fav_routines)
                 )
             }
         }
@@ -65,7 +65,8 @@ fun RoutinesList(
     title: String = "Rutinas",
     onShowMore: () -> Unit = {},
     onNavigateToViewRoutine: (routineId: Int) -> Unit = {},
-    isLastPage: Boolean = false
+    isLastPage: Boolean = false,
+    noRoutinesMessage: String = stringResource(R.string.no_routines_message)
 ) {
     Column(
         modifier = Modifier
@@ -101,6 +102,24 @@ fun RoutinesList(
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
+            if(routines.isEmpty())
+            {
+                Row(modifier = Modifier.padding(start = 4.dp)) {
+                    Icon(
+                        imageVector = Icons.Filled.Feedback,
+                        contentDescription = "no routines",
+                        modifier = Modifier
+                            .size(24.dp)
+                            .alignByBaseline()
+                    )
+                    Text(
+                        text = noRoutinesMessage,
+                        modifier = Modifier
+                            .alignByBaseline()
+                            .padding(start = 10.dp)
+                    )
+                }
+            }
             routines.forEach { routine ->
                 RoutineButton(
                     routine.id,

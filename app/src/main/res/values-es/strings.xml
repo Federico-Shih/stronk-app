@@ -59,4 +59,7 @@
     <string name="back">Espalda</string>
     <string name="nothing_found">¡No Se Encontró Ninguna Rutina!</string>
     <string name="filter">Filtros</string>
+    <string name="no_routines_message">No se encontraron rutinas</string>
+    <string name="no_my_routines">No has creado ninguna rutina aún</string>
+    <string name="no_fav_routines">No tienes rutinas favoritas aún</string>
 </resources>

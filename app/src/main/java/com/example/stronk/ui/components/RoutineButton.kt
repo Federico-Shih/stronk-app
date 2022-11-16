@@ -1,6 +1,5 @@
-package com.example.stronk
+package com.example.stronk.ui.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.stronk.R
 import com.example.stronk.ui.theme.StronkTheme
 
 @Composable
@@ -38,8 +38,7 @@ fun RoutineButton(
         modifier = modifier
             .padding(10.dp)
             .clickable { onNavigateToViewRoutine(RoutineID) }, elevation = 10.dp,
-        border = BorderStroke(2.dp, MaterialTheme.colors.primaryVariant),
-        shape = RoundedCornerShape(20.dp)
+        shape = RoundedCornerShape(5.dp)
     ) {
         Box {
             Image(
