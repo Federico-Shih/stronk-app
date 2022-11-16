@@ -64,4 +64,7 @@
     <string name="searching_qr_code">Looking for a routine QR code...</string>
     <string name="found_qr_code">Routine QR code found!</string>
     <string name="qr_scanner_label">QR Code Scanner</string>
+    <string name="name">Name</string>
+    <string name="date">Date</string>
+    <string name="score">Score</string>
 </resources>

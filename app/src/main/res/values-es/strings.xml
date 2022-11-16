@@ -65,4 +65,7 @@
     <string name="searching_qr_code">Buscando código QR de una rutina...</string>
     <string name="found_qr_code">¡Código QR de rutina encontrado!</string>
     <string name="qr_scanner_label">Escáner Códigos QR</string>
+    <string name="name">Nombre</string>
+    <string name="date">Fecha</string>
+    <string name="score">Puntuación</string>
 </resources>

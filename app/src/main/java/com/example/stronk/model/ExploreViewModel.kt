@@ -10,10 +10,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
 import com.example.stronk.network.repositories.RoutineRepository
-import com.example.stronk.state.Category
-import com.example.stronk.state.CategoryInfo
-import com.example.stronk.state.ExploreState
-import com.example.stronk.state.Routine
+import com.example.stronk.state.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -24,19 +21,16 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
     private var routinesJob: Job? = null
 
     init {
-        getInitialRoutines()
+        getRoutines()
     }
 
-    fun getInitialRoutines() {
-
-        val isLastOne: MutableList<Boolean> = mutableListOf()
-        val allRoutines: MutableList<List<Routine>> = mutableListOf()
+    fun getRoutines() {
         routinesJob = viewModelScope.launch {
             runCatching {
                 getCategories()
                 uiState.categories.forEach {
                     runCatching {
-                        routineRepository.getRoutines(size = 2, category = it.id)
+                        routineRepository.getRoutines(size = 2, category = it.id, orderBy = uiState.order)
                     }.onSuccess { result ->
                         val newCategoryInfoList = uiState.categories
                         val index = newCategoryInfoList.indexOf(it)
@@ -63,17 +57,29 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
+    fun setOrderAndReload(order: String)
+    {
+        uiState = uiState.copy(order = order)
+        if(uiState.searching)
+        {
+            searchRoutines(uiState.searchString)
+        }
+        else{
+            getRoutines()
+        }
+    }
+
     fun searchRoutines(search: String) {
         if(search.isNotEmpty()) {
             routinesJob = viewModelScope.launch {
                 runCatching {
-                    routineRepository.getRoutines(size = 10, page = 0, search = search)
+                    routineRepository.getRoutines(size = 10, page = 0, search = search, orderBy = uiState.order)
                 }.onSuccess { result ->
-                    uiState = uiState.copy(searchedRoutines = result.content.map { it.asModel() }, searching = true)
+                    uiState = uiState.copy(searchedRoutines = result.content.map { it.asModel() }, searchString = search)
                 }
             }
         } else{
-            uiState = uiState.copy(searchedRoutines = listOf(), searching = false)
+            uiState = uiState.copy(searchedRoutines = listOf(), searchString = "")
         }
     }
 

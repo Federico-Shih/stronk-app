@@ -31,6 +31,7 @@ fun SearchBar(
             if(text.value.text.isEmpty() || text.value.text.length > 2)
                 onValueChanged(it.text)
         },
+        singleLine = true,
         label = { Text(label) },
         textStyle = MaterialTheme.typography.subtitle1,
         trailingIcon = {

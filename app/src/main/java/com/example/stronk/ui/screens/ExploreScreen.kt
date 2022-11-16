@@ -24,7 +24,9 @@ import com.example.stronk.R
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.state.ExploreState
 import com.example.stronk.state.foundSomething
+import com.example.stronk.state.searching
 import com.example.stronk.ui.components.LoadDependingContent
+import com.example.stronk.ui.components.OrderBy
 import com.example.stronk.ui.components.RoutineButtonGroup
 import com.example.stronk.ui.components.SearchBar
 
@@ -42,16 +44,47 @@ fun ExploreScreen(
                     label = stringResource(id = R.string.search_for_routines),
                     onValueChanged = { s -> exploreViewModel.searchRoutines(s) })
 
-                IconButton(onClick = { /* exploreViewModel.filterRoutines() */ }, modifier = Modifier.align(Alignment.CenterVertically).size(70.dp)) {
+                IconButton(
+                    onClick = { /* exploreViewModel.filterRoutines() */ }, modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .size(70.dp)
+                ) {
                     Icon(
-                        imageVector = if(state.searching/*cambiar a state.filtering*/){ Icons.Outlined.FilterAlt} else { Icons.Filled.FilterAlt },
+                        imageVector = if (state.searching/*cambiar a state.filtering*/) {
+                            Icons.Outlined.FilterAlt
+                        } else {
+                            Icons.Filled.FilterAlt
+                        },
                         contentDescription = stringResource(id = R.string.filter)
                     )
                 }
             }
-            if(state.searching)
-            {
-                if(state.foundSomething) {
+            Row(modifier = Modifier.fillMaxWidth()) {
+                OrderBy(
+                    optionsList = listOf(Pair(stringResource(id = R.string.name)) {
+                        exploreViewModel.setOrderAndReload(
+                            "name"
+                        )
+                        },
+                        Pair(stringResource(id = R.string.score)) {
+                            exploreViewModel.setOrderAndReload(
+                                "score"
+                            )
+                        },
+                        Pair(stringResource(id = R.string.difficulty)) {
+                            exploreViewModel.setOrderAndReload(
+                                "difficulty"
+                            )
+                        },
+                        Pair(stringResource(id = R.string.date)) {
+                            exploreViewModel.setOrderAndReload(
+                                "date"
+                            )
+                        }))
+                // No deberían ser así Pair(stringResource(id = R.string.date), { exploreViewModel.setOrderAndReload("score") }) ?
+            }
+            if (state.searching) {
+                if (state.foundSomething) {
                     RoutineButtonGroup(
                         routineList = state.searchedRoutines,
                         title = stringResource(id = R.string.searching),
@@ -59,13 +92,13 @@ fun ExploreScreen(
                         onGetMoreRoutines = { /* Para qué, que no aparezca directamente */ },
                         showButton = false
                     )
+                } else {
+                    Text(
+                        stringResource(id = R.string.nothing_found),
+                        modifier = Modifier.padding(10.dp)
+                    )
                 }
-                else
-                {
-                    Text(stringResource(id = R.string.nothing_found), modifier = Modifier.padding(10.dp))
-                }
-            }
-            else {
+            } else {
                 state.categories.forEach() { category ->
                     if (category.routines.isNotEmpty()) {
                         RoutineButtonGroup(
