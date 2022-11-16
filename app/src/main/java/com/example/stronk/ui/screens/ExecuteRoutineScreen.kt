@@ -49,6 +49,9 @@ fun ExecuteRoutineScreen(
 
     val state = executeViewModel.uiState
     val windowInfo = rememberWindowInfo()
+    rememberSaveable {
+        executeViewModel.executeRoutine(routineId)
+    }
     Scaffold(bottomBar = {
         if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact||windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded){
             if (state.loadState.status == ApiStatus.SUCCESS) {
@@ -236,9 +239,7 @@ fun TabsContent(
     executeViewModel: ExecuteViewModel,
     modifier: Modifier = Modifier
 ) {
-    rememberSaveable {
-        executeViewModel.executeRoutine(routineId)
-    }
+
     val coroutineScope = rememberCoroutineScope()
     val windowInfo = rememberWindowInfo()
     val state = executeViewModel.uiState

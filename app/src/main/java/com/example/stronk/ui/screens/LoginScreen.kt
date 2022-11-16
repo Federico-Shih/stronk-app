@@ -113,18 +113,18 @@ fun LoginScreen(
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
-        Row {
-            var checked by remember { mutableStateOf(false) }
-            Checkbox(
-                checked = checked,
-                onCheckedChange = { checked = !checked },
-                modifier = Modifier.padding(4.dp)
-            )
-            Text("Recordar Contraseña", modifier = Modifier.align(Alignment.CenterVertically))
-        }
+//        Row {
+//            var checked by remember { mutableStateOf(false) }
+//            Checkbox(
+//                checked = checked,
+//                onCheckedChange = { checked = !checked },
+//                modifier = Modifier.padding(4.dp)
+//            )
+//            Text("Recordar Contraseña", modifier = Modifier.align(Alignment.CenterVertically))
+//        }
         Button(
             onClick = { onSubmit(email, password) },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 50.dp)
         ) {
             Text(stringResource(id = R.string.login_button_label).uppercase())
         }
