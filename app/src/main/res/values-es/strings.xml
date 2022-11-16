@@ -53,7 +53,7 @@
     <string name="advanced">Avanzado</string>
     <string name="abs">Abdominales</string>
     <string name="legs">Piernas</string>
-    <string name="arms">Arms</string>
+    <string name="arms">Brazos</string>
     <string name="chest">Pecho</string>
     <string name="full_body">Full Body</string>
     <string name="back">Espalda</string>
@@ -62,4 +62,7 @@
     <string name="no_routines_message">No se encontraron rutinas</string>
     <string name="no_my_routines">No has creado ninguna rutina aún</string>
     <string name="no_fav_routines">No tienes rutinas favoritas aún</string>
+    <string name="searching_qr_code">Buscando código QR de una rutina...</string>
+    <string name="found_qr_code">¡Código QR de rutina encontrado!</string>
+    <string name="qr_scanner_label">Escáner Códigos QR</string>
 </resources>

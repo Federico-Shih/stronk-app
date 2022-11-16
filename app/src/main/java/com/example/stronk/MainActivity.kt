@@ -39,9 +39,14 @@ import com.example.stronk.model.*
 import com.example.stronk.ui.components.ProfileButton
 
 @Composable
-fun MainNavbarButtons(onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) {
+fun MainNavbarButtons(
+    onGetViewModel: () -> ViewModel?,
+    navigateTo: (String) -> Unit,
+    MoreButtons: @Composable () -> Unit = {}
+) {
     val userViewModel: MainViewModel = onGetViewModel() as MainViewModel
-    Row {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        MoreButtons()
         ProfileButton(
             userViewModel.uiState
         ) { route ->
@@ -55,18 +60,33 @@ enum class MainScreens(
     val label: Int = R.string.empty,
     val icon: ImageVector = Icons.Filled.Article,
     val hidesBottomNav: Boolean = false,
-    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) -> Unit = { _, _ -> {}},
+    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) -> Unit = { _, _ -> {} },
     val confirmationOnExit: Boolean = false,
     val hidesTopNav: Boolean = false,
 ) {
     AUTH(hidesBottomNav = true, hidesTopNav = true),
-    EXPLORE(R.string.explore_label, Icons.Filled.Search, topLeftButtons = { onGetViewModel, navigateTo -> MainNavbarButtons(onGetViewModel, navigateTo) }),
-    ROUTINES(
-        R.string.routines_label,
+    EXPLORE(R.string.explore_label,
+        Icons.Filled.Search,
+        topLeftButtons = { onGetViewModel, navigateTo ->
+            MainNavbarButtons(
+                onGetViewModel, navigateTo, MoreButtons = {
+                    IconButton(onClick = { navigateTo(QR_SCANNER.name) }) {
+                        Icon(Icons.Filled.QrCode, contentDescription = "Scan QR", tint = MaterialTheme.colors.onPrimary, modifier = Modifier.size(24.dp))
+                    }
+                }
+            )
+        }),
+    ROUTINES(R.string.routines_label,
         Icons.Filled.DirectionsRun,
-        topLeftButtons = { onGetViewModel, navigateTo -> MainNavbarButtons(onGetViewModel, navigateTo) }
+        topLeftButtons = { onGetViewModel, navigateTo ->
+            MainNavbarButtons(
+                onGetViewModel, navigateTo
+            )
+        }),
+    EXECUTE(
+        hidesBottomNav = true,
+        confirmationOnExit = true
     ),
-    EXECUTE(hidesBottomNav = true, confirmationOnExit = true),
     VIEW_ROUTINE(topLeftButtons = { onGetViewModel, _ ->
         val viewRoutineViewModel: ViewRoutineViewModel = onGetViewModel() as ViewRoutineViewModel
         val state = viewRoutineViewModel.uiState
@@ -94,7 +114,8 @@ enum class MainScreens(
             }
 
         }
-    })
+    }),
+    QR_SCANNER(hidesBottomNav = true, label = R.string.qr_scanner_label),
 }
 
 @ExperimentalAnimationApi
@@ -114,58 +135,52 @@ class MainActivity : ComponentActivity() {
             val currentRoute = backStackEntry?.destination?.route ?: initialRoute.name
             val currentScreen = MainScreens.valueOf(currentRoute.split("/")[0])
             val mainViewModel: MainViewModel = viewModel(factory = MainViewModel.Factory)
-            val viewRoutineViewModel: ViewRoutineViewModel = viewModel(factory = ViewRoutineViewModel.Factory)
+            val viewRoutineViewModel: ViewRoutineViewModel =
+                viewModel(factory = ViewRoutineViewModel.Factory)
             val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
             var showConfirmExitDialog by remember { mutableStateOf(false) }
             StronkTheme {
                 val scaffoldState: ScaffoldState = rememberScaffoldState()
-                Scaffold(
-                    topBar = {
-                        if (!currentScreen.hidesTopNav) {
-                            AppBar(
-                                screen = stringResource(id = currentScreen.label),
-                                canGoBack = currentScreen !in bottomBarScreens,
-                                goBack = {
-                                    if (!currentScreen.confirmationOnExit) {
-                                        navController.popBackStack()
-                                    } else {
-                                        showConfirmExitDialog = true
-                                    }
-                                },
-                                TopRightButtons = currentScreen.topLeftButtons,
-                                onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) {
-                                    { viewRoutineViewModel }
-                                } else if (currentScreen in bottomBarScreens) {
-                                    { mainViewModel }
+                Scaffold(topBar = {
+                    if (!currentScreen.hidesTopNav) {
+                        AppBar(screen = stringResource(id = currentScreen.label),
+                            canGoBack = currentScreen !in bottomBarScreens,
+                            goBack = {
+                                if (!currentScreen.confirmationOnExit) {
+                                    navController.popBackStack()
                                 } else {
-                                    { null }
-                                },
-                                navigateTo = {
-                                    dest ->
-                                    navController.navigate(dest)
+                                    showConfirmExitDialog = true
                                 }
-                            )
-                        }
-                    },
-                    bottomBar = {
-                        if (!currentScreen.hidesBottomNav) {
-                            BottomBar(
-                                onNavClick = { name ->
-                                    if (name != currentScreen.name)
-                                    {
-                                        navController.navigate(name) {
-                                            popUpTo(name) {
-                                                inclusive = true
-                                            }
+                            },
+                            TopRightButtons = currentScreen.topLeftButtons,
+                            onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) {
+                                { viewRoutineViewModel }
+                            } else if (currentScreen in bottomBarScreens) {
+                                { mainViewModel }
+                            } else {
+                                { null }
+                            },
+                            navigateTo = { dest ->
+                                navController.navigate(dest)
+                            })
+                    }
+                }, bottomBar = {
+                    if (!currentScreen.hidesBottomNav) {
+                        BottomBar(
+                            onNavClick = { name ->
+                                if (name != currentScreen.name) {
+                                    navController.navigate(name) {
+                                        popUpTo(name) {
+                                            inclusive = true
                                         }
                                     }
-                                },
-                                currentRoute = currentScreen.name,
-                                screenList = bottomBarScreens.toList()
-                            )
-                        }
-                    },
-                    scaffoldState = scaffoldState
+                                }
+                            },
+                            currentRoute = currentScreen.name,
+                            screenList = bottomBarScreens.toList()
+                        )
+                    }
+                }, scaffoldState = scaffoldState
                 ) {
                     Column(
                         modifier = Modifier
@@ -174,8 +189,7 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
                         NavHost(
-                            navController = navController,
-                            startDestination = initialRoute.name
+                            navController = navController, startDestination = initialRoute.name
                         ) {
                             composable(route = MainScreens.EXPLORE.name) {
                                 ExploreScreen(onNavigateToViewRoutine = { routineId ->
@@ -187,14 +201,11 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
                                 })
                             }
-                            composable(
-                                route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
-                                deepLinks = listOf(
-                                    navDeepLink {
-                                        uriPattern = "https://www.stronk.com/routines/{routineId}"
-                                        action = Intent.ACTION_VIEW
-                                    }
-                                ),
+                            composable(route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
+                                deepLinks = listOf(navDeepLink {
+                                    uriPattern = "https://www.stronk.com/routines/{routineId}"
+                                    action = Intent.ACTION_VIEW
+                                }),
                                 arguments = listOf(navArgument("routineId") {
                                     type = NavType.IntType
                                 })
@@ -225,10 +236,9 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 val loginViewModel: LoginViewModel =
                                     viewModel(factory = LoginViewModel.Factory)
-                                LoginScreen(
-                                    onSubmit = { username, password ->
-                                        loginViewModel.login(username, password)
-                                    },
+                                LoginScreen(onSubmit = { username, password ->
+                                    loginViewModel.login(username, password)
+                                },
                                     dismissMessage = {
                                         loginViewModel.dismissMessage()
                                     },
@@ -236,12 +246,22 @@ class MainActivity : ComponentActivity() {
                                     scaffoldState = scaffoldState
                                 )
                                 LaunchedEffect(loginViewModel.uiState.apiState.status) {
-                                    if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS)
-                                    {
+                                    if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
                                         mainViewModel.fetchCurrentUser()
                                         navController.navigate(MainScreens.EXPLORE.name)
                                     }
                                 }
+                            }
+                            composable(
+                                route = MainScreens.QR_SCANNER.name
+                            ) {
+                                ScanQrScreen(onNavigateToViewRoutine = { routineId ->
+                                    navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId") {
+                                        popUpTo(MainScreens.EXPLORE.name) {
+                                            inclusive = true
+                                        }
+                                    }
+                                })
                             }
                         }
                     }
@@ -257,7 +277,10 @@ class MainActivity : ComponentActivity() {
                                         style = MaterialTheme.typography.h6,
                                         modifier = Modifier.padding(bottom = 10.dp)
                                     )
-                                    Row(horizontalArrangement = Arrangement.End, modifier = Modifier.fillMaxWidth()) {
+                                    Row(
+                                        horizontalArrangement = Arrangement.End,
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
                                         Button(
                                             onClick = { showConfirmExitDialog = false },
                                             modifier = Modifier.padding(end = 10.dp)

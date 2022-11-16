@@ -5,6 +5,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -35,23 +36,26 @@ fun AppBar(
         backgroundColor = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.onPrimary,
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            if (canGoBack) {
-                IconButton(onClick = goBack) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "BackButton",
-                        tint = MaterialTheme.colors.onPrimary
-                    )
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+            Row(horizontalArrangement = Arrangement.Start) {
+                if (canGoBack) {
+                    IconButton(onClick = goBack) {
+                        Icon(
+                            imageVector = Icons.Filled.ArrowBack,
+                            contentDescription = "BackButton",
+                            tint = MaterialTheme.colors.onPrimary
+                        )
+                    }
                 }
+                Text(
+                    text = screen,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    modifier = Modifier.padding(10.dp),
+                    color = MaterialTheme.colors.onPrimary
+                )
             }
-            Text(
-                text = screen,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                modifier = Modifier.padding(10.dp),
-                color = MaterialTheme.colors.onPrimary
-            )
+
             TopRightButtons(onGetViewModel, navigateTo)
         }
     }

@@ -61,4 +61,7 @@
     <string name="no_routines_message">No routines were found</string>
     <string name="no_my_routines">You haven\'t created any routines yet</string>
     <string name="no_fav_routines">You don\'t have any favourite routines yet</string>
+    <string name="searching_qr_code">Looking for a routine QR code...</string>
+    <string name="found_qr_code">Routine QR code found!</string>
+    <string name="qr_scanner_label">QR Code Scanner</string>
 </resources>
