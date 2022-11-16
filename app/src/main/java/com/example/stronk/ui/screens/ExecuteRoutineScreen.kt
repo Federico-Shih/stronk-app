@@ -56,6 +56,7 @@ fun ExecuteRoutineScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
+                        .background(MaterialTheme.colors.primaryVariant)
                 ) {
                     if (!executeViewModel.uiState.emptyRoutine) {
                         if (pagerState.currentPage == 1) {
@@ -67,12 +68,12 @@ fun ExecuteRoutineScreen(
                                     state.cycleRepetition + 1,
                                     state.currentCycle.cycleReps
                                 ),
-                                color = MaterialTheme.colors.onBackground,
+                                color = MaterialTheme.colors.onPrimary,
                                 modifier = Modifier
                                     .padding(
-                                        top = 0.dp,
+                                        top = 4.dp,
                                         start = 0.dp,
-                                        bottom = 0.dp
+                                        bottom = 4.dp
                                     )
                                     .align(Alignment.CenterHorizontally),
                                 fontSize = 14.sp,
@@ -87,8 +88,6 @@ fun ExecuteRoutineScreen(
                             onSkipPrevious = { executeViewModel.previous() },
                             onSkipNext = { executeViewModel.next() },
                             onFinishExecution = { executeViewModel.finish() },
-                            contentColor = MaterialTheme.colors.onBackground,
-                            backgroundColor = MaterialTheme.colors.background,
                             isFirstExercise = !state.hasPrevious,
                             isLastExercise = !state.hasNext,
                         )
@@ -366,8 +365,7 @@ fun DetailedScreen(
     val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
     Column(
         modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState()),
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
@@ -380,7 +378,7 @@ fun DetailedScreen(
                     .clip(RoundedCornerShape(10.dp))
             )
         }
-        TitleAndSubtitle(MainText = exercise.name, SecondaryText = exercise.description)
+        TitleAndSubtitle(MainText = exercise.name, SecondaryText = exercise.description, SecondaryTextHeight = 30.dp)
         InfoCycle(
             currentCycle = state.currentCycle.name,
             cycleRepetitions = state.currentCycle.cycleReps,
