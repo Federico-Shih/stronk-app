@@ -30,7 +30,7 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
                 getCategories()
                 uiState.categories.forEach {
                     runCatching {
-                        routineRepository.getRoutines(size = 2, category = it.id, orderBy = uiState.order)
+                        routineRepository.getRoutines(size = 2, category = it.id, orderBy = uiState.order, direction = uiState.ascOrDesc)
                     }.onSuccess { result ->
                         val newCategoryInfoList = uiState.categories
                         val index = newCategoryInfoList.indexOf(it)
@@ -57,9 +57,8 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
-    fun setOrderAndReload(order: String)
+    private fun reload()
     {
-        uiState = uiState.copy(order = order)
         if(uiState.searching)
         {
             searchRoutines(uiState.searchString)
@@ -69,11 +68,23 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
+    fun setOrderAndReload(order: String)
+    {
+        uiState = uiState.copy(order = order)
+        reload()
+    }
+
+    fun setAscOrDescAndReload(ascOrDesc : String)
+    {
+        uiState = uiState.copy(ascOrDesc = ascOrDesc)
+        reload()
+    }
+
     fun searchRoutines(search: String) {
         if(search.isNotEmpty()) {
             routinesJob = viewModelScope.launch {
                 runCatching {
-                    routineRepository.getRoutines(size = 10, page = 0, search = search, orderBy = uiState.order)
+                    routineRepository.getRoutines(size = 10, page = 0, search = search, orderBy = uiState.order, direction = uiState.ascOrDesc)
                 }.onSuccess { result ->
                     uiState = uiState.copy(searchedRoutines = result.content.map { it.asModel() }, searchString = search)
                 }

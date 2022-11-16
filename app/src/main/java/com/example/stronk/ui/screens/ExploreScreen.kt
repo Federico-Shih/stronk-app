@@ -59,7 +59,7 @@ fun ExploreScreen(
                     )
                 }
             }
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)) {
                 OrderBy(
                     optionsList = listOf(Pair(stringResource(id = R.string.name)) {
                         exploreViewModel.setOrderAndReload(
@@ -81,7 +81,10 @@ fun ExploreScreen(
                                 "date"
                             )
                         }))
-                // No deberían ser así Pair(stringResource(id = R.string.date), { exploreViewModel.setOrderAndReload("score") }) ?
+                OrderBy(
+                    optionsList= listOf(Pair("asc") { exploreViewModel.setAscOrDescAndReload("asc")},
+                    Pair("desc") { exploreViewModel.setAscOrDescAndReload("desc")})
+                )
             }
             if (state.searching) {
                 if (state.foundSomething) {

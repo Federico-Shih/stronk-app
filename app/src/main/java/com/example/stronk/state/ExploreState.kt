@@ -16,6 +16,7 @@ data class ExploreState(
     val searchedRoutines: List<Routine> = listOf(),
     val loadState: ApiState = ApiState(ApiStatus.LOADING, ""),
     val order: String = "id",
+    val ascOrDesc: String = "asc",
     val searchString: String = "",
 )
 
