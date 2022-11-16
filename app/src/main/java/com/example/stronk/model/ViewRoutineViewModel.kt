@@ -1,18 +1,23 @@
 package com.example.stronk.model
 
+import android.content.ClipData
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import androidx.compose.runtime.*
+import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.misc.QrCodeGenerator
 import com.example.stronk.network.dtos.RatingDTO
 import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.*
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.*
 
 class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : ViewModel() {
@@ -94,7 +99,7 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
         }
     }
 
-    fun shareRoutine(context: Context) {
+    fun shareRoutineLink(context: Context) {
         val intent = Intent().apply {
             action = Intent.ACTION_SEND
             putExtra(Intent.EXTRA_TEXT, "https://www.stronk.com/routines/${uiState.routine.id}")
@@ -102,6 +107,14 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
         }
         val shareIntent = Intent.createChooser(intent, null)
         context.startActivity(shareIntent)
+    }
+
+    fun showRoutineQr() {
+        uiState = uiState.copy(showQrDialog = true)
+    }
+
+    fun hideRoutineQr() {
+        uiState = uiState.copy(showQrDialog = false)
     }
 
     fun showRatingDialog() {

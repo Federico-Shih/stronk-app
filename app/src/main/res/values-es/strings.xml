@@ -69,4 +69,8 @@
     <string name="date">Fecha</string>
     <string name="score">Puntuación</string>
     <string name="OrderBy">Ordenar Por</string>
+    <string name="close">Cerrar</string>
+    <string name="qr_for_routine">Código QR para esta rutina</string>
+    <string name="share_link">Compartir Enlace</string>
+    <string name="show_qr_code">Mostrar Código QR</string>
 </resources>

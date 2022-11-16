@@ -2,6 +2,7 @@ package com.example.stronk.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -15,6 +16,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.example.stronk.MainScreens
 import com.example.stronk.R
@@ -45,7 +47,7 @@ fun ProfileButton(
             navigateTo(MainScreens.AUTH.name)
         }) {
             Row {
-                Icon(Icons.Filled.Logout, contentDescription = "logout")
+                Icon(Icons.Filled.Logout, contentDescription = "logout", modifier = Modifier.padding(end = 8.dp))
                 Text(text = stringResource(id = R.string.logout_button_label))
             }
         }

@@ -71,7 +71,12 @@ enum class MainScreens(
             MainNavbarButtons(
                 onGetViewModel, navigateTo, MoreButtons = {
                     IconButton(onClick = { navigateTo(QR_SCANNER.name) }) {
-                        Icon(Icons.Filled.QrCode, contentDescription = "Scan QR", tint = MaterialTheme.colors.onPrimary, modifier = Modifier.size(24.dp))
+                        Icon(
+                            Icons.Filled.QrCode,
+                            contentDescription = "Scan QR",
+                            tint = MaterialTheme.colors.onPrimary,
+                            modifier = Modifier.size(24.dp)
+                        )
                     }
                 }
             )
@@ -92,6 +97,7 @@ enum class MainScreens(
         val state = viewRoutineViewModel.uiState
         Row() {
             val context = LocalContext.current
+            var shareExpanded by remember { mutableStateOf(false) }
             if (viewRoutineViewModel.uiState.loadState.status == ApiStatus.SUCCESS) {
                 IconButton(onClick = { viewRoutineViewModel.toggleFavourite() }) {
                     Icon(
@@ -101,15 +107,35 @@ enum class MainScreens(
                     )
                 }
                 IconButton(onClick = {
-                    viewRoutineViewModel.shareRoutine(
-                        context
-                    )
+                    shareExpanded = !shareExpanded
                 }) {
                     Icon(
                         imageVector = Icons.Filled.Share,
                         contentDescription = "share",
                         tint = MaterialTheme.colors.onPrimary
                     )
+                }
+                DropdownMenu(
+                    expanded = shareExpanded,
+                    onDismissRequest = { shareExpanded = false }) {
+                    DropdownMenuItem(onClick = {
+                        shareExpanded = false
+                        viewRoutineViewModel.shareRoutineLink(context)
+                    }) {
+                        Row {
+                            Icon(Icons.Filled.Link, contentDescription = "share link", modifier = Modifier.padding(end = 8.dp))
+                            Text(text = stringResource(id = R.string.share_link))
+                        }
+                    }
+                    DropdownMenuItem(onClick = {
+                        shareExpanded = false
+                        viewRoutineViewModel.showRoutineQr()
+                    }) {
+                        Row {
+                            Icon(Icons.Filled.QrCode, contentDescription = "share qr", modifier = androidx.compose.ui.Modifier.padding(end = 8.dp))
+                            Text(text = stringResource(id = R.string.show_qr_code))
+                        }
+                    }
                 }
             }
 
@@ -201,7 +227,8 @@ class MainActivity : ComponentActivity() {
                                     navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
                                 })
                             }
-                            composable(route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
+                            composable(
+                                route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
                                 deepLinks = listOf(navDeepLink {
                                     uriPattern = "https://www.stronk.com/routines/{routineId}"
                                     action = Intent.ACTION_VIEW
@@ -236,9 +263,10 @@ class MainActivity : ComponentActivity() {
                             ) {
                                 val loginViewModel: LoginViewModel =
                                     viewModel(factory = LoginViewModel.Factory)
-                                LoginScreen(onSubmit = { username, password ->
-                                    loginViewModel.login(username, password)
-                                },
+                                LoginScreen(
+                                    onSubmit = { username, password ->
+                                        loginViewModel.login(username, password)
+                                    },
                                     dismissMessage = {
                                         loginViewModel.dismissMessage()
                                     },

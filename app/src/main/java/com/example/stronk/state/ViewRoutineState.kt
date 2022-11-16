@@ -10,4 +10,5 @@ data class ViewRoutineState (
     val cycles: List<CycleInfo> = listOf(),
     val faved: Boolean = false,
     val showRatingDialog: Boolean = false,
+    val showQrDialog: Boolean = false,
 )

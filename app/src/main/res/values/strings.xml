@@ -68,4 +68,8 @@
     <string name="date">Date</string>
     <string name="score">Score</string>
     <string name="OrderBy">Order by</string>
+    <string name="close">Close</string>
+    <string name="qr_for_routine">QR Code for this routine</string>
+    <string name="share_link">Share Link</string>
+    <string name="show_qr_code">Show QR Code</string>
 </resources>
