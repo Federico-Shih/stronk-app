@@ -18,6 +18,9 @@ data class ExploreState(
     val order: String = "id",
     val ascOrDesc: String = "asc",
     val searchString: String = "",
+    val filtering: Boolean = false,
+    val difficultyFilter: Int? = null,
+    val scoreFilter: Int? = null,
 )
 
 val ExploreState.searching: Boolean get() = searchString.isNotEmpty()

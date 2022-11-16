@@ -45,18 +45,50 @@ fun ExploreScreen(
                     onValueChanged = { s -> exploreViewModel.searchRoutines(s) })
 
                 IconButton(
-                    onClick = { /* exploreViewModel.filterRoutines() */ }, modifier = Modifier
+                    onClick = { exploreViewModel.startCleanFilters() }, modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .size(70.dp)
                 ) {
                     Icon(
-                        imageVector = if (state.searching/*cambiar a state.filtering*/) {
+                        imageVector = if (state.filtering) {
                             Icons.Outlined.FilterAlt
                         } else {
                             Icons.Filled.FilterAlt
                         },
                         contentDescription = stringResource(id = R.string.filter)
                     )
+                }
+            }
+            if(state.filtering) {
+                Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
+                {
+                    OrderBy(    //hacer lo de stringResource(id = R.string.score)
+                        optionsList = listOf(Pair("Beginner") {
+                            exploreViewModel.setDifficultyAndReload(
+                                1
+                            )
+                        },
+                            Pair("Intermediate") {
+                                exploreViewModel.setDifficultyAndReload(
+                                    2
+                                )
+                            },
+                            Pair("Advanced") {
+                                exploreViewModel.setDifficultyAndReload(
+                                    3
+                                )
+                            },
+                    ))
+                }
+                Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
+                {
+                    OrderBy(    //hacer lo de stringResource(id = R.string.score)
+                        optionsList = listOf(Pair("Awful"){ exploreViewModel.setScoreAndReload(0) },
+                        Pair("Bad"){ exploreViewModel.setScoreAndReload(1) },
+                        Pair("So so"){ exploreViewModel.setScoreAndReload(2) },
+                        Pair("Good"){ exploreViewModel.setScoreAndReload(3) },
+                        Pair("Great"){ exploreViewModel.setScoreAndReload(4) },
+                        Pair("Excellent"){ exploreViewModel.setScoreAndReload(5) }))
                 }
             }
             Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)) {
