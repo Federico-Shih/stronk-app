@@ -32,8 +32,8 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
                     runCatching {
                         routineRepository.getRoutines(size = 2, category = it.id, orderBy = uiState.order,
                             direction = uiState.ascOrDesc,
-                            difficulty = if(uiState.filtering){ uiState.difficultyFilter} else {null},
-                            score = if(uiState.filtering){ uiState.scoreFilter} else {null} )
+                            difficulty = uiState.difficultyFilter,
+                            score = uiState.scoreFilter )
                     }.onSuccess { result ->
                         val newCategoryInfoList = uiState.categories
                         val index = newCategoryInfoList.indexOf(it)
@@ -60,22 +60,26 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
-    fun setDifficultyAndReload(value: String)
+    fun setDifficultyAndReload(value: String?)
     {
         uiState = uiState.copy(difficultyFilter = value)
         reload()
     }
 
-    fun setScoreAndReload(value: Int)
+    fun setScoreAndReload(value: Int?)
     {
         uiState = uiState.copy(scoreFilter = value)
         reload()
     }
 
-    fun startCleanFilters()
+    fun showFilterMenu()
     {
-        uiState = uiState.copy(filtering = !uiState.filtering)
-        reload()
+        uiState = uiState.copy(showFilters = true)
+    }
+
+    fun hideFilterMenu()
+    {
+        uiState = uiState.copy(showFilters = false)
     }
 
     private fun reload()
@@ -89,7 +93,7 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
-    fun setOrderAndReload(order: String)
+    fun setOrderAndReload(order: String = "id")
     {
         uiState = uiState.copy(order = order)
         reload()
@@ -107,8 +111,8 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
                 runCatching {
                     routineRepository.getRoutines(size = 10, page = 0, search = search,
                         orderBy = uiState.order, direction = uiState.ascOrDesc,
-                        difficulty = if(uiState.filtering){ uiState.difficultyFilter} else {null},
-                        score = if(uiState.filtering){ uiState.scoreFilter} else {null} )
+                        difficulty = uiState.difficultyFilter,
+                        score = uiState.scoreFilter )
                 }.onSuccess { result ->
                     uiState = uiState.copy(searchedRoutines = result.content.map { it.asModel() }, searchString = search)
                 }
@@ -124,8 +128,8 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
             runCatching {
                 routineRepository.getRoutines(size = 2, category = category.id, page = category.pages,
                     orderBy = uiState.order, direction = uiState.ascOrDesc,
-                    difficulty = if(uiState.filtering){ uiState.difficultyFilter} else {null},
-                    score = if(uiState.filtering){ uiState.scoreFilter} else {null} )
+                    difficulty = uiState.difficultyFilter,
+                    score = uiState.scoreFilter )
             }.onSuccess { result ->
                 val newCategoryInfoList = uiState.categories
                 val index = newCategoryInfoList.indexOf(category)

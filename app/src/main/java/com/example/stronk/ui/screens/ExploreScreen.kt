@@ -15,20 +15,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.stronk.MainScreens
 import com.example.stronk.R
+import com.example.stronk.misc.QrCodeGenerator
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.state.ExploreState
 import com.example.stronk.state.foundSomething
 import com.example.stronk.state.searching
-import com.example.stronk.ui.components.LoadDependingContent
-import com.example.stronk.ui.components.OrderBy
-import com.example.stronk.ui.components.RoutineButtonGroup
-import com.example.stronk.ui.components.SearchBar
+import com.example.stronk.ui.components.*
 
 @Composable
 fun ExploreScreen(
@@ -39,55 +39,90 @@ fun ExploreScreen(
 
     LoadDependingContent(loadState = state.loadState) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Row(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)) {
                 SearchBar(
                     label = stringResource(id = R.string.search_for_routines),
                     onValueChanged = { s -> exploreViewModel.searchRoutines(s) })
 
                 IconButton(
-                    onClick = { exploreViewModel.startCleanFilters() }, modifier = Modifier
+                    onClick = { exploreViewModel.showFilterMenu() }, modifier = Modifier
                         .align(Alignment.CenterVertically)
                         .size(70.dp)
                 ) {
                     Icon(
-                        imageVector = if (state.filtering) {
-                            Icons.Outlined.FilterAlt
-                        } else {
-                            Icons.Filled.FilterAlt
-                        },
+                        imageVector = Icons.Filled.FilterAlt,
                         contentDescription = stringResource(id = R.string.filter)
                     )
                 }
             }
-            if(state.filtering) {
-                Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
-                {
-                    OrderBy(
-                        optionsList = listOf(Pair(stringResource(id = R.string.beginner)) { exploreViewModel.setDifficultyAndReload("beginner") },
-                            Pair(stringResource(id = R.string.intermediate)) { exploreViewModel.setDifficultyAndReload("intermediate") },
-                            Pair(stringResource(id = R.string.advanced)) { exploreViewModel.setDifficultyAndReload("advanced") },))
+            if(state.showFilters) {
+                Dialog(onDismissRequest = { exploreViewModel.hideFilterMenu() }) {
+                    Card(backgroundColor = MaterialTheme.colors.background) {
+                        Column(modifier = Modifier
+                            .padding(16.dp)
+                            .wrapContentHeight()) {
+                            Column(modifier = Modifier
+                                .height(500.dp)
+                                .verticalScroll(rememberScrollState())) {
+                                Text(
+                                    text = "${stringResource(id = R.string.OrderBy)}:",
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.padding(bottom = 10.dp)
+                                )
+                                OrderBy(
+                                    title = stringResource(id = R.string.criteria),
+                                    optionsList = listOf(
+                                        Pair(stringResource(id = R.string.default_)) { exploreViewModel.setOrderAndReload() },
+                                        Pair(stringResource(id = R.string.name)) { exploreViewModel.setOrderAndReload("name") },
+                                        Pair(stringResource(id = R.string.score)) { exploreViewModel.setOrderAndReload("score") },
+                                        Pair(stringResource(id = R.string.difficulty)) { exploreViewModel.setOrderAndReload("difficulty") },
+                                        Pair(stringResource(id = R.string.date)) { exploreViewModel.setOrderAndReload("date") }))
+                                OrderBy(
+                                    title = stringResource(id = R.string.direction),
+                                    optionsList= listOf(Pair("asc") { exploreViewModel.setAscOrDescAndReload("asc")},
+                                        Pair("desc") { exploreViewModel.setAscOrDescAndReload("desc")}),
+                                )
+                                Divider(modifier = Modifier.padding(vertical = 10.dp))
+                                Text(
+                                    text = "${stringResource(id = R.string.filter)}:",
+                                    style = MaterialTheme.typography.h6,
+                                    modifier = Modifier.padding(bottom = 10.dp)
+                                )
+                                OrderBy(
+                                    title = stringResource(id = R.string.difficulty),
+                                    optionsList = listOf(
+                                        Pair(stringResource(id = R.string.no_filter)) { exploreViewModel.setDifficultyAndReload(null) },
+                                        Pair(stringResource(id = R.string.beginner)) { exploreViewModel.setDifficultyAndReload("beginner") },
+                                        Pair(stringResource(id = R.string.intermediate)) { exploreViewModel.setDifficultyAndReload("intermediate") },
+                                        Pair(stringResource(id = R.string.advanced)) { exploreViewModel.setDifficultyAndReload("advanced") },))
+                                OrderBy(
+                                    title = stringResource(id = R.string.score),
+                                    optionsList = listOf(
+                                        Pair(stringResource(id = R.string.no_filter)) { exploreViewModel.setScoreAndReload(null) },
+                                        Pair(stringResource(id = R.string.score_0)){ exploreViewModel.setScoreAndReload(0) },
+                                        Pair(stringResource(id = R.string.score_1)){ exploreViewModel.setScoreAndReload(1) },
+                                        Pair(stringResource(id = R.string.score_2)){ exploreViewModel.setScoreAndReload(2) },
+                                        Pair(stringResource(id = R.string.score_3)){ exploreViewModel.setScoreAndReload(3) },
+                                        Pair(stringResource(id = R.string.score_4)){ exploreViewModel.setScoreAndReload(4) },
+                                        Pair(stringResource(id = R.string.score_5)){ exploreViewModel.setScoreAndReload(5) }))
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .padding(top = 10.dp)
+                                    .fillMaxWidth(),
+                                horizontalArrangement = Arrangement.End
+                            ) {
+                                Button(onClick = {
+                                    exploreViewModel.hideFilterMenu()
+                                }) {
+                                    Text(text = stringResource(id = R.string.apply).uppercase())
+                                }
+                            }
+                        }
+                    }
                 }
-                Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
-                {
-                    OrderBy(
-                        optionsList = listOf(Pair(stringResource(id = R.string.score_0)){ exploreViewModel.setScoreAndReload(0) },
-                        Pair(stringResource(id = R.string.score_1)){ exploreViewModel.setScoreAndReload(1) },
-                        Pair(stringResource(id = R.string.score_2)){ exploreViewModel.setScoreAndReload(2) },
-                        Pair(stringResource(id = R.string.score_3)){ exploreViewModel.setScoreAndReload(3) },
-                        Pair(stringResource(id = R.string.score_4)){ exploreViewModel.setScoreAndReload(4) },
-                        Pair(stringResource(id = R.string.score_5)){ exploreViewModel.setScoreAndReload(5) }))
-                }
-            }
-            Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)) {
-                OrderBy(
-                    optionsList = listOf(Pair(stringResource(id = R.string.name)) { exploreViewModel.setOrderAndReload("name") },
-                        Pair(stringResource(id = R.string.score)) { exploreViewModel.setOrderAndReload("score") },
-                        Pair(stringResource(id = R.string.difficulty)) { exploreViewModel.setOrderAndReload("difficulty") },
-                        Pair(stringResource(id = R.string.date)) { exploreViewModel.setOrderAndReload("date") }))
-                OrderBy(    // cambiar por íconos quizás
-                    optionsList= listOf(Pair("asc") { exploreViewModel.setAscOrDescAndReload("asc")},
-                    Pair("desc") { exploreViewModel.setAscOrDescAndReload("desc")})
-                )
             }
             if (state.searching) {
                 if (state.foundSomething) {
@@ -95,14 +130,11 @@ fun ExploreScreen(
                         routineList = state.searchedRoutines,
                         title = stringResource(id = R.string.searching),
                         onNavigateToViewRoutine = onNavigateToViewRoutine,
-                        onGetMoreRoutines = { /* Para qué, que no aparezca directamente */ },
+                        onGetMoreRoutines = {},
                         showButton = false
                     )
                 } else {
-                    Text(
-                        stringResource(id = R.string.nothing_found),
-                        modifier = Modifier.padding(10.dp)
-                    )
+                    NoRoutinesMessage(msg = stringResource(id = R.string.nothing_found))
                 }
             } else {
                 state.categories.forEach() { category ->
@@ -115,6 +147,9 @@ fun ExploreScreen(
                             showButton = !category.isLastPage
                         )
                     }
+                }
+                if(state.categories.isEmpty()) {
+                    NoRoutinesMessage(msg = stringResource(id = R.string.nothing_found))
                 }
             }
         }

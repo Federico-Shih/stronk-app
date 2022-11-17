@@ -21,6 +21,7 @@ import com.example.stronk.ui.components.RoutineButton
 import com.example.stronk.model.MyRoutinesViewModel
 import com.example.stronk.state.Routine
 import com.example.stronk.ui.components.LoadDependingContent
+import com.example.stronk.ui.components.NoRoutinesMessage
 import com.example.stronk.ui.components.Refreshable
 
 @Composable
@@ -103,21 +104,7 @@ fun RoutinesList(
                 .wrapContentHeight()
         ) {
             if (routines.isEmpty()) {
-                Row(modifier = Modifier.padding(start = 4.dp)) {
-                    Icon(
-                        imageVector = Icons.Filled.Feedback,
-                        contentDescription = "no routines",
-                        modifier = Modifier
-                            .size(24.dp)
-                            .alignByBaseline()
-                    )
-                    Text(
-                        text = noRoutinesMessage,
-                        modifier = Modifier
-                            .alignByBaseline()
-                            .padding(start = 10.dp)
-                    )
-                }
+                NoRoutinesMessage(msg = noRoutinesMessage)
             }
             routines.forEach { routine ->
                 RoutineButton(
