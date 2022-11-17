@@ -28,7 +28,7 @@ interface RoutineApiService {
 
     @GET("users/current/routines")
     suspend fun getMyRoutines(
-        @Query("difficulty") difficulty: Int?,
+        @Query("difficulty") difficulty: String?,
         @Query("search") search: String?,
         @Query("page") page: Int?,
         @Query("size") size: Int?,
