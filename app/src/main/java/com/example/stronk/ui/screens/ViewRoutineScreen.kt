@@ -19,15 +19,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.example.stronk.ui.theme.StronkTheme
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.*
 import com.example.stronk.R
 import com.example.stronk.misc.QrCodeGenerator
 import com.example.stronk.model.ApiStatus
@@ -99,8 +100,9 @@ fun ViewRoutineScreen(
                             )
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 AsyncImage(
-                                    model = state.routine.user?.avatarUrl
-                                        ?: "",//TODO avatar default
+                                    model = state.routine.user?.avatarUrl,
+                                    placeholder = painterResource(id = R.drawable.profile_placeholder),
+                                    error = painterResource(id = R.drawable.profile_placeholder),
                                     contentDescription = null,
                                     modifier = Modifier
                                         .size(32.dp)
@@ -190,7 +192,9 @@ fun ViewRoutineScreen(
                         )
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             AsyncImage(
-                                model = state.routine.user?.avatarUrl ?: "",//TODO avatar default
+                                model = state.routine.user?.avatarUrl,
+                                placeholder = painterResource(id = R.drawable.profile_placeholder),
+                                error = painterResource(id = R.drawable.profile_placeholder),
                                 contentDescription = null,
                                 modifier = Modifier
                                     .size(32.dp)
@@ -309,13 +313,26 @@ fun ViewRoutineScreen(
                                     style = MaterialTheme.typography.h6,
                                     modifier = Modifier.padding(bottom = 10.dp)
                                 )
-                                AsyncImage(
-                                    model = QrCodeGenerator.qrUrlOfRoutine(state.routine.id),
-                                    contentDescription = "qr code",
-                                    modifier = Modifier.sizeIn(maxHeight = 200.dp),
-                                )
+                                val painter = rememberAsyncImagePainter(model = QrCodeGenerator.qrUrlOfRoutine(state.routine.id))
+                                Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                                    if(painter.state is AsyncImagePainter.State.Loading) {
+                                        Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
+                                    Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                                        Image(
+                                            painter = painter,
+                                            contentDescription = "qr code",
+                                            modifier = Modifier.sizeIn(maxHeight = 200.dp),
+                                        )
+                                    }
+
+
+                                }
+
                                 Row(
-                                    modifier = Modifier.padding(top = 10.dp),
+                                    modifier = Modifier.padding(top = 10.dp).fillMaxWidth(),
                                     horizontalArrangement = Arrangement.End
                                 ) {
                                     Button(onClick = {

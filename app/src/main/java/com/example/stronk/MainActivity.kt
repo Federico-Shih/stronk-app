@@ -350,6 +350,8 @@ class MainActivity : ComponentActivity() {
                                     if (mainViewModel.uiState.apiState.status == null) {
                                         if (mainViewModel.forceFetchUser()) {
                                             mainViewModel.clearUiState()
+                                            mainViewModel.fetchCurrentUser()
+                                            myRoutinesViewModel.forceFetchRoutines()
                                             navController.navigate(MainScreens.EXPLORE.name) {
                                                 popUpTo(MainScreens.AUTH.name) {
                                                     inclusive = true
@@ -361,6 +363,7 @@ class MainActivity : ComponentActivity() {
                                 LaunchedEffect(loginViewModel.uiState.apiState.status) {
                                     if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
                                         mainViewModel.fetchCurrentUser()
+                                        myRoutinesViewModel.forceFetchRoutines()
                                         navController.navigate(MainScreens.EXPLORE.name) {
                                             popUpTo(MainScreens.AUTH.name) {
                                                 inclusive = true
