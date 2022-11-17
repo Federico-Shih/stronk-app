@@ -52,6 +52,7 @@ fun ViewRoutineScreen(
     viewRoutineViewModel: ViewRoutineViewModel
 ) {
     val state = viewRoutineViewModel.uiState
+    val windowInfo = rememberWindowInfo()
     rememberSaveable {
         viewRoutineViewModel.initialize()
         viewRoutineViewModel.fetchRoutine(routineId)
@@ -77,86 +78,185 @@ fun ViewRoutineScreen(
                     )
                 }
             }, modifier = Modifier.padding(10.dp)) {
-                Column(
-                    modifier = Modifier
-                        .padding(it)
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
-                ) {
-                    Text(
-                        text = state.routine.name,
-                        style = MaterialTheme.typography.h5,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(bottom = 4.dp)
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        AsyncImage(
-                            model = state.routine.user?.avatarUrl ?: "",//TODO avatar default
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                        Text(
-                            text = stringResource(
-                                id = R.string.made_by_x,
-                                if (state.routine.user == null) "" else state.routine.user.username
-                            ),
-                            modifier = Modifier.padding(start = 8.dp)
-                        )
-                    }
+                if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Expanded) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Top
+                        Modifier
+                            .fillMaxSize()
+                            .padding(it),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
                     ) {
-                        Column() {
+                        Column(
+                            Modifier
+                                .weight(0.75f)
+                                .fillMaxHeight()
+                                .padding(end=10.dp)
+                        ) {
+                            Text(
+                                text = state.routine.name,
+                                style = MaterialTheme.typography.h5,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(bottom = 4.dp)
+                            )
                             Row(verticalAlignment = Alignment.CenterVertically) {
+                                AsyncImage(
+                                    model = state.routine.user?.avatarUrl
+                                        ?: "",//TODO avatar default
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape),
+                                    contentScale = ContentScale.Crop
+                                )
                                 Text(
-                                    text = "${stringResource(id = R.string.category)}:",
-                                    modifier = Modifier.padding(end = 10.dp),
+                                    text = stringResource(
+                                        id = R.string.made_by_x,
+                                        if (state.routine.user == null) "" else state.routine.user.username
+                                    ),
+                                    modifier = Modifier.padding(start = 8.dp)
+                                )
+                            }
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Column() {
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "${stringResource(id = R.string.category)}:",
+                                            modifier = Modifier.padding(end = 10.dp),
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                        Chip(onClick = {}) {
+                                            Text(text = stringResource(id = state.routine.category.nameStringResourceId))
+                                        }
+                                    }
+                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                        Text(
+                                            text = "${stringResource(id = R.string.difficulty)}:",
+                                            modifier = Modifier.padding(end = 10.dp),
+                                            fontWeight = FontWeight.SemiBold
+                                        )
+                                        Chip(onClick = {}) {
+                                            Text(text = stringResource(id = state.routine.difficultyStringResourceId))
+                                        }
+                                    }
+                                }
+                                RatingCard(
+                                    rating = state.routine.rating, modifier = Modifier
+                                        .padding(top = 10.dp)
+                                        .wrapContentWidth()
+                                        .clickable { viewRoutineViewModel.showRatingDialog() }
+                                )
+                            }
+                            Row() {
+                                Text(
+                                    text = "${stringResource(id = R.string.creation_date)}: ",
                                     fontWeight = FontWeight.SemiBold
                                 )
-                                Chip(onClick = {}) {
-                                    Text(text = stringResource(id = state.routine.category.nameStringResourceId))
-                                }
+                                val date = SimpleDateFormat(
+                                    "dd/MM/yyyy",
+                                    Locale.getDefault()
+                                ).format(state.routine.creationDate).toString()
+                                Text(text = date)
                             }
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Text(
-                                    text = "${stringResource(id = R.string.difficulty)}:",
-                                    modifier = Modifier.padding(end = 10.dp),
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                Chip(onClick = {}) {
-                                    Text(text = stringResource(id = state.routine.difficultyStringResourceId))
-                                }
-                            }
+                            Text(
+                                text = "${stringResource(id = R.string.description)}:",
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            Text(text = state.routine.description ?: "")
                         }
-                        RatingCard(
-                            rating = state.routine.rating, modifier = Modifier
-                                .padding(top = 10.dp)
-                                .wrapContentWidth()
-                                .clickable { viewRoutineViewModel.showRatingDialog() }
-                        )
+                        Column(
+                            Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            CompleteRoutine(cycleList = state.cycles)
+                        }
                     }
-                    Row() {
+                } else {
+                    Column(
+                        modifier = Modifier
+                            .padding(it)
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                    ) {
                         Text(
-                            text = "${stringResource(id = R.string.creation_date)}: ",
+                            text = state.routine.name,
+                            style = MaterialTheme.typography.h5,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(bottom = 4.dp)
+                        )
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            AsyncImage(
+                                model = state.routine.user?.avatarUrl ?: "",//TODO avatar default
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop
+                            )
+                            Text(
+                                text = stringResource(
+                                    id = R.string.made_by_x,
+                                    if (state.routine.user == null) "" else state.routine.user.username
+                                ),
+                                modifier = Modifier.padding(start = 8.dp)
+                            )
+                        }
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.Top
+                        ) {
+                            Column() {
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "${stringResource(id = R.string.category)}:",
+                                        modifier = Modifier.padding(end = 10.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Chip(onClick = {}) {
+                                        Text(text = stringResource(id = state.routine.category.nameStringResourceId))
+                                    }
+                                }
+                                Row(verticalAlignment = Alignment.CenterVertically) {
+                                    Text(
+                                        text = "${stringResource(id = R.string.difficulty)}:",
+                                        modifier = Modifier.padding(end = 10.dp),
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                    Chip(onClick = {}) {
+                                        Text(text = stringResource(id = state.routine.difficultyStringResourceId))
+                                    }
+                                }
+                            }
+                            RatingCard(
+                                rating = state.routine.rating, modifier = Modifier
+                                    .padding(top = 10.dp)
+                                    .wrapContentWidth()
+                                    .clickable { viewRoutineViewModel.showRatingDialog() }
+                            )
+                        }
+                        Row() {
+                            Text(
+                                text = "${stringResource(id = R.string.creation_date)}: ",
+                                fontWeight = FontWeight.SemiBold
+                            )
+                            val date = SimpleDateFormat(
+                                "dd/MM/yyyy",
+                                Locale.getDefault()
+                            ).format(state.routine.creationDate).toString()
+                            Text(text = date)
+                        }
+                        Text(
+                            text = "${stringResource(id = R.string.description)}:",
                             fontWeight = FontWeight.SemiBold
                         )
-                        val date = SimpleDateFormat(
-                            "dd/MM/yyyy",
-                            Locale.getDefault()
-                        ).format(state.routine.creationDate).toString()
-                        Text(text = date)
+                        Text(text = state.routine.description ?: "")
+                        CompleteRoutine(cycleList = state.cycles)
                     }
-                    Text(
-                        text = "${stringResource(id = R.string.description)}:",
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Text(text = state.routine.description ?: "")
-                    CompleteRoutine(cycleList = state.cycles)
                 }
                 if (state.showRatingDialog) {
                     Dialog(onDismissRequest = { viewRoutineViewModel.hideRatingDialog() }) {
@@ -200,7 +300,7 @@ fun ViewRoutineScreen(
                         }
                     }
                 }
-                if(state.showQrDialog) {
+                if (state.showQrDialog) {
                     Dialog(onDismissRequest = { viewRoutineViewModel.hideRoutineQr() }) {
                         Card(backgroundColor = MaterialTheme.colors.background) {
                             Column(modifier = Modifier.padding(16.dp)) {
