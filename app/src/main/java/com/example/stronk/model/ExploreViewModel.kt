@@ -134,11 +134,12 @@ private val preferencesManager: PreferencesManager) : MainNavViewModel() {
         }
     }
 
+
     fun getMoreRoutines(categoryId: Int) {
         val category = uiState.categories.find { c -> c.id == categoryId } ?: uiState.categories[0]
         routinesJob = viewModelScope.launch {
             runCatching {
-                routineRepository.getRoutines(size = 2, category = category.id, page = category.pages,
+                routineRepository.getRoutines(size = 10, category = category.id, page = category.pages,
                     orderBy = uiState.order, direction = uiState.ascOrDesc,
                     difficulty = uiState.difficultyFilter,
                     score = uiState.scoreFilter )

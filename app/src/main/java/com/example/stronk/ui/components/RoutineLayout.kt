@@ -11,8 +11,40 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.example.stronk.R
+import com.example.stronk.network.PreferencesManager
 import com.example.stronk.state.Routine
 
+@Composable
+fun RoutineButtonGroup(
+    routineList: List<Routine>,
+    title: String,
+    onNavigateToViewRoutine: (routineId: Int) -> Unit,
+    onGetMoreRoutines: () -> Unit,
+    isLastPage: Boolean,
+    noRoutinesMessage: String = stringResource(R.string.no_routines_message),
+    wantsList: Boolean,
+    showButtonAtEnd: Boolean = false
+)
+{
+    if(wantsList)
+    {
+        RoutineButtonList(routineList = routineList,
+            title = title,
+            onNavigateToViewRoutine = onNavigateToViewRoutine,
+            onGetMoreRoutines = onGetMoreRoutines,
+            isLastPage = isLastPage,
+            noRoutinesMessage = noRoutinesMessage,
+            showButtonAtEnd = showButtonAtEnd)
+    } else {
+        RoutineButtonGrid(routineList = routineList,
+            title = title,
+            onNavigateToViewRoutine = onNavigateToViewRoutine,
+            onGetMoreRoutines = onGetMoreRoutines,
+            isLastPage = isLastPage,
+            noRoutinesMessage = noRoutinesMessage,
+            showButtonAtEnd = showButtonAtEnd)
+    }
+}
 
 @Composable
 fun RoutineButtonGrid(
@@ -21,7 +53,8 @@ fun RoutineButtonGrid(
     onNavigateToViewRoutine: (routineId: Int) -> Unit,
     onGetMoreRoutines: () -> Unit,
     isLastPage: Boolean,
-    noRoutinesMessage: String = stringResource(R.string.no_routines_message)
+    noRoutinesMessage: String = stringResource(R.string.no_routines_message),
+    showButtonAtEnd: Boolean = false
 ) {
         Column(verticalArrangement = Arrangement.Top, modifier = Modifier.padding(5.dp)) {
             Row(
@@ -39,7 +72,7 @@ fun RoutineButtonGrid(
                     style = MaterialTheme.typography.h5,
                     fontWeight = FontWeight.Bold,
                 )
-                if (!isLastPage) {
+                if (!isLastPage && !showButtonAtEnd) {
                     Button(
                         onClick = { onGetMoreRoutines() },
                         modifier = Modifier
@@ -107,6 +140,19 @@ fun RoutineButtonGrid(
                         }
                     }
                 }
+                Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                    if (!isLastPage && showButtonAtEnd) {
+                        Button(
+                            onClick = { onGetMoreRoutines() },
+                            modifier = Modifier
+                        ) {
+                            Text(
+                                stringResource(id = R.string.show_more).uppercase(),
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
             }
         }
 }
@@ -119,7 +165,8 @@ fun RoutineButtonList(
     onGetMoreRoutines: () -> Unit = {},
     onNavigateToViewRoutine: (routineId: Int) -> Unit = {},
     isLastPage: Boolean = false,
-    noRoutinesMessage: String = stringResource(R.string.no_routines_message)
+    noRoutinesMessage: String = stringResource(R.string.no_routines_message),
+    showButtonAtEnd: Boolean = false
 ) {
     Column(
         modifier = Modifier
@@ -142,7 +189,7 @@ fun RoutineButtonList(
                 modifier = Modifier
                     .padding(bottom = 4.dp)
             )
-            if (!isLastPage) {
+            if (!isLastPage && !showButtonAtEnd) {
                 Button(onClick = { onGetMoreRoutines() }, modifier = Modifier) {
                     Text(
                         text = stringResource(R.string.ShowMore).uppercase(),
@@ -173,6 +220,19 @@ fun RoutineButtonList(
                         .height(125.dp)
                         .padding(bottom = 3.dp)
                 )
+            }
+            Row(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                if (!isLastPage && showButtonAtEnd) {
+                    Button(
+                        onClick = { onGetMoreRoutines() },
+                        modifier = Modifier
+                    ) {
+                        Text(
+                            stringResource(id = R.string.show_more).uppercase(),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
             }
         }
 

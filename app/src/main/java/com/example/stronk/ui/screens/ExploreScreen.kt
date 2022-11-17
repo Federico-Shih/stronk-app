@@ -125,39 +125,30 @@ fun ExploreScreen(
             }
             if (state.searching) {
                 if (state.foundSomething) {
-                    RoutineButtonGrid(
+                    RoutineButtonGroup(
                         routineList = state.searchedRoutines,
                         title = stringResource(id = R.string.searching),
                         onNavigateToViewRoutine = onNavigateToViewRoutine,
                         onGetMoreRoutines = { },
-                        isLastPage = false
+                        isLastPage = true,
+                        wantsList = (state.viewPreference==PreferencesManager.ViewPreference.LIST)
                     )
                 } else {
                     NoRoutinesMessage(msg = stringResource(id = R.string.nothing_found))
                 }
             } else {
                 //RoutineLayoutButton(layoutSelected = state.viewPreference, changeLayout ={preference-> exploreViewModel.changeViewPreference(preference)}  )
-                state.categories.forEach() { category ->
+                state.categories.forEach { category ->
                     if (category.routines.isNotEmpty()) {
-                        if(state.viewPreference==PreferencesManager.ViewPreference.GRID){
-                            RoutineButtonGrid(
-                                routineList = category.routines,
-                                title = category.name,
-                                onNavigateToViewRoutine = onNavigateToViewRoutine,
-                                onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
-                                isLastPage = category.isLastPage,
-                                noRoutinesMessage = stringResource(R.string.no_routines_category)
-                            )
-                        }else{
-                            RoutineButtonList(
-                                routineList = category.routines,
-                                title = category.name,
-                                onNavigateToViewRoutine = onNavigateToViewRoutine,
-                                onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
-                                isLastPage = category.isLastPage,
-                                noRoutinesMessage = stringResource(R.string.no_routines_category)
-                            )
-                        }
+                        RoutineButtonGroup(
+                            routineList = category.routines,
+                            title = category.name,
+                            onNavigateToViewRoutine = onNavigateToViewRoutine,
+                            onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
+                            isLastPage = category.isLastPage,
+                            noRoutinesMessage = stringResource(R.string.no_routines_category),
+                            wantsList = (state.viewPreference==PreferencesManager.ViewPreference.LIST)
+                        )
                     }
                 }
                 if(state.categories.none { it.routines.isNotEmpty() }){
