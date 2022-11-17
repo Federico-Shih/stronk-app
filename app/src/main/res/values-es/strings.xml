@@ -103,4 +103,6 @@
     <string name="default_">Predeterminado</string>
     <string name="criteria">Criterio</string>
     <string name="apply">Aplicar</string>
+    <string name="no_routines_category">No hay rutinas en esta categoria</string>
+
 </resources>

@@ -9,18 +9,21 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.network.PreferencesManager
 import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewModel() {
+class ExploreViewModel(private val routineRepository: RoutineRepository,
+private val preferencesManager: PreferencesManager) : ViewModel() {
     var uiState by mutableStateOf(ExploreState())
         private set
 
     private var routinesJob: Job? = null
 
     init {
+        getViewPreference()
         getRoutines()
     }
 
@@ -159,12 +162,21 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
 
     }
 
+    fun getViewPreference(){
+        uiState = uiState.copy( viewPreference = preferencesManager.fetchViewPreferenceExplore() )
+    }
+
+    fun changeViewPreference(viewPreference: PreferencesManager.ViewPreference){
+        preferencesManager.saveViewPreferenceExplore(viewPreference)
+        uiState = uiState.copy( viewPreference = viewPreference )
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
-                ExploreViewModel(application.routineRepository)
+                ExploreViewModel(application.routineRepository, application.preferencesManager)
             }
         }
     }

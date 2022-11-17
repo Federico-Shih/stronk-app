@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.network.PreferencesManager
 import com.example.stronk.network.dtos.Paginated
 import com.example.stronk.network.dtos.RoutineData
 import com.example.stronk.network.repositories.RoutineRepository
@@ -20,7 +21,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.util.*
 
-class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : ViewModel() {
+class MyRoutinesViewModel(private val routineRepository: RoutineRepository,
+private val preferencesManager: PreferencesManager) : ViewModel() {
     var uiState by mutableStateOf(MyRoutinesState())
         private set
 
@@ -29,7 +31,17 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
     private val myRoutinesPageSize = 3
 
     init {
+        getViewPreference()
         fetchFirstRoutines()
+    }
+
+    fun getViewPreference(){
+        uiState = uiState.copy( viewPreference = preferencesManager.fetchViewPreferenceMyRoutines() )
+    }
+
+    fun changeViewPreference(viewPreference: PreferencesManager.ViewPreference){
+        preferencesManager.saveViewPreferenceMyRoutines(viewPreference)
+        uiState = uiState.copy( viewPreference = viewPreference )
     }
 
     fun moreFavouriteRoutines() {
@@ -151,7 +163,7 @@ class MyRoutinesViewModel(private val routineRepository: RoutineRepository) : Vi
             initializer {
                 val application =
                     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
-                MyRoutinesViewModel(application.routineRepository)
+                MyRoutinesViewModel(application.routineRepository,application.preferencesManager)
             }
         }
     }

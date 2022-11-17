@@ -12,20 +12,20 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
 import com.example.stronk.network.ApiErrorCode
 import com.example.stronk.network.DataSourceException
-import com.example.stronk.network.SessionManager
+import com.example.stronk.network.PreferencesManager
 import com.example.stronk.network.repositories.UserRepository
 import com.example.stronk.state.LoginState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 class LoginViewModel(
-    sessionManager: SessionManager,
+    preferencesManager: PreferencesManager,
     private val userRepository: UserRepository,
 ) : ViewModel() {
 
     private var loginJob: Job? = null
 
-    var uiState by mutableStateOf(LoginState(isAuthenticated = sessionManager.fetchAuthToken() != null))
+    var uiState by mutableStateOf(LoginState(isAuthenticated = preferencesManager.fetchAuthToken() != null))
         private set
 
     fun clearUiState() {
@@ -78,7 +78,7 @@ class LoginViewModel(
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
                 val application = (this[APPLICATION_KEY] as StronkApplication)
-                LoginViewModel(application.sessionManager, application.userRepository)
+                LoginViewModel(application.preferencesManager, application.userRepository)
             }
         }
     }

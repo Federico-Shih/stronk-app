@@ -47,6 +47,8 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
                 }.onFailure {
                     throw it
                 }
+            }.onFailure {
+                throw it
             }
             runCatching {
                 routineRepository.getAllFavouriteRoutines()

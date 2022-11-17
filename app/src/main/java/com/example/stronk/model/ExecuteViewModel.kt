@@ -37,6 +37,8 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                 }.onSuccess { cycles ->
                     val firstNonEmptyCycle = cycles.indexOfFirst { it.exList.isNotEmpty() }
                     uiState = uiState.copy(cycles = cycles, loadState = ApiState(ApiStatus.SUCCESS), cycleIndex = firstNonEmptyCycle)
+                }.onFailure {
+                    throw it
                 }
             }.onFailure {
                 uiState = uiState.copy(

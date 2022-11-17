@@ -1,26 +1,26 @@
 package com.example.stronk.network.datasources
 
 import com.example.stronk.network.RemoteDataSource
-import com.example.stronk.network.SessionManager
+import com.example.stronk.network.PreferencesManager
 import com.example.stronk.network.dtos.*
 import com.example.stronk.network.services.UsersApiService
 import com.example.stronk.state.User
 
 class UserDataSource(
-    private val sessionManager: SessionManager,
+    private val preferencesManager: PreferencesManager,
     private val userApiService: UsersApiService) : RemoteDataSource() {
     suspend fun login(username: String, password: String) {
         val response = handleApiResponse {
             userApiService.login(LoginDTO(username, password))
         }
-        sessionManager.saveAuthToken(response.token)
+        preferencesManager.saveAuthToken(response.token)
     }
 
     suspend fun logout() {
         handleApiResponse {
             userApiService.logout()
         }
-        sessionManager.removeAuthToken()
+        preferencesManager.removeAuthToken()
     }
 
     suspend fun getCurrentUser() : User {

@@ -88,7 +88,7 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
     ) = remoteDataSource.getExercisesImages(exerciseId, 0, 1)
 
     suspend fun getMyRoutines(
-        difficulty: Int? = null,
+        difficulty: String? = null,
         search: String? = null,
         page: Int? = null,
         size: Int? = null,

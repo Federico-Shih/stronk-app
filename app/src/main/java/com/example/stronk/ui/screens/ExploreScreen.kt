@@ -1,12 +1,10 @@
 package com.example.stronk.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Filter
 import androidx.compose.material.icons.filled.FilterAlt
 import androidx.compose.material.icons.outlined.FilterAlt
 import androidx.compose.runtime.Composable
@@ -25,7 +23,7 @@ import com.example.stronk.MainScreens
 import com.example.stronk.R
 import com.example.stronk.misc.QrCodeGenerator
 import com.example.stronk.model.ExploreViewModel
-import com.example.stronk.state.ExploreState
+import com.example.stronk.network.PreferencesManager
 import com.example.stronk.state.foundSomething
 import com.example.stronk.state.searching
 import com.example.stronk.ui.components.*
@@ -126,12 +124,12 @@ fun ExploreScreen(
             }
             if (state.searching) {
                 if (state.foundSomething) {
-                    RoutineButtonGroup(
+                    RoutineButtonGrid(
                         routineList = state.searchedRoutines,
                         title = stringResource(id = R.string.searching),
                         onNavigateToViewRoutine = onNavigateToViewRoutine,
-                        onGetMoreRoutines = {},
-                        showButton = false
+                        onGetMoreRoutines = { },
+                        isLastPage = false
                     )
                 } else {
                     NoRoutinesMessage(msg = stringResource(id = R.string.nothing_found))
@@ -139,17 +137,26 @@ fun ExploreScreen(
             } else {
                 state.categories.forEach() { category ->
                     if (category.routines.isNotEmpty()) {
-                        RoutineButtonGroup(
-                            routineList = category.routines,
-                            title = category.name,
-                            onNavigateToViewRoutine = onNavigateToViewRoutine,
-                            onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
-                            showButton = !category.isLastPage
-                        )
+                        if(state.viewPreference==PreferencesManager.ViewPreference.GRID){
+                            RoutineButtonGrid(
+                                routineList = category.routines,
+                                title = category.name,
+                                onNavigateToViewRoutine = onNavigateToViewRoutine,
+                                onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
+                                isLastPage = category.isLastPage,
+                                noRoutinesMessage = stringResource(R.string.no_routines_category)
+                            )
+                        }else{
+                            RoutineButtonList(
+                                routineList = category.routines,
+                                title = category.name,
+                                onNavigateToViewRoutine = onNavigateToViewRoutine,
+                                onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
+                                isLastPage = category.isLastPage,
+                                noRoutinesMessage = stringResource(R.string.no_routines_category)
+                            )
+                        }
                     }
-                }
-                if(state.categories.isEmpty()) {
-                    NoRoutinesMessage(msg = stringResource(id = R.string.nothing_found))
                 }
             }
         }

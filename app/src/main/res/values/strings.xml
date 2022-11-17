@@ -102,4 +102,6 @@
     <string name="default_">Default</string>
     <string name="criteria">Criteria</string>
     <string name="apply">Apply</string>
+    <string name="no_routines_category">There are no routines in this category</string>
+
 </resources>

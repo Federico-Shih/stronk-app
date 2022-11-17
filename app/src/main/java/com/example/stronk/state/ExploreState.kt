@@ -2,6 +2,7 @@ package com.example.stronk.state
 
 import com.example.stronk.model.ApiState
 import com.example.stronk.model.ApiStatus
+import com.example.stronk.network.PreferencesManager
 
 data class CategoryInfo(
     val id: Int,
@@ -21,6 +22,7 @@ data class ExploreState(
     val showFilters: Boolean = false,
     val difficultyFilter: String? = null,
     val scoreFilter: Int? = null,
+    val viewPreference: PreferencesManager.ViewPreference = PreferencesManager.ViewPreference.GRID
 )
 
 val ExploreState.searching: Boolean get() = searchString.isNotEmpty()
