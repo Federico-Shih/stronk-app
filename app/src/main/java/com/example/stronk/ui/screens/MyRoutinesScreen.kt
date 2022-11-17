@@ -3,19 +3,18 @@ package com.example.stronk.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.TabRowDefaults.Divider
+import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
 import com.example.stronk.model.MyRoutinesViewModel
 import com.example.stronk.network.PreferencesManager
-import com.example.stronk.ui.components.LoadDependingContent
-import com.example.stronk.ui.components.NoRoutinesMessage
-import com.example.stronk.ui.components.Refreshable
-import com.example.stronk.ui.components.RoutineButtonGrid
-import com.example.stronk.ui.components.RoutineButtonList
+import com.example.stronk.ui.components.*
 
 @Composable
 fun MyRoutinesScreen(
@@ -31,6 +30,7 @@ fun MyRoutinesScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             LoadDependingContent(loadState = state.loadState) {
+                // RoutineLayoutButton(layoutSelected = state.viewPreference, changeLayout ={preference-> myRoutinesViewModel.changeViewPreference(preference)}  )
                 if(state.viewPreference==PreferencesManager.ViewPreference.LIST) {
                     RoutineButtonList(
                         state.myRoutines,

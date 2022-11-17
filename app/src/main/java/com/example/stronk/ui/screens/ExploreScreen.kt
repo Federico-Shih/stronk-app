@@ -139,6 +139,7 @@ fun ExploreScreen(
                     NoRoutinesMessage(msg = stringResource(id = R.string.nothing_found))
                 }
             } else {
+                //RoutineLayoutButton(layoutSelected = state.viewPreference, changeLayout ={preference-> exploreViewModel.changeViewPreference(preference)}  )
                 state.categories.forEach() { category ->
                     if (category.routines.isNotEmpty()) {
                         if(state.viewPreference==PreferencesManager.ViewPreference.GRID){

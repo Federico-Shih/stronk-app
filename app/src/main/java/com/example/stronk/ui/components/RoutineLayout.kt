@@ -35,15 +35,17 @@ fun RoutineButtonGrid(
             {
                 Text(
                     title,
-                    modifier = Modifier,
-                    style = MaterialTheme.typography.h5
+                    modifier = Modifier.padding(bottom = 4.dp),
+                    style = MaterialTheme.typography.h5,
+                    fontWeight = FontWeight.Bold,
                 )
                 if (!isLastPage) {
                     Button(
                         onClick = { onGetMoreRoutines() },
                         modifier = Modifier
                     ) {
-                        Text(stringResource(id = R.string.show_more).uppercase())
+                        Text(stringResource(id = R.string.show_more).uppercase(),
+                            fontWeight = FontWeight.Bold)
                     }
                 }
             }
