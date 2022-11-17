@@ -32,6 +32,7 @@ fun LoginScreen(
     dismissMessage: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToVerify: () -> Unit,
+    onInitialLoad: suspend () -> Unit,
 ) {
     var isError by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(uiState.isWrongPasswordOrUser) {
@@ -39,8 +40,10 @@ fun LoginScreen(
             isError = true
         }
     }
-
-    Column(modifier = Modifier.fillMaxWidth(0.9F)) {
+    LaunchedEffect(true) {
+        onInitialLoad()
+    }
+    Column(modifier = Modifier.padding(20.dp)) {
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var passwordVisible by rememberSaveable { mutableStateOf(false) }
@@ -127,7 +130,9 @@ fun LoginScreen(
         }
         Button(
             onClick = { onSubmit(email, password) },
-            modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 50.dp)
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .padding(top = 50.dp)
         ) {
             Text(stringResource(id = R.string.login_button_label).uppercase())
         }

@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
 import com.example.stronk.network.repositories.UserRepository
 import com.example.stronk.state.MainState
+import com.example.stronk.state.User
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
@@ -28,16 +29,22 @@ class MainViewModel(private val userRepository: UserRepository) : ViewModel() {
         }
     }
 
+    fun clearUiState() = run { uiState = MainState() }
+
+    suspend fun forceFetchUser(): Boolean {
+        return try {
+            val user = userRepository.getCurrentUser(true)
+            uiState = uiState.copy(currentUser = user)
+            true
+        } catch (err: java.lang.Exception) {
+            false
+        }
+    }
 
     fun fetchCurrentUser() {
         userJob?.cancel()
         userJob = viewModelScope.launch {
-            runCatching {
-                userRepository.getCurrentUser(true)
-            }.onSuccess {
-                    user ->
-                uiState = uiState.copy(currentUser = user)
-            }
+            forceFetchUser()
         }
     }
     companion object {

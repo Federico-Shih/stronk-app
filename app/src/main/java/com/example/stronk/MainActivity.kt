@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -187,7 +188,7 @@ class MainActivity : ComponentActivity() {
                             canGoBack = currentScreen !in bottomBarScreens,
                             goBack = {
                                 if (!currentScreen.confirmationOnExit) {
-                                    if(!navController.popBackStack())
+                                    if (!navController.popBackStack())
                                         navController.navigate(MainScreens.EXPLORE.name)
                                 } else {
                                     showConfirmExitDialog = true
@@ -264,7 +265,11 @@ class MainActivity : ComponentActivity() {
                                 route = MainScreens.VERIFY.name,
                             ) {
                                 VerifyScreen(
-                                    onVerified = { navController.navigate(MainScreens.ROUTINES.name) },
+                                    onVerified = {
+                                        navController.navigate(MainScreens.ROUTINES.name) {
+                                            popUpTo(MainScreens.AUTH.name)
+                                        }
+                                    },
                                     email = "",
                                     scaffoldState = scaffoldState,
                                     username = loginViewModel.uiState.username,
@@ -311,12 +316,33 @@ class MainActivity : ComponentActivity() {
                                     uiState = loginViewModel.uiState,
                                     scaffoldState = scaffoldState,
                                     navigateToVerify = { navController.navigate(MainScreens.VERIFY.name) },
-                                    navigateToRegister = { navController.navigate(MainScreens.REGISTER.name) }
-                                )
+                                    navigateToRegister = {
+                                        navController.navigate(MainScreens.REGISTER.name) {
+                                            popUpTo(MainScreens.AUTH.name) {
+                                                inclusive = true
+                                            }
+                                        }
+                                    }
+                                ) {
+                                    if (mainViewModel.uiState.apiState.status == null) {
+                                        if (mainViewModel.forceFetchUser()) {
+                                            mainViewModel.clearUiState()
+                                            navController.navigate(MainScreens.EXPLORE.name) {
+                                                popUpTo(MainScreens.AUTH.name) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                                 LaunchedEffect(loginViewModel.uiState.apiState.status) {
                                     if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
                                         mainViewModel.fetchCurrentUser()
-                                        navController.navigate(MainScreens.EXPLORE.name)
+                                        navController.navigate(MainScreens.EXPLORE.name) {
+                                            popUpTo(MainScreens.AUTH.name) {
+                                                inclusive = true
+                                            }
+                                        }
                                         loginViewModel.clearUiState()
                                     }
                                 }

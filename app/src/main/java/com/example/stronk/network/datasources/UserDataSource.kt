@@ -17,10 +17,10 @@ class UserDataSource(
     }
 
     suspend fun logout() {
+        preferencesManager.removeAuthToken()
         handleApiResponse {
             userApiService.logout()
         }
-        preferencesManager.removeAuthToken()
     }
 
     suspend fun getCurrentUser() : User {

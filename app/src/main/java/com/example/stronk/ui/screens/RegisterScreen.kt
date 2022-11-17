@@ -87,7 +87,7 @@ fun RegisterForm(
     val emailErr = uiState.emailInputState
 
     println(passError)
-    Column(modifier = Modifier.fillMaxWidth(0.9F)) {
+    Column(modifier = Modifier.padding(20.dp)) {
         var username by remember { mutableStateOf("") }
         var firstname by remember { mutableStateOf("") }
         var lastname by remember { mutableStateOf("") }

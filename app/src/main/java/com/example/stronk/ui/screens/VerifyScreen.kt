@@ -31,7 +31,7 @@ fun VerifyScreen(
     val uiState = registerViewModel.uiState
     var verifyToken by rememberSaveable { mutableStateOf("") }
     var emailInput by rememberSaveable { mutableStateOf("") }
-    Column(modifier = modifier.fillMaxWidth(0.9F)) {
+    Column(modifier = modifier.padding(20.dp)) {
         Spacer(modifier = Modifier.height(50.dp))
         Text(
             stringResource(id = R.string.verify_email_label),
