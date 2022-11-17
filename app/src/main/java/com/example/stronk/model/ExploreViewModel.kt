@@ -15,10 +15,19 @@ import com.example.stronk.state.*
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
+abstract class MainNavViewModel : ViewModel() {
+    abstract val viewPreference: PreferencesManager.ViewPreference
+    abstract fun changeViewPreference(viewPreference: PreferencesManager.ViewPreference)
+}
+
+
 class ExploreViewModel(private val routineRepository: RoutineRepository,
-private val preferencesManager: PreferencesManager) : ViewModel() {
+private val preferencesManager: PreferencesManager) : MainNavViewModel() {
     var uiState by mutableStateOf(ExploreState())
         private set
+
+    override val viewPreference: PreferencesManager.ViewPreference
+        get() = uiState.viewPreference
 
     private var routinesJob: Job? = null
 
@@ -166,7 +175,7 @@ private val preferencesManager: PreferencesManager) : ViewModel() {
         uiState = uiState.copy( viewPreference = preferencesManager.fetchViewPreferenceExplore() )
     }
 
-    fun changeViewPreference(viewPreference: PreferencesManager.ViewPreference){
+    override fun changeViewPreference(viewPreference: PreferencesManager.ViewPreference){
         preferencesManager.saveViewPreferenceExplore(viewPreference)
         uiState = uiState.copy( viewPreference = viewPreference )
     }

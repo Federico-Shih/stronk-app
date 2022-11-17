@@ -38,16 +38,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.stronk.model.*
 import com.example.stronk.ui.components.ProfileButton
+import com.example.stronk.ui.components.RoutineLayoutButton
 
 @Composable
 fun MainNavbarButtons(
-    onGetViewModel: () -> ViewModel?,
+    onGetViewModel: List<() -> ViewModel?>,
     navigateTo: (String) -> Unit,
     MoreButtons: @Composable () -> Unit = {}
 ) {
-    val userViewModel: MainViewModel = onGetViewModel() as MainViewModel
+    val userViewModel: MainViewModel = (onGetViewModel[0])() as MainViewModel
+    val mainNavViewModel: MainNavViewModel = (onGetViewModel[1])() as MainNavViewModel
     Row(verticalAlignment = Alignment.CenterVertically) {
         MoreButtons()
+        RoutineLayoutButton(
+            layoutSelected = mainNavViewModel.viewPreference,
+            changeLayout = { preference -> mainNavViewModel.changeViewPreference(preference) }
+        )
         ProfileButton(
             userViewModel.uiState
         ) { route ->
@@ -61,7 +67,7 @@ enum class MainScreens(
     val label: Int = R.string.empty,
     val icon: ImageVector = Icons.Filled.Article,
     val hidesBottomNav: Boolean = false,
-    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) -> Unit = { _, _ -> },
+    val topLeftButtons: @Composable (onGetViewModel: List<() -> ViewModel?>, navigateTo: (String) -> Unit) -> Unit = { _, _ -> },
     val confirmationOnExit: Boolean = false,
     val hidesTopNav: Boolean = false,
 ) {
@@ -94,7 +100,8 @@ enum class MainScreens(
         hidesBottomNav = true, confirmationOnExit = true
     ),
     VIEW_ROUTINE(topLeftButtons = { onGetViewModel, _ ->
-        val viewRoutineViewModel: ViewRoutineViewModel = onGetViewModel() as ViewRoutineViewModel
+        val viewRoutineViewModel: ViewRoutineViewModel =
+            (onGetViewModel[0])() as ViewRoutineViewModel
         val state = viewRoutineViewModel.uiState
         Row() {
             val context = LocalContext.current
@@ -174,6 +181,9 @@ class MainActivity : ComponentActivity() {
             val viewRoutineViewModel: ViewRoutineViewModel =
                 viewModel(factory = ViewRoutineViewModel.Factory)
             val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
+            val myRoutinesViewModel: MyRoutinesViewModel =
+                viewModel(factory = MyRoutinesViewModel.Factory)
+            val exploreViewModel: ExploreViewModel = viewModel(factory = ExploreViewModel.Factory)
             var showConfirmExitDialog by remember { mutableStateOf(false) }
             val loginViewModel: LoginViewModel =
                 viewModel(factory = LoginViewModel.Factory)
@@ -195,12 +205,19 @@ class MainActivity : ComponentActivity() {
                                 }
                             },
                             TopRightButtons = currentScreen.topLeftButtons,
-                            onGetViewModel = if (currentScreen == MainScreens.VIEW_ROUTINE) {
-                                { viewRoutineViewModel }
-                            } else if (currentScreen in bottomBarScreens) {
-                                { mainViewModel }
-                            } else {
-                                { null }
+                            onGetViewModel = when (currentScreen) {
+                                MainScreens.VIEW_ROUTINE -> {
+                                    listOf { viewRoutineViewModel }
+                                }
+                                MainScreens.EXPLORE -> {
+                                    listOf({ mainViewModel }, { exploreViewModel })
+                                }
+                                MainScreens.ROUTINES -> {
+                                    listOf({ mainViewModel }, { myRoutinesViewModel })
+                                }
+                                else -> {
+                                    listOf { null }
+                                }
                             },
                             navigateTo = { dest ->
                                 navController.navigate(dest)
@@ -234,14 +251,20 @@ class MainActivity : ComponentActivity() {
                             navController = navController, startDestination = initialRoute.name
                         ) {
                             composable(route = MainScreens.EXPLORE.name) {
-                                ExploreScreen(onNavigateToViewRoutine = { routineId ->
-                                    navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
-                                })
+                                ExploreScreen(
+                                    onNavigateToViewRoutine = { routineId ->
+                                        navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+                                    },
+                                    exploreViewModel = exploreViewModel,
+                                )
                             }
                             composable(route = MainScreens.ROUTINES.name) {
-                                MyRoutinesScreen(onNavigateToViewRoutine = { routineId ->
-                                    navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
-                                })
+                                MyRoutinesScreen(
+                                    onNavigateToViewRoutine = { routineId ->
+                                        navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+                                    },
+                                    myRoutinesViewModel = myRoutinesViewModel,
+                                )
                             }
                             composable(
                                 route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",

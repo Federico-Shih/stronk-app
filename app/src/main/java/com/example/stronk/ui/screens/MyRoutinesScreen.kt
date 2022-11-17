@@ -30,7 +30,7 @@ fun MyRoutinesScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             LoadDependingContent(loadState = state.loadState) {
-                // RoutineLayoutButton(layoutSelected = state.viewPreference, changeLayout ={preference-> myRoutinesViewModel.changeViewPreference(preference)}  )
+
                 if(state.viewPreference==PreferencesManager.ViewPreference.LIST) {
                     RoutineButtonList(
                         state.myRoutines,
@@ -40,7 +40,7 @@ fun MyRoutinesScreen(
                         state.isLastPageMyRoutines,
                         stringResource(id = R.string.no_my_routines)
                     )
-                    Divider()
+                    Divider(modifier = Modifier.padding(top = 5.dp))
                     RoutineButtonList(
                         state.favouriteRoutines,
                         stringResource(R.string.FavRoutines),
@@ -58,7 +58,7 @@ fun MyRoutinesScreen(
                         isLastPage = state.isLastPageMyRoutines,
                         noRoutinesMessage = stringResource(id = R.string.no_my_routines)
                     )
-                    Divider()
+                    Divider(modifier = Modifier.padding(top = 5.dp))
                     RoutineButtonGrid(
                         routineList = state.favouriteRoutines,
                         title = stringResource(R.string.FavRoutines),

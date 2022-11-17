@@ -66,7 +66,7 @@ fun RoutineButtonGrid(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth(if (!onlyOne) 0.5f else 1f)
-                                .height(180.dp)
+                                .height(150.dp)
                         ) {
                             val current = routineList[i]
                             RoutineButton(
@@ -123,14 +123,15 @@ fun RoutineButtonList(
 ) {
     Column(
         modifier = Modifier
-            .padding(10.dp)
+            .padding(5.dp)
             .wrapContentHeight()
             .fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 5.dp, start = 10.dp, end = 10.dp),
+                .padding(horizontal = 10.dp)
+                .height(50.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {

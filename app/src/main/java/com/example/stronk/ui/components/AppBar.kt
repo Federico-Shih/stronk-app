@@ -24,10 +24,10 @@ fun AppBar(
     canGoBack: Boolean = false,
     goBack: () -> Unit = {},
     TopRightButtons: @Composable (
-        onGetViewModel: () -> ViewModel?,
+        onGetViewModel: List<() -> ViewModel?>,
         navigateTo: (String) -> Unit
     ) -> Unit,
-    onGetViewModel: () -> ViewModel? = { null },
+    onGetViewModel: List<() -> ViewModel?> = listOf { null },
     navigateTo: (String) -> Unit
 ) {
     TopAppBar(

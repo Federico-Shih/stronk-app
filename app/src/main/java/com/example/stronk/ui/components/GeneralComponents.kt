@@ -52,7 +52,7 @@ fun LoadDependingContent(
 
 @Composable
 fun NoRoutinesMessage(msg: String) {
-    Row(modifier = Modifier.padding(start = 4.dp)) {
+    Row(modifier = Modifier.padding(start = 10.dp)) {
         Icon(
             imageVector = Icons.Filled.Feedback,
             contentDescription = "no routines",

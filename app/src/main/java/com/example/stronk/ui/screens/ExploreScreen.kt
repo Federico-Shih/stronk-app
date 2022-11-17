@@ -5,8 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.FilterAlt
-import androidx.compose.material.icons.outlined.FilterAlt
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,10 +17,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.example.stronk.MainScreens
 import com.example.stronk.R
-import com.example.stronk.misc.QrCodeGenerator
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.network.PreferencesManager
 import com.example.stronk.state.foundSomething
@@ -51,7 +48,7 @@ fun ExploreScreen(
                         .size(70.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Filled.FilterAlt,
+                        imageVector = Icons.Filled.FilterList,
                         contentDescription = stringResource(id = R.string.filter)
                     )
                 }
@@ -162,6 +159,9 @@ fun ExploreScreen(
                             )
                         }
                     }
+                }
+                if(state.categories.none { it.routines.isNotEmpty() }){
+                    NoRoutinesMessage(msg = stringResource(id = R.string.nothing_found))
                 }
             }
         }
