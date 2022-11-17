@@ -22,7 +22,7 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
         size: Int? = null,
         category: Int? = null,
         userId: Int? = null,
-        difficulty: Int? = null,
+        difficulty: String? = null,
         score: Int? = null,
         search: String? = null,
         orderBy: String? = null,

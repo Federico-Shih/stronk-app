@@ -17,7 +17,7 @@ class RoutineDataSource(
     suspend fun getRoutines(
         category: Int? = null,
         userId: Int? = null,
-        difficulty: Int? = null,
+        difficulty: String? = null,
         score: Int? = null,
         search: String? = null,
         page: Int? = null,

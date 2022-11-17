@@ -19,7 +19,7 @@ data class ExploreState(
     val ascOrDesc: String = "asc",
     val searchString: String = "",
     val filtering: Boolean = false,
-    val difficultyFilter: Int? = null,
+    val difficultyFilter: String? = null,
     val scoreFilter: Int? = null,
 )
 
