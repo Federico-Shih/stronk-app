@@ -50,8 +50,8 @@ fun MainNavbarButtons(
         ProfileButton(
             userViewModel.uiState
         ) { route ->
-            navigateTo(route)
             userViewModel.logout()
+            navigateTo(route)
         }
     }
 }
@@ -316,6 +316,7 @@ class MainActivity : ComponentActivity() {
                                     if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
                                         mainViewModel.fetchCurrentUser()
                                         navController.navigate(MainScreens.EXPLORE.name)
+                                        loginViewModel.clearUiState()
                                     }
                                 }
                             }

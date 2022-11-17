@@ -117,16 +117,9 @@ fun LoginScreen(
                 modifier = Modifier.padding(start = 16.dp)
             )
         }
-//        Row {
-//            var checked by remember { mutableStateOf(false) }
-//            Checkbox(
-//                checked = checked,
-//                onCheckedChange = { checked = !checked },
-//                modifier = Modifier.padding(4.dp)
-//            )
-//            Text("Recordar Contraseña", modifier = Modifier.align(Alignment.CenterVertically))
-//        }
-        TextButton(onClick = { navigateToRegister() }) {
+        TextButton(onClick = {
+            navigateToRegister()
+        }) {
             Text(
                 text = stringResource(id = R.string.no_user_cta),
                 color = MaterialTheme.colors.secondary

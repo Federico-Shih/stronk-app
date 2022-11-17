@@ -28,6 +28,9 @@ class LoginViewModel(
     var uiState by mutableStateOf(LoginState(isAuthenticated = sessionManager.fetchAuthToken() != null))
         private set
 
+    fun clearUiState() {
+        uiState = LoginState()
+    }
 
     fun login(username: String, password: String) {
         loginJob?.cancel()
