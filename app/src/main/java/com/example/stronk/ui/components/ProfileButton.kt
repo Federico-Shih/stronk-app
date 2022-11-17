@@ -3,6 +3,7 @@ package com.example.stronk.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
@@ -29,14 +30,15 @@ fun ProfileButton(
     navigateTo: (String) -> Unit = {}
 ) {
     var expanded by remember { mutableStateOf(false) }
-    Button(onClick = { expanded = !expanded }, modifier = Modifier.clip(CircleShape).wrapContentSize()) {
+    Button(onClick = { expanded = !expanded }, modifier = Modifier.clip(CircleShape)) {
         AsyncImage(
             model = userState.currentUser?.avatarUrl,
             contentDescription = "Profile button",
             placeholder = painterResource(id = R.drawable.profile_placeholder),
             error = painterResource(id = R.drawable.profile_placeholder),
-            contentScale = ContentScale.Inside,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
+                .size(40.dp)
                 .clip(CircleShape)
                 .background(color = Color.Transparent)
         )

@@ -187,7 +187,8 @@ class MainActivity : ComponentActivity() {
                             canGoBack = currentScreen !in bottomBarScreens,
                             goBack = {
                                 if (!currentScreen.confirmationOnExit) {
-                                    navController.popBackStack()
+                                    if(!navController.popBackStack())
+                                        navController.navigate(MainScreens.EXPLORE.name)
                                 } else {
                                     showConfirmExitDialog = true
                                 }

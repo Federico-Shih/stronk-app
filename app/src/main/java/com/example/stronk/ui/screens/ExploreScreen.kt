@@ -39,7 +39,7 @@ fun ExploreScreen(
 
     LoadDependingContent(loadState = state.loadState) {
         Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-            Row(modifier = Modifier.fillMaxWidth()) {
+            Row(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
                 SearchBar(
                     label = stringResource(id = R.string.search_for_routines),
                     onValueChanged = { s -> exploreViewModel.searchRoutines(s) })

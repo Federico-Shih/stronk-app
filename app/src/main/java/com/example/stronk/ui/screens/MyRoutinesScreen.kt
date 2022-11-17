@@ -10,6 +10,7 @@ import androidx.compose.material.icons.filled.AssignmentLate
 import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,7 +77,9 @@ fun RoutinesList(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 5.dp), horizontalArrangement = Arrangement.SpaceBetween
+                .padding(bottom = 5.dp, start = 10.dp, end = 10.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = title,
@@ -84,13 +87,11 @@ fun RoutinesList(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier
                     .padding(bottom = 4.dp)
-                    .alignByBaseline()
             )
             if (!isLastPage) {
-                Button(onClick = { onShowMore() }, modifier = Modifier.alignByBaseline()) {
+                Button(onClick = { onShowMore() }, modifier = Modifier) {
                     Text(
                         text = stringResource(R.string.ShowMore).uppercase(),
-                        style = MaterialTheme.typography.body1,
                         fontWeight = FontWeight.Bold
                     )
                 }
@@ -101,8 +102,7 @@ fun RoutinesList(
                 .fillMaxWidth()
                 .wrapContentHeight()
         ) {
-            if(routines.isEmpty())
-            {
+            if (routines.isEmpty()) {
                 Row(modifier = Modifier.padding(start = 4.dp)) {
                     Icon(
                         imageVector = Icons.Filled.Feedback,

@@ -21,26 +21,26 @@ fun RoutineButtonGroup(
 ) {
     Card(
         modifier = Modifier
-            .padding(15.dp),
+            .padding(10.dp),
         elevation = 10.dp
     ) {
-        Column(verticalArrangement = Arrangement.Top) {
+        Column(verticalArrangement = Arrangement.Top, modifier = Modifier.padding(5.dp)) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 10.dp).height(50.dp),
+                verticalAlignment = Alignment.CenterVertically
             )
             {
                 Text(
                     title,
-                    modifier = Modifier
-                        .padding(start = 5.dp, top = 5.dp)
-                        .alignByBaseline(),
-                    style = MaterialTheme.typography.h4
+                    modifier = Modifier,
+                    style = MaterialTheme.typography.h5
                 )
                 if (showButton) {
                     Button(
                         onClick = { onGetMoreRoutines() },
-                        modifier = Modifier.alignByBaseline()
+                        modifier = Modifier
                     ) {
                         Text(stringResource(id = R.string.show_more).uppercase())
                     }
@@ -60,7 +60,7 @@ fun RoutineButtonGroup(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth(if(!onlyOne) 0.5f else 1f)
-                            .height(200.dp)
+                            .height(180.dp)
                     ) {
                         val current = routineList[i]
                         RoutineButton(
@@ -77,7 +77,7 @@ fun RoutineButtonGroup(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(200.dp)
+                            .height(180.dp)
                     ) {
                         if (!onlyOne) {
                             val current = routineList[i + 1]
