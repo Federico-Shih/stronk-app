@@ -72,7 +72,10 @@ fun RoutineButtonGrid(
                             RoutineButton(
                                 RoutineID = current.id,
                                 //TODO cambiar dependiendo de las categorías
-                                RoutineImageID = R.drawable.abdos,
+                                RoutineImageID = getResourceIdRoutineImage(
+                                    category = current.category,
+                                    routineId = current.id
+                                ),
                                 RoutineName = current.name,
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -83,14 +86,17 @@ fun RoutineButtonGrid(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(180.dp)
+                                .height(150.dp)
                         ) {
                             if (!onlyOne) {
                                 val current = routineList[i + 1]
                                 RoutineButton(
                                     RoutineID = current.id,
                                     //TODO cambiar dependiendo de las categorías
-                                    RoutineImageID = R.drawable.abdos,
+                                    RoutineImageID = getResourceIdRoutineImage(
+                                        category = current.category,
+                                        routineId = current.id
+                                    ),
                                     RoutineName = current.name,
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -155,7 +161,10 @@ fun RoutineButtonList(
             routineList.forEach { routine ->
                 RoutineButton(
                     routine.id,
-                    R.drawable.abdos,
+                    RoutineImageID = getResourceIdRoutineImage(
+                        category = routine.category,
+                        routineId = routine.id
+                    ),
                     routine.name,
                     onNavigateToViewRoutine = onNavigateToViewRoutine,
                     modifier = Modifier

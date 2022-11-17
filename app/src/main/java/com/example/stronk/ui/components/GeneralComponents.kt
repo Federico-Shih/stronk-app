@@ -13,7 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.stronk.model.ApiState
 import com.example.stronk.model.ApiStatus
-
+import com.example.stronk.state.Category
+import com.example.stronk.R
 @Composable
 fun LoadDependingContent(
     loadState: ApiState,
@@ -66,4 +67,17 @@ fun NoRoutinesMessage(msg: String) {
                 .padding(start = 10.dp)
         )
     }
+}
+
+@Composable
+fun getResourceIdRoutineImage(category: Category,routineId:Int):Int {
+    val resourceID = when(category.name){
+        "Espalda" -> if(routineId%2==0) R.drawable.back01 else R.drawable.back02
+        "Full Body" -> if(routineId%2==0) R.drawable.fullbody01 else R.drawable.fullbody02
+        "Pecho" -> if(routineId%2==0) R.drawable.chest01 else R.drawable.chest02
+        "Piernas" -> if(routineId%2==0) R.drawable.leg01 else R.drawable.leg02
+        "Brazos" -> if(routineId%2==0) R.drawable.arms01 else R.drawable.arms02
+        else -> R.drawable.abdos
+    }
+    return resourceID
 }
