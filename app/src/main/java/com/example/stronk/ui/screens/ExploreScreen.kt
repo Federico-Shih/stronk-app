@@ -26,6 +26,7 @@ import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.network.PreferencesManager
 import com.example.stronk.state.foundSomething
 import com.example.stronk.state.searching
+import com.example.stronk.state.*
 import com.example.stronk.ui.components.*
 
 @Composable
@@ -76,12 +77,13 @@ fun ExploreScreen(
                                         Pair(stringResource(id = R.string.name)) { exploreViewModel.setOrderAndReload("name") },
                                         Pair(stringResource(id = R.string.score)) { exploreViewModel.setOrderAndReload("score") },
                                         Pair(stringResource(id = R.string.difficulty)) { exploreViewModel.setOrderAndReload("difficulty") },
-                                        Pair(stringResource(id = R.string.date)) { exploreViewModel.setOrderAndReload("date") }))
+                                        Pair(stringResource(id = R.string.date)) { exploreViewModel.setOrderAndReload("date") }),
+                                    selectedIndex = state.filterIndex)
                                 OrderBy(
                                     title = stringResource(id = R.string.direction),
                                     optionsList= listOf(Pair("asc") { exploreViewModel.setAscOrDescAndReload("asc")},
                                         Pair("desc") { exploreViewModel.setAscOrDescAndReload("desc")}),
-                                )
+                                    selectedIndex = state.directionIndex)
                                 Divider(modifier = Modifier.padding(vertical = 10.dp))
                                 Text(
                                     text = "${stringResource(id = R.string.filter)}:",
@@ -94,7 +96,8 @@ fun ExploreScreen(
                                         Pair(stringResource(id = R.string.no_filter)) { exploreViewModel.setDifficultyAndReload(null) },
                                         Pair(stringResource(id = R.string.beginner)) { exploreViewModel.setDifficultyAndReload("beginner") },
                                         Pair(stringResource(id = R.string.intermediate)) { exploreViewModel.setDifficultyAndReload("intermediate") },
-                                        Pair(stringResource(id = R.string.advanced)) { exploreViewModel.setDifficultyAndReload("advanced") },))
+                                        Pair(stringResource(id = R.string.advanced)) { exploreViewModel.setDifficultyAndReload("advanced") },),
+                                    selectedIndex = state.difficultyIndex)
                                 OrderBy(
                                     title = stringResource(id = R.string.score),
                                     optionsList = listOf(
@@ -104,7 +107,8 @@ fun ExploreScreen(
                                         Pair(stringResource(id = R.string.score_2)){ exploreViewModel.setScoreAndReload(2) },
                                         Pair(stringResource(id = R.string.score_3)){ exploreViewModel.setScoreAndReload(3) },
                                         Pair(stringResource(id = R.string.score_4)){ exploreViewModel.setScoreAndReload(4) },
-                                        Pair(stringResource(id = R.string.score_5)){ exploreViewModel.setScoreAndReload(5) }))
+                                        Pair(stringResource(id = R.string.score_5)){ exploreViewModel.setScoreAndReload(5) }),
+                                    selectedIndex = state.scoreFilteringIndex)
                             }
                             Row(
                                 modifier = Modifier
