@@ -34,9 +34,14 @@
     <string name="dismiss">Cerrar</string>
     <string name="password_label">Contraseña</string>
     <string name="username_label">Nombre de usuario</string>
+    <string name="email_label">Correo de email</string>
+    <string name="firstname_label">Nombre</string>
+    <string name="lastname_label">Apellido</string>
+    <string name="confirmpass_label">Confirmar contraseña</string>
     <string name="login_label">Inicie sesión a Stronk!</string>
     <string name="error_pass_user">Usuario/contraseña incorrecta</string>
     <string name="login_button_label">Iniciar sesión</string>
+    <string name="register_button_label">Registrar</string>
     <string name="creation_date">Fecha de Creación</string>
     <string name="loading_routine">Cargando Rutina</string>
     <string name="exit_confirmation">¿Está seguro que desea salir de la ejecución de rutina?</string>
@@ -53,7 +58,7 @@
     <string name="advanced">Avanzado</string>
     <string name="abs">Abdominales</string>
     <string name="legs">Piernas</string>
-    <string name="arms">Brazos</string>
+    <string name="arms">Arms</string>
     <string name="chest">Pecho</string>
     <string name="full_body">Full Body</string>
     <string name="back">Espalda</string>
@@ -73,4 +78,16 @@
     <string name="qr_for_routine">Código QR para esta rutina</string>
     <string name="share_link">Compartir Enlace</string>
     <string name="show_qr_code">Mostrar Código QR</string>
+    <string name="unknown_error_message">Unknown error</string>
+    <string name="register_label">Registrate en Stronk!</string>
+    <string name="empty_input">Obligatorio</string>
+    <string name="pass_no_match">Contraseñas no coinciden</string>
+    <string name="email_username_taken_err">Email o nombre de usuario tomado</string>
+    <string name="connection_error">No hay conexión a internet</string>
+    <string name="no_user_cta">Todavía no te registraste?</string>
+    <string name="has_user_cta">Ya tienes una cuenta?</string>
+    <string name="verify_token_label">Token de verificación</string>
+    <string name="unable_to_verify">Token de verificación incorrecta</string>
+    <string name="verify_email_label">Verificar tu cuenta</string>
+    <string name="verify_note_label">Hemos enviado un código de verificación a tu correo electrónico.</string>
 </resources>

@@ -37,9 +37,14 @@
     <string name="dismiss">Close</string>
     <string name="password_label">Password</string>
     <string name="username_label">Username</string>
+    <string name="email_label">Email</string>
+    <string name="firstname_label">Firstname</string>
+    <string name="lastname_label">Lastname</string>
+    <string name="confirmpass_label">Confirm password</string>
     <string name="login_label">Log in to Stronk!</string>
     <string name="error_pass_user">Incorrect username/password</string>
     <string name="login_button_label">Log in</string>
+    <string name="register_button_label">Register</string>
     <string name="logout_button_label">Log out</string>
     <string name="finish">Finish</string>
     <string name="congrats_routine_end">Good Job! You completed this routine!</string>
@@ -61,9 +66,11 @@
     <string name="no_routines_message">No routines were found</string>
     <string name="no_my_routines">You haven\'t created any routines yet</string>
     <string name="no_fav_routines">You don\'t have any favourite routines yet</string>
-    <string name="searching_qr_code">Looking for a routine QR code...</string>
+    <string name="searching_qr_code">Looking for a routine QR code…</string>
     <string name="found_qr_code">Routine QR code found!</string>
     <string name="qr_scanner_label">QR Code Scanner</string>
+    <string name="unknown_error_message">Unknown error</string>
+    <string name="register_label">Register to Stronk!</string>
     <string name="name">Name</string>
     <string name="date">Date</string>
     <string name="score">Score</string>
@@ -72,4 +79,14 @@
     <string name="qr_for_routine">QR Code for this routine</string>
     <string name="share_link">Share Link</string>
     <string name="show_qr_code">Show QR Code</string>
+    <string name="empty_input">This field is mandatory</string>
+    <string name="pass_no_match">Passwords don\'t match</string>
+    <string name="email_username_taken_err">Username or email already taken</string>
+    <string name="connection_error">No internet connection</string>
+    <string name="no_user_cta">Not registered yet?</string>
+    <string name="has_user_cta">Already registered?</string>
+    <string name="verify_token_label">Verify token</string>
+    <string name="unable_to_verify">Invalid verification code</string>
+    <string name="verify_email_label">Verify email</string>
+    <string name="verify_note_label">We sent a verification code to your email account.</string>
 </resources>

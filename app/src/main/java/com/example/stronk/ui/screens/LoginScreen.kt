@@ -11,6 +11,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
@@ -20,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
 import com.example.stronk.model.ApiStatus
+import com.example.stronk.network.ApiErrorCode
 import com.example.stronk.state.LoginState
 
 @Composable
@@ -27,7 +29,9 @@ fun LoginScreen(
     onSubmit: (username: String, password: String) -> Unit,
     uiState: LoginState = LoginState(),
     scaffoldState: ScaffoldState,
-    dismissMessage: () -> Unit
+    dismissMessage: () -> Unit,
+    navigateToRegister: () -> Unit,
+    navigateToVerify: () -> Unit,
 ) {
     var isError by rememberSaveable { mutableStateOf(false) }
     LaunchedEffect(uiState.isWrongPasswordOrUser) {
@@ -122,6 +126,12 @@ fun LoginScreen(
 //            )
 //            Text("Recordar Contraseña", modifier = Modifier.align(Alignment.CenterVertically))
 //        }
+        TextButton(onClick = { navigateToRegister() }) {
+            Text(
+                text = stringResource(id = R.string.no_user_cta),
+                color = MaterialTheme.colors.secondary
+            )
+        }
         Button(
             onClick = { onSubmit(email, password) },
             modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 50.dp)
@@ -136,17 +146,29 @@ fun LoginScreen(
                 CircularProgressIndicator()
             }
         }
-        if (uiState.apiState.status == ApiStatus.FAILURE) {
+
+        val context = LocalContext.current
+
+        if (uiState.apiState.status == ApiStatus.FAILURE && uiState.apiState.code != ApiErrorCode.EMAIL_NOT_VERIFIED.code) {
             val actionLabel = stringResource(id = R.string.dismiss)
             LaunchedEffect(scaffoldState.snackbarHostState) {
                 val result = scaffoldState.snackbarHostState.showSnackbar(
-                    message = uiState.apiState.message,
+                    message =
+                    when (uiState.apiState.code) {
+                        ApiErrorCode.INVALID_USER_PASS.code -> context.resources.getString(R.string.error_pass_user)
+                        ApiErrorCode.CONNECTION_ERROR.code -> context.resources.getString(R.string.connection_error)
+                        else -> context.resources.getString(R.string.unknown_error_message)
+                    },
                     actionLabel = actionLabel
                 )
                 when (result) {
                     SnackbarResult.Dismissed -> dismissMessage()
                     SnackbarResult.ActionPerformed -> dismissMessage()
                 }
+            }
+        } else if (uiState.apiState.code == ApiErrorCode.EMAIL_NOT_VERIFIED.code) {
+            LaunchedEffect(true) {
+                navigateToVerify()
             }
         }
     }

@@ -7,6 +7,8 @@ data class LoginState(
     val isAuthenticated: Boolean = false,
     val currentUser: User? = null,
     val isWrongPasswordOrUser: Boolean = false,
+    val username: String = "",
+    val password: String = "",
 )
 
 val LoginState.canGetCurrentUser: Boolean get() = isAuthenticated

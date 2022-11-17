@@ -22,7 +22,6 @@ import com.example.stronk.state.Routine
 import com.example.stronk.ui.components.LoadDependingContent
 import com.example.stronk.ui.components.Refreshable
 
-@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MyRoutinesScreen(
     onNavigateToViewRoutine: (routineId: Int) -> Unit,

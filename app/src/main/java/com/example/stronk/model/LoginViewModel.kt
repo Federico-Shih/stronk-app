@@ -10,6 +10,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.network.ApiErrorCode
 import com.example.stronk.network.DataSourceException
 import com.example.stronk.network.SessionManager
 import com.example.stronk.network.repositories.UserRepository
@@ -20,7 +21,7 @@ import kotlinx.coroutines.launch
 class LoginViewModel(
     sessionManager: SessionManager,
     private val userRepository: UserRepository,
-    ) : ViewModel() {
+) : ViewModel() {
 
     private var loginJob: Job? = null
 
@@ -34,19 +35,32 @@ class LoginViewModel(
         loginJob = viewModelScope.launch {
             uiState = uiState.copy(apiState = ApiState(ApiStatus.LOADING))
             runCatching {
-             userRepository.login(username, password)
+                userRepository.login(username, password)
             }.onSuccess {
-                uiState = uiState.copy(apiState = ApiState(ApiStatus.SUCCESS), isAuthenticated = true)
-            }.onFailure {
-                error ->
-                if (error is DataSourceException)
-                {
+                uiState =
+                    uiState.copy(apiState = ApiState(ApiStatus.SUCCESS), isAuthenticated = true)
+            }.onFailure { error ->
+                if (error is DataSourceException) {
                     when (error.code) {
-                        4 -> {
-                            uiState = uiState.copy(isWrongPasswordOrUser = true)
+                        ApiErrorCode.INVALID_USER_PASS.code -> {
+                            uiState = uiState.copy(
+                                isWrongPasswordOrUser = true,
+                            )
+                        }
+                        ApiErrorCode.EMAIL_NOT_VERIFIED.code -> {
+                            uiState = uiState.copy(
+                                username = username,
+                                password = password
+                            )
                         }
                     }
-                    uiState = uiState.copy(apiState = ApiState(ApiStatus.FAILURE, error.message ?: "Unknown error"))
+                    uiState = uiState.copy(
+                        apiState = ApiState(
+                            ApiStatus.FAILURE,
+                            error.message ?: "Unknown error",
+                            error.code
+                        )
+                    )
                 }
             }
         }

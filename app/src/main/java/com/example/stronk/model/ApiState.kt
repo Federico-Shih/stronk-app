@@ -6,5 +6,6 @@ enum class ApiStatus {
 
 class ApiState(
     var status: ApiStatus? = null,
-    var message: String = ""
+    var message: String = "",
+    var code: Int = 0,
 )

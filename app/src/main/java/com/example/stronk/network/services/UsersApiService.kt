@@ -1,8 +1,7 @@
 package com.example.stronk.network.services
 
-import com.example.stronk.network.dtos.LoginDTO
-import com.example.stronk.network.dtos.TokenData
-import com.example.stronk.network.dtos.UserData
+import com.example.stronk.network.dtos.*
+import com.example.stronk.state.User
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -17,4 +16,13 @@ interface UsersApiService {
 
     @POST("users/logout")
     suspend fun logout(): Response<Unit>
+
+    @POST("users")
+    suspend fun register(@Body registerDTO: RegisterDTO): Response<UserData>
+
+    @POST("users/verify_email")
+    suspend fun verifyEmail(@Body verifyEmail: VerifyEmailDTO): Response<Unit>
+
+    @POST("users/resend_verification")
+    suspend fun resendVerification(@Body resendEmailDTO: ResendEmailDTO): Response<Unit>
 }

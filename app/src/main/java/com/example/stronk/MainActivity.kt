@@ -60,26 +60,27 @@ enum class MainScreens(
     val label: Int = R.string.empty,
     val icon: ImageVector = Icons.Filled.Article,
     val hidesBottomNav: Boolean = false,
-    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) -> Unit = { _, _ -> {} },
+    val topLeftButtons: @Composable (onGetViewModel: () -> ViewModel?, navigateTo: (String) -> Unit) -> Unit = { _, _ -> },
     val confirmationOnExit: Boolean = false,
     val hidesTopNav: Boolean = false,
 ) {
-    AUTH(hidesBottomNav = true, hidesTopNav = true),
-    EXPLORE(R.string.explore_label,
+    AUTH(hidesBottomNav = true, hidesTopNav = true), REGISTER(
+        hidesBottomNav = true,
+        hidesTopNav = true
+    ),
+    VERIFY(hidesBottomNav = true, hidesTopNav = true), EXPLORE(R.string.explore_label,
         Icons.Filled.Search,
         topLeftButtons = { onGetViewModel, navigateTo ->
-            MainNavbarButtons(
-                onGetViewModel, navigateTo, MoreButtons = {
-                    IconButton(onClick = { navigateTo(QR_SCANNER.name) }) {
-                        Icon(
-                            Icons.Filled.QrCode,
-                            contentDescription = "Scan QR",
-                            tint = MaterialTheme.colors.onPrimary,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
+            MainNavbarButtons(onGetViewModel, navigateTo, MoreButtons = {
+                IconButton(onClick = { navigateTo(QR_SCANNER.name) }) {
+                    Icon(
+                        Icons.Filled.QrCode,
+                        contentDescription = "Scan QR",
+                        tint = MaterialTheme.colors.onPrimary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
-            )
+            })
         }),
     ROUTINES(R.string.routines_label,
         Icons.Filled.DirectionsRun,
@@ -89,8 +90,7 @@ enum class MainScreens(
             )
         }),
     EXECUTE(
-        hidesBottomNav = true,
-        confirmationOnExit = true
+        hidesBottomNav = true, confirmationOnExit = true
     ),
     VIEW_ROUTINE(topLeftButtons = { onGetViewModel, _ ->
         val viewRoutineViewModel: ViewRoutineViewModel = onGetViewModel() as ViewRoutineViewModel
@@ -115,15 +115,18 @@ enum class MainScreens(
                         tint = MaterialTheme.colors.onPrimary
                     )
                 }
-                DropdownMenu(
-                    expanded = shareExpanded,
+                DropdownMenu(expanded = shareExpanded,
                     onDismissRequest = { shareExpanded = false }) {
                     DropdownMenuItem(onClick = {
                         shareExpanded = false
                         viewRoutineViewModel.shareRoutineLink(context)
                     }) {
                         Row {
-                            Icon(Icons.Filled.Link, contentDescription = "share link", modifier = Modifier.padding(end = 8.dp))
+                            Icon(
+                                Icons.Filled.Link,
+                                contentDescription = "share link",
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
                             Text(text = stringResource(id = R.string.share_link))
                         }
                     }
@@ -132,7 +135,13 @@ enum class MainScreens(
                         viewRoutineViewModel.showRoutineQr()
                     }) {
                         Row {
-                            Icon(Icons.Filled.QrCode, contentDescription = "share qr", modifier = androidx.compose.ui.Modifier.padding(end = 8.dp))
+                            Icon(
+                                Icons.Filled.QrCode,
+                                contentDescription = "share qr",
+                                modifier = androidx.compose.ui.Modifier.padding(
+                                    end = 8.dp
+                                )
+                            )
                             Text(text = stringResource(id = R.string.show_qr_code))
                         }
                     }
@@ -165,6 +174,11 @@ class MainActivity : ComponentActivity() {
                 viewModel(factory = ViewRoutineViewModel.Factory)
             val executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
             var showConfirmExitDialog by remember { mutableStateOf(false) }
+            val loginViewModel: LoginViewModel =
+                viewModel(factory = LoginViewModel.Factory)
+            val registerViewModel: RegisterViewModel =
+                viewModel(factory = RegisterViewModel.Factory)
+
             StronkTheme {
                 val scaffoldState: ScaffoldState = rememberScaffoldState()
                 Scaffold(topBar = {
@@ -246,6 +260,31 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                             composable(
+                                route = MainScreens.VERIFY.name,
+                            ) {
+                                VerifyScreen(
+                                    onVerified = { navController.navigate(MainScreens.ROUTINES.name) },
+                                    email = "",
+                                    scaffoldState = scaffoldState,
+                                    username = loginViewModel.uiState.username,
+                                    password = loginViewModel.uiState.password
+                                )
+                            }
+                            composable(
+                                route = "${MainScreens.VERIFY.name}/{email}",
+                                arguments = listOf(navArgument("email") {
+                                    type = NavType.StringType
+                                })
+                            ) { backStackEntry ->
+                                VerifyScreen(
+                                    onVerified = { navController.navigate(MainScreens.ROUTINES.name) },
+                                    email = backStackEntry.arguments?.getString("email") ?: "",
+                                    scaffoldState = scaffoldState,
+                                    username = registerViewModel.uiState.username,
+                                    password = registerViewModel.uiState.password,
+                                )
+                            }
+                            composable(
                                 route = "${MainScreens.EXECUTE.name}/{routineId}",
                                 arguments = listOf(navArgument("routineId") {
                                     type = NavType.IntType
@@ -261,8 +300,6 @@ class MainActivity : ComponentActivity() {
                             composable(
                                 route = MainScreens.AUTH.name
                             ) {
-                                val loginViewModel: LoginViewModel =
-                                    viewModel(factory = LoginViewModel.Factory)
                                 LoginScreen(
                                     onSubmit = { username, password ->
                                         loginViewModel.login(username, password)
@@ -271,7 +308,9 @@ class MainActivity : ComponentActivity() {
                                         loginViewModel.dismissMessage()
                                     },
                                     uiState = loginViewModel.uiState,
-                                    scaffoldState = scaffoldState
+                                    scaffoldState = scaffoldState,
+                                    navigateToVerify = { navController.navigate(MainScreens.VERIFY.name) },
+                                    navigateToRegister = { navController.navigate(MainScreens.REGISTER.name) }
                                 )
                                 LaunchedEffect(loginViewModel.uiState.apiState.status) {
                                     if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
@@ -291,38 +330,49 @@ class MainActivity : ComponentActivity() {
                                     }
                                 })
                             }
-                        }
-                    }
-                    if (showConfirmExitDialog) {
-                        Dialog(onDismissRequest = { showConfirmExitDialog = false }) {
-                            Card(
-                                backgroundColor = MaterialTheme.colors.background,
-                                contentColor = MaterialTheme.colors.onBackground,
+                            composable(
+                                route = MainScreens.REGISTER.name
                             ) {
-                                Column(modifier = Modifier.padding(16.dp)) {
-                                    Text(
-                                        text = stringResource(id = R.string.exit_confirmation),
-                                        style = MaterialTheme.typography.h6,
-                                        modifier = Modifier.padding(bottom = 10.dp)
-                                    )
-                                    Row(
-                                        horizontalArrangement = Arrangement.End,
-                                        modifier = Modifier.fillMaxWidth()
-                                    ) {
-                                        Button(
-                                            onClick = { showConfirmExitDialog = false },
-                                            modifier = Modifier.padding(end = 10.dp)
+                                RegisterScreen(
+                                    onSubmit = { email ->
+                                        navController.navigate("${MainScreens.VERIFY.name}/$email")
+                                    },
+                                    scaffoldState = scaffoldState,
+                                    navigateToLogin = { navController.navigate(MainScreens.AUTH.name) },
+                                    viewModel = registerViewModel
+                                )
+                            }
+                        }
+                        if (showConfirmExitDialog) {
+                            Dialog(onDismissRequest = { showConfirmExitDialog = false }) {
+                                Card(
+                                    backgroundColor = MaterialTheme.colors.background,
+                                    contentColor = MaterialTheme.colors.onBackground,
+                                ) {
+                                    Column(modifier = Modifier.padding(16.dp)) {
+                                        Text(
+                                            text = stringResource(id = R.string.exit_confirmation),
+                                            style = MaterialTheme.typography.h6,
+                                            modifier = Modifier.padding(bottom = 10.dp)
+                                        )
+                                        Row(
+                                            horizontalArrangement = Arrangement.End,
+                                            modifier = Modifier.fillMaxWidth()
                                         ) {
-                                            Text(text = stringResource(id = R.string.cancel).uppercase())
-                                        }
-                                        Button(onClick = {
-                                            showConfirmExitDialog = false
-                                            navController.popBackStack()
-                                        }) {
-                                            Text(text = stringResource(id = R.string.exit).uppercase())
+                                            Button(
+                                                onClick = { showConfirmExitDialog = false },
+                                                modifier = Modifier.padding(end = 10.dp)
+                                            ) {
+                                                Text(text = stringResource(id = R.string.cancel).uppercase())
+                                            }
+                                            Button(onClick = {
+                                                showConfirmExitDialog = false
+                                                navController.popBackStack()
+                                            }) {
+                                                Text(text = stringResource(id = R.string.exit).uppercase())
+                                            }
                                         }
                                     }
-
                                 }
                             }
                         }
@@ -332,7 +382,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 /*
 Scaffold(
                     topBar = {

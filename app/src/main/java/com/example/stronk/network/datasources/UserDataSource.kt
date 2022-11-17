@@ -2,8 +2,7 @@ package com.example.stronk.network.datasources
 
 import com.example.stronk.network.RemoteDataSource
 import com.example.stronk.network.SessionManager
-import com.example.stronk.network.dtos.LoginDTO
-import com.example.stronk.network.dtos.UserData
+import com.example.stronk.network.dtos.*
 import com.example.stronk.network.services.UsersApiService
 import com.example.stronk.state.User
 
@@ -28,5 +27,23 @@ class UserDataSource(
         return handleApiResponse {
             userApiService.current()
         }.asModel()
+    }
+
+    suspend fun register(registerDTO: RegisterDTO) : User {
+        return handleApiResponse {
+            userApiService.register(registerDTO)
+        }.asModel()
+    }
+
+    suspend fun verifyEmail(email: String, code: String) {
+        handleApiResponse {
+            userApiService.verifyEmail(VerifyEmailDTO(email, code))
+        }
+    }
+
+    suspend fun resendVerification(email: String) {
+        handleApiResponse {
+            userApiService.resendVerification(ResendEmailDTO(email))
+        }
     }
 }
