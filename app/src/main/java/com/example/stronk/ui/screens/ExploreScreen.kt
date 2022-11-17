@@ -62,58 +62,29 @@ fun ExploreScreen(
             if(state.filtering) {
                 Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
                 {
-                    OrderBy(    //hacer lo de stringResource(id = R.string.score)
-                        optionsList = listOf(Pair("Beginner") {
-                            exploreViewModel.setDifficultyAndReload(
-                                1
-                            )
-                        },
-                            Pair("Intermediate") {
-                                exploreViewModel.setDifficultyAndReload(
-                                    2
-                                )
-                            },
-                            Pair("Advanced") {
-                                exploreViewModel.setDifficultyAndReload(
-                                    3
-                                )
-                            },
-                    ))
+                    OrderBy(
+                        optionsList = listOf(Pair(stringResource(id = R.string.beginner)) { exploreViewModel.setDifficultyAndReload("beginner") },
+                            Pair(stringResource(id = R.string.intermediate)) { exploreViewModel.setDifficultyAndReload("intermediate") },
+                            Pair(stringResource(id = R.string.advanced)) { exploreViewModel.setDifficultyAndReload("advanced") },))
                 }
                 Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally))
                 {
-                    OrderBy(    //hacer lo de stringResource(id = R.string.score)
-                        optionsList = listOf(Pair("Awful"){ exploreViewModel.setScoreAndReload(0) },
-                        Pair("Bad"){ exploreViewModel.setScoreAndReload(1) },
-                        Pair("So so"){ exploreViewModel.setScoreAndReload(2) },
-                        Pair("Good"){ exploreViewModel.setScoreAndReload(3) },
-                        Pair("Great"){ exploreViewModel.setScoreAndReload(4) },
-                        Pair("Excellent"){ exploreViewModel.setScoreAndReload(5) }))
+                    OrderBy(
+                        optionsList = listOf(Pair(stringResource(id = R.string.score_0)){ exploreViewModel.setScoreAndReload(0) },
+                        Pair(stringResource(id = R.string.score_1)){ exploreViewModel.setScoreAndReload(1) },
+                        Pair(stringResource(id = R.string.score_2)){ exploreViewModel.setScoreAndReload(2) },
+                        Pair(stringResource(id = R.string.score_3)){ exploreViewModel.setScoreAndReload(3) },
+                        Pair(stringResource(id = R.string.score_4)){ exploreViewModel.setScoreAndReload(4) },
+                        Pair(stringResource(id = R.string.score_5)){ exploreViewModel.setScoreAndReload(5) }))
                 }
             }
             Row(modifier = Modifier.fillMaxWidth().align(Alignment.CenterHorizontally)) {
                 OrderBy(
-                    optionsList = listOf(Pair(stringResource(id = R.string.name)) {
-                        exploreViewModel.setOrderAndReload(
-                            "name"
-                        )
-                        },
-                        Pair(stringResource(id = R.string.score)) {
-                            exploreViewModel.setOrderAndReload(
-                                "score"
-                            )
-                        },
-                        Pair(stringResource(id = R.string.difficulty)) {
-                            exploreViewModel.setOrderAndReload(
-                                "difficulty"
-                            )
-                        },
-                        Pair(stringResource(id = R.string.date)) {
-                            exploreViewModel.setOrderAndReload(
-                                "date"
-                            )
-                        }))
-                OrderBy(
+                    optionsList = listOf(Pair(stringResource(id = R.string.name)) { exploreViewModel.setOrderAndReload("name") },
+                        Pair(stringResource(id = R.string.score)) { exploreViewModel.setOrderAndReload("score") },
+                        Pair(stringResource(id = R.string.difficulty)) { exploreViewModel.setOrderAndReload("difficulty") },
+                        Pair(stringResource(id = R.string.date)) { exploreViewModel.setOrderAndReload("date") }))
+                OrderBy(    // cambiar por íconos quizás
                     optionsList= listOf(Pair("asc") { exploreViewModel.setAscOrDescAndReload("asc")},
                     Pair("desc") { exploreViewModel.setAscOrDescAndReload("desc")})
                 )

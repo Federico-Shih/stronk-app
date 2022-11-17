@@ -14,7 +14,7 @@ interface RoutineApiService {
     suspend fun getRoutines(
         @Query("categoryId") category: Int?,
         @Query("userId") userId: Int?,
-        @Query("difficulty") difficulty: Int?,
+        @Query("difficulty") difficulty: String?,
         @Query("score") score: Int?,
         @Query("search") search: String?,
         @Query("page") page: Int?,

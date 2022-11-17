@@ -60,7 +60,7 @@ class ExploreViewModel(private val routineRepository: RoutineRepository) : ViewM
         }
     }
 
-    fun setDifficultyAndReload(value: Int)
+    fun setDifficultyAndReload(value: String)
     {
         uiState = uiState.copy(difficultyFilter = value)
         reload()

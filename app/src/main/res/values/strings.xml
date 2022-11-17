@@ -89,4 +89,10 @@
     <string name="unable_to_verify">Invalid verification code</string>
     <string name="verify_email_label">Verify email</string>
     <string name="verify_note_label">We sent a verification code to your email account.</string>
+    <string name="score_0">Awful</string>
+    <string name="score_1">Bad</string>
+    <string name="score_2">So so</string>
+    <string name="score_3">Good</string>
+    <string name="score_4">Great</string>
+    <string name="score_5">Excellent</string>
 </resources>

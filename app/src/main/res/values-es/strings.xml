@@ -90,4 +90,10 @@
     <string name="unable_to_verify">Token de verificación incorrecta</string>
     <string name="verify_email_label">Verificar tu cuenta</string>
     <string name="verify_note_label">Hemos enviado un código de verificación a tu correo electrónico.</string>
+    <string name="score_0">Pésimo</string>
+    <string name="score_1">Malo</string>
+    <string name="score_2">Más o menos</string>
+    <string name="score_3">Buena</string>
+    <string name="score_4">Muy buena</string>
+    <string name="score_5">Excelente</string>
 </resources>
