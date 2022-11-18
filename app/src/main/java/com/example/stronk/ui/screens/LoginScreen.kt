@@ -36,11 +36,12 @@ fun LoginScreen(
     dismissMessage: () -> Unit,
     navigateToRegister: () -> Unit,
     navigateToVerify: () -> Unit,
-    onInitialLoad: suspend () -> Unit,
+    onInitialLoad: suspend () -> Boolean,
 ) {
     var isError by remember { mutableStateOf(InputState()) }
     var usernameError by remember { mutableStateOf(InputState()) }
     val once by remember { mutableStateOf(1) }
+    var initialLoading by remember { mutableStateOf(true) }
     LaunchedEffect(uiState.isWrongPasswordOrUser) {
         if (uiState.isWrongPasswordOrUser) {
             isError = isError.copy(hasError = false)
@@ -48,6 +49,7 @@ fun LoginScreen(
     }
     LaunchedEffect(once) {
         onInitialLoad()
+        initialLoading = false
     }
     Column(modifier = Modifier
         .padding(20.dp)
@@ -170,9 +172,10 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth(0.8F)
                 .height(50.dp)
-                .animateContentSize()
+                .animateContentSize(),
+            enabled = !(uiState.apiState.status == ApiStatus.LOADING || initialLoading)
         ) {
-            if (uiState.apiState.status == ApiStatus.LOADING) {
+            if (uiState.apiState.status == ApiStatus.LOADING || initialLoading) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally

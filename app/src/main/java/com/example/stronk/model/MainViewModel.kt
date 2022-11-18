@@ -13,6 +13,7 @@ import com.example.stronk.network.repositories.UserRepository
 import com.example.stronk.state.MainState
 import com.example.stronk.state.User
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class MainViewModel(private val userRepository: UserRepository) : ViewModel() {

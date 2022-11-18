@@ -342,7 +342,10 @@ class MainActivity : ComponentActivity() {
                                         onNavigateToExecution = { routineId ->
                                             navController.navigate("${MainScreens.EXECUTE.name}/$routineId")
                                         },
-                                        viewRoutineViewModel = viewRoutineViewModel
+                                        viewRoutineViewModel = viewRoutineViewModel,
+                                        navigateToAuth = {
+                                            navController.navigate("${MainScreens.AUTH.name}/deep")
+                                        }
                                     )
                                 }
                                 composable(
@@ -390,7 +393,7 @@ class MainActivity : ComponentActivity() {
                                     )
                                 }
                                 composable(
-                                    route = MainScreens.AUTH.name
+                                    route = MainScreens.AUTH.name,
                                 ) {
                                     LoginScreen(
                                         onSubmit = { username, password ->
@@ -408,20 +411,23 @@ class MainActivity : ComponentActivity() {
                                                     inclusive = true
                                                 }
                                             }
-                                        }
-                                    ) {
-                                        if (mainViewModel.uiState.apiState.status == null) {
-                                            if (mainViewModel.forceFetchUser()) {
-                                                mainViewModel.clearUiState()
-                                                mainViewModel.fetchCurrentUser()
-                                                navController.navigate(MainScreens.EXPLORE.name) {
-                                                    popUpTo(MainScreens.AUTH.name) {
-                                                        inclusive = true
+                                        },
+                                        onInitialLoad = {
+                                            if (mainViewModel.uiState.apiState.status == null) {
+                                                if (mainViewModel.forceFetchUser()) {
+                                                    mainViewModel.clearUiState()
+                                                    mainViewModel.fetchCurrentUser()
+                                                    navController.navigate(MainScreens.EXPLORE.name) {
+                                                        popUpTo(MainScreens.AUTH.name) {
+                                                            inclusive = true
+                                                        }
                                                     }
+                                                    return@LoginScreen true
                                                 }
                                             }
+                                            return@LoginScreen false
                                         }
-                                    }
+                                    )
                                     LaunchedEffect(loginViewModel.uiState.apiState.status) {
                                         if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
                                             mainViewModel.fetchCurrentUser()
@@ -430,6 +436,50 @@ class MainActivity : ComponentActivity() {
                                                     inclusive = true
                                                 }
                                             }
+                                            loginViewModel.clearUiState()
+                                        }
+                                    }
+                                }
+                                composable(
+                                    route = "${MainScreens.AUTH.name}/deep",
+                                ) {
+                                    LoginScreen(
+                                        onSubmit = { username, password ->
+                                            loginViewModel.login(username, password)
+                                        },
+                                        dismissMessage = {
+                                            loginViewModel.dismissMessage()
+                                        },
+                                        uiState = loginViewModel.uiState,
+                                        scaffoldState = scaffoldState,
+                                        navigateToVerify = { navController.navigate(MainScreens.VERIFY.name) },
+                                        navigateToRegister = {
+                                            navController.navigate(MainScreens.REGISTER.name) {
+                                                popUpTo(MainScreens.AUTH.name) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        },
+                                        onInitialLoad = {
+                                            if (mainViewModel.uiState.apiState.status == null) {
+                                                if (mainViewModel.forceFetchUser()) {
+                                                    mainViewModel.clearUiState()
+                                                    mainViewModel.fetchCurrentUser()
+                                                    navController.navigate(MainScreens.EXPLORE.name) {
+                                                        popUpTo(MainScreens.AUTH.name) {
+                                                            inclusive = true
+                                                        }
+                                                    }
+                                                    return@LoginScreen true
+                                                }
+                                            }
+                                            return@LoginScreen false
+                                        }
+                                    )
+                                    LaunchedEffect(loginViewModel.uiState.apiState.status) {
+                                        if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
+                                            mainViewModel.fetchCurrentUser()
+                                            navController.popBackStack()
                                             loginViewModel.clearUiState()
                                         }
                                     }

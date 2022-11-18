@@ -6,18 +6,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Error
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Warning
-import androidx.compose.material.pullrefresh.PullRefreshIndicator
-import androidx.compose.material.pullrefresh.pullRefresh
-import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -25,20 +19,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.stronk.ui.theme.StronkTheme
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role.Companion.Image
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.*
 import com.example.stronk.R
 import com.example.stronk.misc.QrCodeGenerator
-import com.example.stronk.model.ApiStatus
 import com.example.stronk.model.ViewRoutineViewModel
+import com.example.stronk.network.ApiErrorCode
 import com.example.stronk.state.*
 import com.example.stronk.ui.components.*
-import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.ZoneId
 import java.util.*
 
 data class RefreshParams(val uiState: ViewRoutineState, val viewModel: ViewRoutineViewModel)
@@ -50,7 +40,8 @@ data class RefreshParams(val uiState: ViewRoutineState, val viewModel: ViewRouti
 fun ViewRoutineScreen(
     routineId: Int,
     onNavigateToExecution: (routineId: Int) -> Unit,
-    viewRoutineViewModel: ViewRoutineViewModel
+    viewRoutineViewModel: ViewRoutineViewModel,
+    navigateToAuth: () -> Unit,
 ) {
     val state = viewRoutineViewModel.uiState
     val windowInfo = rememberWindowInfo()
@@ -58,6 +49,12 @@ fun ViewRoutineScreen(
         viewRoutineViewModel.initialize()
         viewRoutineViewModel.fetchRoutine(routineId)
     }
+
+    LaunchedEffect(key1 = state.loadState, block = {
+        if (state.loadState.code == ApiErrorCode.UNAUTHORIZED.code) {
+            navigateToAuth()
+        }
+    })
 
     Refreshable(refreshFunction = {
         viewRoutineViewModel.forceFetchRoutine(
@@ -90,7 +87,7 @@ fun ViewRoutineScreen(
                             Modifier
                                 .weight(0.75f)
                                 .fillMaxHeight()
-                                .padding(end=10.dp)
+                                .padding(end = 10.dp)
                         ) {
                             Text(
                                 text = state.routine.name,
@@ -314,7 +311,9 @@ fun ViewRoutineScreen(
                                     modifier = Modifier.padding(bottom = 10.dp)
                                 )
                                 val painter = rememberAsyncImagePainter(model = QrCodeGenerator.qrUrlOfRoutine(state.routine.id))
-                                Box(modifier = Modifier.fillMaxWidth().height(200.dp)) {
+                                Box(modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(200.dp)) {
                                     if(painter.state is AsyncImagePainter.State.Loading) {
                                         Row(modifier = Modifier.fillMaxSize(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                                             CircularProgressIndicator()
@@ -332,7 +331,9 @@ fun ViewRoutineScreen(
                                 }
 
                                 Row(
-                                    modifier = Modifier.padding(top = 10.dp).fillMaxWidth(),
+                                    modifier = Modifier
+                                        .padding(top = 10.dp)
+                                        .fillMaxWidth(),
                                     horizontalArrangement = Arrangement.End
                                 ) {
                                     Button(onClick = {
@@ -357,6 +358,6 @@ fun ViewRoutineScreen(
 @Composable
 fun ExampleRoutineView() {
     StronkTheme() {
-        ViewRoutineScreen(1, {}, viewModel(factory = ViewRoutineViewModel.Factory))
+        ViewRoutineScreen(1, {}, viewModel(factory = ViewRoutineViewModel.Factory), {})
     }
 }
