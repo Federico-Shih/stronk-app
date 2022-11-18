@@ -11,7 +11,8 @@ data class ExecuteRoutineState(
     val cycleIndex: Int = 0,
     val exerciseIndex: Int = 0,
     val page: Int = 0,
-    val finished: Boolean = false
+    val finished: Boolean = false,
+    val tts: Boolean = false
 )
 
 val ExecuteRoutineState.emptyRoutine: Boolean get() = cycles.isEmpty() || cycles.none { it.exList.isNotEmpty() }

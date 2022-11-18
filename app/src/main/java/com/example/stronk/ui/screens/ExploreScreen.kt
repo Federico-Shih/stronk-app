@@ -1,11 +1,5 @@
 package com.example.stronk.ui.screens
 
-import android.Manifest.permission.RECORD_AUDIO
-import android.content.pm.PackageManager
-import android.speech.RecognizerIntent
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -16,13 +10,10 @@ import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.stronk.Manifest
 import com.example.stronk.R
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.network.PreferencesManager
@@ -38,9 +29,6 @@ fun ExploreScreen(
     exploreViewModel: ExploreViewModel = viewModel(factory = ExploreViewModel.Factory),
     onNavigateToViewMore: () -> Unit,
 ) {
-    
-    //
-
     val state = exploreViewModel.uiState
     val scrollState = rememberScrollState()
     val coroutine = rememberCoroutineScope()

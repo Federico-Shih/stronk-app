@@ -1,5 +1,15 @@
 package com.example.stronk.ui.screens
 
+
+import android.Manifest
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -15,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -24,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.example.stronk.R
@@ -45,6 +57,45 @@ fun ExecuteRoutineScreen(
     onGoBack: () -> Unit,
     executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory)
 ) {
+    //text to speech
+    val context = LocalContext.current
+    var hasPermission by remember {
+        mutableStateOf(
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        )
+    }
+
+    val requestPermissionLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { result ->
+            hasPermission = result
+        }
+    LaunchedEffect(true) {
+        requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+    }
+
+    val speechRecognizerDialogLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult()
+    )
+    { result ->
+        if (result.resultCode == ComponentActivity.RESULT_OK) {
+            val data = result.data
+            data?.let {
+                data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.let {
+                    if (it.size > 0){
+                        when {
+                            it[0].contains("next") || it[0].contains("siguiente") -> executeViewModel.next()
+                            it[0].contains("previous") || it[0].contains("anterior") -> executeViewModel.previous()
+                        }
+                    }
+                }
+            }
+        }
+    }
+    //
+
     val pagerState = rememberPagerState(pageCount = 2)
 
     val state = executeViewModel.uiState
@@ -53,7 +104,7 @@ fun ExecuteRoutineScreen(
         executeViewModel.executeRoutine(routineId)
     }
     Scaffold(bottomBar = {
-        if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact||windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded){
+        if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded) {
             if (state.loadState.status == ApiStatus.SUCCESS) {
                 Column(
                     modifier = Modifier
@@ -102,7 +153,29 @@ fun ExecuteRoutineScreen(
     }) {
         Column {
             Tabs(pagerState = pagerState)
-            if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact||windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded) {
+            if (state.tts) {
+                if (!SpeechRecognizer.isRecognitionAvailable(context)) {
+                    Toast.makeText(
+                        context,
+                        "What? We can't hear you"/*cambiar*/,
+                        Toast.LENGTH_LONG
+                    ).show()
+                } else {
+                    val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+                    intent.putExtra(
+                        RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                        RecognizerIntent.LANGUAGE_MODEL_FREE_FORM
+                    )
+                    intent.putExtra(
+                        RecognizerIntent.EXTRA_LANGUAGE,
+                        java.util.Locale.getDefault()
+                    )
+                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "this is a prompt")
+                    speechRecognizerDialogLauncher.launch(intent)
+                }
+                executeViewModel.hideTTS()
+            }
+            if (windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded) {
                 TabsContent(
                     pagerState = pagerState,
                     routineId = routineId,
@@ -287,8 +360,14 @@ fun TabsContent(
                         .fillMaxSize()
                 ) {
                     when (page) {
-                        0 -> DetailedScreen(executeViewModel,windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded)
-                        1 -> ResumedScreen(executeViewModel, windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded)
+                        0 -> DetailedScreen(
+                            executeViewModel,
+                            windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded
+                        )
+                        1 -> ResumedScreen(
+                            executeViewModel,
+                            windowInfo.screenWidthInfo == WindowInfo.WindowType.Compact || windowInfo.screenHeightInfo == WindowInfo.WindowType.Expanded
+                        )
                     }
                 }
             }
@@ -332,8 +411,10 @@ fun TabsContent(
 @Composable
 @ExperimentalAnimationApi
 @ExperimentalFoundationApi
-fun ResumedScreen(executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory),
-shouldShowImage: Boolean = true) {
+fun ResumedScreen(
+    executeViewModel: ExecuteViewModel = viewModel(factory = ExecuteViewModel.Factory),
+    shouldShowImage: Boolean = true
+) {
     val state = executeViewModel.uiState
     val exercise: ExInfo = state.currentCycle.exList[state.exerciseIndex]
     Column(
@@ -350,7 +431,7 @@ shouldShowImage: Boolean = true) {
             currentExercise = state.exerciseIndex,
             currentRepetition = state.cycleRepetition,
             shouldMoveScrolling = state.page == 1,
-            expandedExerciseVariant = if(!shouldShowImage)ExerciseItemType.EXPANDED_NO_PIC else
+            expandedExerciseVariant = if (!shouldShowImage) ExerciseItemType.EXPANDED_NO_PIC else
                 ExerciseItemType.EXPANDED,
         )
     }
@@ -379,7 +460,11 @@ fun DetailedScreen(
                     .clip(RoundedCornerShape(10.dp))
             )
         }
-        TitleAndSubtitle(MainText = exercise.name, SecondaryText = exercise.description, SecondaryTextHeight = 30.dp)
+        TitleAndSubtitle(
+            MainText = exercise.name,
+            SecondaryText = exercise.description,
+            SecondaryTextHeight = 30.dp
+        )
         InfoCycle(
             currentCycle = state.currentCycle.name,
             cycleRepetitions = state.currentCycle.cycleReps,

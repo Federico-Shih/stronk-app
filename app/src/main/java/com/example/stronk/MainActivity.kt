@@ -97,7 +97,19 @@ enum class MainScreens(
         }),
     VIEW_MORE(),
     EXECUTE(
-        hidesBottomNav = true, confirmationOnExit = true
+        hidesBottomNav = true, confirmationOnExit = true, topLeftButtons = {
+            onGetViewModel, _ ->
+            val executeViewModel: ExecuteViewModel = (onGetViewModel[0])() as ExecuteViewModel
+            Row() {
+                IconButton(onClick = { executeViewModel.showTTS() }) {
+                    Icon(
+                        imageVector = Icons.Filled.Mic,
+                        contentDescription = "Text to speech",
+                        tint = MaterialTheme.colors.onPrimary
+                    )
+                }
+            }
+        }
     ),
     VIEW_ROUTINE(topLeftButtons = { onGetViewModel, _ ->
         val viewRoutineViewModel: ViewRoutineViewModel =
@@ -220,6 +232,9 @@ class MainActivity : ComponentActivity() {
                                 }
                                 MainScreens.ROUTINES -> {
                                     listOf({ mainViewModel }, { myRoutinesViewModel })
+                                }
+                                MainScreens.EXECUTE -> {
+                                    listOf { executeViewModel }
                                 }
                                 else -> {
                                     listOf { null }
