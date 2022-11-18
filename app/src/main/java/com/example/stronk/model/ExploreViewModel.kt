@@ -31,6 +31,8 @@ private val preferencesManager: PreferencesManager) : MainNavViewModel() {
 
     private var routinesJob: Job? = null
 
+    val routinePageSize = 2
+
     init {
         getViewPreference()
         getRoutines()
@@ -42,7 +44,7 @@ private val preferencesManager: PreferencesManager) : MainNavViewModel() {
                 getCategories()
                 uiState.categories.forEach {
                     runCatching {
-                        routineRepository.getRoutines(size = 2, category = it.id, orderBy = uiState.order,
+                        routineRepository.getRoutines(size = routinePageSize, category = it.id, orderBy = uiState.order,
                             direction = uiState.ascOrDesc,
                             difficulty = uiState.difficultyFilter,
                             score = uiState.scoreFilter )
@@ -121,7 +123,7 @@ private val preferencesManager: PreferencesManager) : MainNavViewModel() {
         if(search.isNotEmpty()) {
             routinesJob = viewModelScope.launch {
                 runCatching {
-                    routineRepository.getRoutines(size = 10, page = 0, search = search,
+                    routineRepository.getRoutines(size = routinePageSize, page = 0, search = search,
                         orderBy = uiState.order, direction = uiState.ascOrDesc,
                         difficulty = uiState.difficultyFilter,
                         score = uiState.scoreFilter )
@@ -139,7 +141,7 @@ private val preferencesManager: PreferencesManager) : MainNavViewModel() {
         val category = uiState.categories.find { c -> c.id == categoryId } ?: uiState.categories[0]
         routinesJob = viewModelScope.launch {
             runCatching {
-                routineRepository.getRoutines(size = 10, category = category.id, page = category.pages,
+                routineRepository.getRoutines(size = routinePageSize, category = category.id, page = category.pages,
                     orderBy = uiState.order, direction = uiState.ascOrDesc,
                     difficulty = uiState.difficultyFilter,
                     score = uiState.scoreFilter )
@@ -179,6 +181,9 @@ private val preferencesManager: PreferencesManager) : MainNavViewModel() {
     override fun changeViewPreference(viewPreference: PreferencesManager.ViewPreference){
         preferencesManager.saveViewPreferenceExplore(viewPreference)
         uiState = uiState.copy( viewPreference = viewPreference )
+    }
+    fun setCategoryViewMore(category:Int){
+        uiState = uiState.copy(categoryViewMore = category)
     }
 
     companion object {

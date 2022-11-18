@@ -71,11 +71,13 @@ enum class MainScreens(
     val confirmationOnExit: Boolean = false,
     val hidesTopNav: Boolean = false,
 ) {
-    AUTH(hidesBottomNav = true, hidesTopNav = true), REGISTER(
+    AUTH(hidesBottomNav = true, hidesTopNav = true),
+    REGISTER(
         hidesBottomNav = true,
         hidesTopNav = true
     ),
-    VERIFY(hidesBottomNav = true, hidesTopNav = true), EXPLORE(R.string.explore_label,
+    VERIFY(hidesBottomNav = true, hidesTopNav = true),
+    EXPLORE(R.string.explore_label,
         Icons.Filled.Search,
         topLeftButtons = { onGetViewModel, navigateTo ->
             MainNavbarButtons(onGetViewModel, navigateTo, MoreButtons = {
@@ -96,6 +98,7 @@ enum class MainScreens(
                 onGetViewModel, navigateTo
             )
         }),
+    VIEW_MORE(),
     EXECUTE(
         hidesBottomNav = true, confirmationOnExit = true
     ),
@@ -256,6 +259,9 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
                                     },
                                     exploreViewModel = exploreViewModel,
+                                    onNavigateToViewMore = {
+                                        navController.navigate("${MainScreens.VIEW_MORE.name}/explore")
+                                    }
                                 )
                             }
                             composable(route = MainScreens.ROUTINES.name) {
@@ -264,6 +270,26 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
                                     },
                                     myRoutinesViewModel = myRoutinesViewModel,
+                                    onNavigateToViewMore = { type ->
+                                        navController.navigate("${MainScreens.VIEW_MORE.name}/$type")
+                                    }
+                                )
+                            }
+                            composable(
+                                route = "${MainScreens.VIEW_MORE.name}/{type}",
+                                arguments = listOf(navArgument("type") {
+                                    type = NavType.StringType
+                                })
+                            ) { backStackEntry ->
+                                val type =
+                                    backStackEntry.arguments?.getString("type") ?: "myroutines"
+                                ViewMoreScreen(
+                                    onNavigateToViewRoutine = { routineId ->
+                                        navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+                                    },
+                                    exploreViewModel = if (type == "explore") exploreViewModel else null,
+                                    myRoutinesViewModel = if (type == "myroutines" || type == "favourites") myRoutinesViewModel else null,
+                                    isFavorite = type == "favourites"
                                 )
                             }
                             composable(

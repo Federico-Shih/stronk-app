@@ -19,7 +19,8 @@ import com.example.stronk.ui.components.*
 @Composable
 fun MyRoutinesScreen(
     onNavigateToViewRoutine: (routineId: Int) -> Unit,
-    myRoutinesViewModel: MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory)
+    myRoutinesViewModel: MyRoutinesViewModel = viewModel(factory = MyRoutinesViewModel.Factory),
+    onNavigateToViewMore: (type: String) -> Unit,
 ) {
     val state = myRoutinesViewModel.uiState
 
@@ -30,44 +31,33 @@ fun MyRoutinesScreen(
                 .verticalScroll(rememberScrollState())
         ) {
             LoadDependingContent(loadState = state.loadState) {
-
-                if(state.viewPreference==PreferencesManager.ViewPreference.LIST) {
-                    RoutineButtonList(
-                        state.myRoutines,
-                        stringResource(R.string.MyRoutines),
-                        { myRoutinesViewModel.moreMyRoutines() },
-                        onNavigateToViewRoutine,
-                        state.isLastPageMyRoutines,
-                        stringResource(id = R.string.no_my_routines)
-                    )
-                    Divider(modifier = Modifier.padding(top = 5.dp))
-                    RoutineButtonList(
-                        state.favouriteRoutines,
-                        stringResource(R.string.FavRoutines),
-                        { myRoutinesViewModel.moreFavouriteRoutines() },
-                        onNavigateToViewRoutine,
-                        state.isLastPageFav,
-                        stringResource(id = R.string.no_fav_routines)
-                    )
-                }else{
-                    RoutineButtonGrid(
-                        routineList = state.myRoutines,
-                        title = stringResource(R.string.MyRoutines),
-                        onNavigateToViewRoutine = onNavigateToViewRoutine,
-                        onGetMoreRoutines = { myRoutinesViewModel.moreMyRoutines() },
-                        isLastPage = state.isLastPageMyRoutines,
-                        noRoutinesMessage = stringResource(id = R.string.no_my_routines)
-                    )
-                    Divider(modifier = Modifier.padding(top = 5.dp))
-                    RoutineButtonGrid(
-                        routineList = state.favouriteRoutines,
-                        title = stringResource(R.string.FavRoutines),
-                        onNavigateToViewRoutine = onNavigateToViewRoutine,
-                        onGetMoreRoutines = { myRoutinesViewModel.moreFavouriteRoutines() },
-                        isLastPage = state.isLastPageFav,
-                        noRoutinesMessage = stringResource(id = R.string.no_fav_routines)
-                    )
-                }
+                RoutineButtonGroup(
+                    routineList = if (state.myRoutines.size > myRoutinesViewModel.myRoutinesPageSize)
+                        state.myRoutines.subList(
+                            0,
+                            myRoutinesViewModel.myRoutinesPageSize
+                        ) else state.myRoutines,
+                    title = stringResource(R.string.MyRoutines),
+                    onNavigateToViewRoutine = onNavigateToViewRoutine,
+                    onGetMoreRoutines = { onNavigateToViewMore("myroutines") },
+                    isLastPage = state.myRoutines.size < myRoutinesViewModel.myRoutinesPageSize,
+                    noRoutinesMessage = stringResource(id = R.string.no_my_routines),
+                    wantsList = state.viewPreference == PreferencesManager.ViewPreference.LIST
+                )
+                Divider(modifier = Modifier.padding(top = 5.dp))
+                RoutineButtonGroup(
+                    routineList = if (state.favouriteRoutines.size > myRoutinesViewModel.favoritePageSize)
+                        state.favouriteRoutines.subList(
+                            0,
+                            myRoutinesViewModel.favoritePageSize
+                        ) else state.favouriteRoutines,
+                    title = stringResource(R.string.FavRoutines),
+                    onNavigateToViewRoutine = onNavigateToViewRoutine,
+                    onGetMoreRoutines = { onNavigateToViewMore("favourites") },
+                    isLastPage = state.favouriteRoutines.size < myRoutinesViewModel.favoritePageSize,
+                    noRoutinesMessage = stringResource(id = R.string.no_fav_routines),
+                    wantsList = state.viewPreference == PreferencesManager.ViewPreference.LIST
+                )
             }
         }
     }

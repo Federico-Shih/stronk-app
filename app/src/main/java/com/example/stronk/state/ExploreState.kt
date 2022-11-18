@@ -22,7 +22,8 @@ data class ExploreState(
     val showFilters: Boolean = false,
     val difficultyFilter: String? = null,
     val scoreFilter: Int? = null,
-    val viewPreference: PreferencesManager.ViewPreference = PreferencesManager.ViewPreference.GRID
+    val viewPreference: PreferencesManager.ViewPreference = PreferencesManager.ViewPreference.GRID,
+    val categoryViewMore: Int? = null
 )
 
 val listForFilterIndex: List<String> = listOf("id", "name", "score", "difficulty", "date")

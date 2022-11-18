@@ -25,8 +25,8 @@ class MyRoutinesViewModel(
         get() = uiState.viewPreference
 
     private var fetchJob: Job? = null
-    private val favoritePageSize = 3
-    private val myRoutinesPageSize = 3
+    val favoritePageSize = 3
+    val myRoutinesPageSize = 3
 
     init {
         getViewPreference()

@@ -29,7 +29,8 @@ import com.example.stronk.ui.components.*
 @Composable
 fun ExploreScreen(
     onNavigateToViewRoutine: (routineId: Int) -> Unit,
-    exploreViewModel: ExploreViewModel = viewModel(factory = ExploreViewModel.Factory)
+    exploreViewModel: ExploreViewModel = viewModel(factory = ExploreViewModel.Factory),
+    onNavigateToViewMore: () -> Unit,
 ) {
     val state = exploreViewModel.uiState
 
@@ -138,14 +139,18 @@ fun ExploreScreen(
                 }
             } else {
                 //RoutineLayoutButton(layoutSelected = state.viewPreference, changeLayout ={preference-> exploreViewModel.changeViewPreference(preference)}  )
-                state.categories.forEach { category ->
+                state.categories.forEachIndexed { index,category ->
                     if (category.routines.isNotEmpty()) {
                         RoutineButtonGroup(
-                            routineList = category.routines,
+                            routineList = if(category.routines.size>exploreViewModel.routinePageSize)
+                                category.routines.subList(0,exploreViewModel.routinePageSize) else category.routines,
                             title = category.name,
                             onNavigateToViewRoutine = onNavigateToViewRoutine,
-                            onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
-                            isLastPage = category.isLastPage,
+                            onGetMoreRoutines = {
+                                exploreViewModel.setCategoryViewMore(index)
+                                onNavigateToViewMore()
+                            },
+                            isLastPage = category.routines.size < exploreViewModel.routinePageSize,
                             noRoutinesMessage = stringResource(R.string.no_routines_category),
                             wantsList = (state.viewPreference==PreferencesManager.ViewPreference.LIST)
                         )
@@ -160,20 +165,20 @@ fun ExploreScreen(
 
 }
 
-@Preview
-@Composable
-fun PreviewExplore() {
-    Box {
-        val navController = rememberNavController()
-        NavHost(
-            navController = navController,
-            startDestination = MainScreens.EXPLORE.name
-        ) {
-            composable(route = MainScreens.EXPLORE.name) {
-                ExploreScreen(onNavigateToViewRoutine = { routineId ->
-                    navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
-                })
-            }
-        }
-    }
-}
+//@Preview
+//@Composable
+//fun PreviewExplore() {
+//    Box {
+//        val navController = rememberNavController()
+//        NavHost(
+//            navController = navController,
+//            startDestination = MainScreens.EXPLORE.name
+//        ) {
+//            composable(route = MainScreens.EXPLORE.name) {
+//                ExploreScreen(onNavigateToViewRoutine = { routineId ->
+//                    navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+//                })
+//            }
+//        }
+//    }
+//}
