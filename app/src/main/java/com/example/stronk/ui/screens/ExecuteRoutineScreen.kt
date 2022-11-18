@@ -82,7 +82,7 @@ fun ExecuteRoutineScreen(
             val data = result.data
             data?.let {
                 data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.let {
-                    if (it.size > 0){
+                    if (it.size > 0) {
                         when {
                             it[0].contains("next") || it[0].contains("siguiente") -> executeViewModel.next()
                             it[0].contains("previous") || it[0].contains("anterior") -> executeViewModel.previous()
@@ -171,7 +171,10 @@ fun ExecuteRoutineScreen(
                         RecognizerIntent.EXTRA_LANGUAGE,
                         java.util.Locale.getDefault()
                     )
-                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, stringResource(id = R.string.listening))
+                    intent.putExtra(
+                        RecognizerIntent.EXTRA_PROMPT,
+                        stringResource(id = R.string.listening)
+                    )
                     speechRecognizerDialogLauncher.launch(intent)
                 }
                 executeViewModel.hideTTS()
@@ -375,7 +378,10 @@ fun TabsContent(
         }
         if (executeViewModel.uiState.finished) {
             Dialog(
-                onDismissRequest = { onGoBack() },
+                onDismissRequest = {
+                    onGoBack()
+                    executeViewModel.resetFinish()
+                },
                 properties = DialogProperties(
                     dismissOnBackPress = false,
                     dismissOnClickOutside = false
@@ -397,6 +403,7 @@ fun TabsContent(
                         ) {
                             Button(onClick = {
                                 onGoBack()
+                                executeViewModel.resetFinish()
                             }) {
                                 Text(text = stringResource(id = R.string.finish).uppercase())
                             }
