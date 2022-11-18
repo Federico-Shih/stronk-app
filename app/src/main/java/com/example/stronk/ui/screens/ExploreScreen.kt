@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -69,14 +70,34 @@ fun ExploreScreen(
                         Card(backgroundColor = MaterialTheme.colors.background) {
                             Column(
                                 modifier = Modifier
-                                    .padding(16.dp)
+                                    .padding(horizontal = 16.dp, vertical = 8.dp)
                                     .wrapContentHeight()
                             ) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.order_and_filters),
+                                        style = MaterialTheme.typography.h5
+                                    )
+                                    IconButton(onClick = {
+                                        exploreViewModel.hideFilterMenu()
+                                    }) {
+                                        Icon(
+                                            imageVector = Icons.Filled.Close,
+                                            contentDescription = stringResource(id = R.string.close)
+                                        )
+                                    }
+                                }
                                 Column(
                                     modifier = Modifier
                                         .height(500.dp)
                                         .verticalScroll(rememberScrollState())
                                 ) {
+                                    Divider(modifier = Modifier.padding(bottom = 10.dp))
                                     Text(
                                         text = "${stringResource(id = R.string.OrderBy)}:",
                                         style = MaterialTheme.typography.h6,
@@ -190,18 +211,6 @@ fun ExploreScreen(
                                             }),
                                         selectedIndex = state.scoreFilteringIndex
                                     )
-                                }
-                                Row(
-                                    modifier = Modifier
-                                        .padding(top = 10.dp)
-                                        .fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.End
-                                ) {
-                                    Button(onClick = {
-                                        exploreViewModel.hideFilterMenu()
-                                    }) {
-                                        Text(text = stringResource(id = R.string.apply).uppercase())
-                                    }
                                 }
                             }
                         }

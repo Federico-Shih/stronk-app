@@ -113,5 +113,6 @@
     <string name="unauthorized">Unauthorized</string>
     <string name="email_not_verified">Email Not Verified</string>
     <string name="forbidden">Forbidden Request</string>
+    <string name="order_and_filters">Order and Filters</string>
 
 </resources>

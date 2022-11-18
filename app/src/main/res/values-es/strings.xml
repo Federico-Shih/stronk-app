@@ -114,5 +114,6 @@
     <string name="unauthorized">No Autorizado</string>
     <string name="email_not_verified">Correo Electrónico No Verificado</string>
     <string name="forbidden">Solicitud Prohibida</string>
+    <string name="order_and_filters">Orden y Filtros</string>
 
 </resources>
