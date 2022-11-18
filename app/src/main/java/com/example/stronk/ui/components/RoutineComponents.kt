@@ -492,7 +492,7 @@ fun ExerciseItem(
                     }
                     if (variant == ExerciseItemType.EXPANDED) {
                         AsyncImage(
-                            model = exercise.imageUrl?:"",//TODO Imagen default
+                            model = exercise.imageUrl?:"",
                             contentDescription = null,
                             modifier = Modifier
                                 .size(width = 140.dp, height = 100.dp)

@@ -213,7 +213,7 @@ fun ExecuteRoutineScreen(
                                     state.currentCycle.exList[state.exerciseIndex]
                                 if (pagerState.currentPage == 0) {
                                     AsyncImage(
-                                        model = exercise.imageUrl ?: "",//TODO imagen default
+                                        model = exercise.imageUrl ?: "",
                                         contentDescription = null,
                                         modifier = Modifier
                                             .sizeIn(maxHeight = 80.dp)
@@ -471,7 +471,7 @@ fun DetailedScreen(
         TitleAndSubtitle(
             MainText = exercise.name,
             SecondaryText = exercise.description,
-            SecondaryTextHeight = 30.dp
+            SecondaryTextHeight = if (shouldshowImage) 70.dp else 30.dp
         )
         InfoCycle(
             currentCycle = state.currentCycle.name,

@@ -13,13 +13,3 @@ val DarkestForest = Color(0xFF293316)
 val TwilightZone = Color(0xFF171D12)
 val MustardGreen = Color(0xFFA1A834)
 val LiveRed = Color(0xFFC52212)
-
-/* COLORES WEB
-val LightPurple= Color(0xFF5A31FF)
-val DarkBlue = Color(0xFF170E46)
-val ContBackground = Color(0xFFEEE0FF)
-val ContBackVar = Color(0xFFEDCDFF)
-val LiveOrange = Color(0xFFFD8E01)
-val LiveOrangeVar = Color(0xFFFDBE01)
-val LiveRed = Color(0xFFD21502)
- */

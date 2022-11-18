@@ -42,7 +42,7 @@ fun RoutineControls(
     var seconds: Long = (totalremainingMilliSeconds / 1000) % 60
     var changed: Boolean by remember { mutableStateOf(false) }
 
-    /*TODO Temporizador Alerta */
+
 
     LaunchedEffect(key1 = totalremainingMilliSeconds, key2 = timerRunning) {
         if (timerRunning && totalremainingMilliSeconds > 0L) {
