@@ -13,6 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.toUpperCase
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stronk.R
 import com.example.stronk.model.ApiStatus
@@ -117,7 +118,7 @@ fun VerifyScreen(
             if (uiState.apiState.status == ApiStatus.LOADING) {
                 CircularProgressIndicator(color = Color.White)
             } else {
-                Text(stringResource(id = R.string.verify_token_label).uppercase())
+                Text(stringResource(id = R.string.verify_token_label).uppercase(), fontSize = 20.sp)
             }
         }
 

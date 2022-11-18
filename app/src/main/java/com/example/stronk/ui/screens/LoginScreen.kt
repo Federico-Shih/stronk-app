@@ -180,7 +180,7 @@ fun LoginScreen(
                     CircularProgressIndicator(color = Color.White)
                 }
             } else {
-                Text(stringResource(id = R.string.login_button_label), fontSize = 20.sp)
+                Text(stringResource(id = R.string.login_button_label).uppercase(), fontSize = 20.sp)
             }
         }
 
