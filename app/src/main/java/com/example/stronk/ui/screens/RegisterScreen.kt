@@ -1,7 +1,9 @@
 package com.example.stronk.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
@@ -10,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -86,252 +89,268 @@ fun RegisterForm(
     val lastnameErr = uiState.lastnameInputState
     val emailErr = uiState.emailInputState
 
-    println(passError)
-    Column(modifier = Modifier.padding(20.dp)) {
+    Column(
+        modifier = Modifier
+            .padding(20.dp)
+            .fillMaxHeight()
+            .fillMaxWidth(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         var username by remember { mutableStateOf("") }
         var firstname by remember { mutableStateOf("") }
         var lastname by remember { mutableStateOf("") }
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
         var confirmPassword by remember { mutableStateOf("") }
+        val scrollState = rememberScrollState()
 
         var passwordVisible by rememberSaveable { mutableStateOf(false) }
-        Spacer(modifier = Modifier.height(50.dp))
-        Text(
-            stringResource(id = R.string.register_label),
-            modifier = Modifier.padding(top = 4.dp, start = 4.dp),
-            style = MaterialTheme.typography.h4
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Divider(
-            color = MaterialTheme.colors.primary, thickness = 10.dp,
-            modifier = Modifier
-                .fillMaxWidth(0.15F)
-                .padding(start = 10.dp, bottom = 3.dp)
-        )
-        OutlinedTextField(
-            value = username,
-            modifier = Modifier
-                .padding(bottom = 3.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textStyle = MaterialTheme.typography.subtitle1,
-            onValueChange = {
-                username = it
-                viewModel.clearUsername()
-            },
-            label = { Text(stringResource(id = R.string.username_label)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
-                unfocusedBorderColor = MaterialTheme.colors.secondary,
-                errorBorderColor = MaterialTheme.colors.error
-            ),
-            isError = usernameErr.hasError
-        )
-        if (usernameErr.hasError) {
+        Column(modifier = Modifier
+            .fillMaxHeight()
+            .weight(1F)
+            .verticalScroll(scrollState)
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
             Text(
-                text = when (usernameErr.errorCode) {
-                    InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
-                    ApiErrorCode.DATA_CONSTRAINT.code -> stringResource(id = R.string.email_username_taken_err)
-                    else -> ""
-                },
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(start = 16.dp)
+                stringResource(id = R.string.register_label),
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp),
+                style = MaterialTheme.typography.h4
             )
-        }
-        OutlinedTextField(
-            value = firstname,
-            modifier = Modifier
-                .padding(bottom = 3.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textStyle = MaterialTheme.typography.subtitle1,
-            onValueChange = {
-                firstname = it
-                viewModel.clearFirstname()
-            },
-            label = { Text(stringResource(id = R.string.firstname_label)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
-                unfocusedBorderColor = MaterialTheme.colors.secondary,
-                errorBorderColor = MaterialTheme.colors.error
-            ),
-            isError = firstnameErr.hasError
-        )
-        if (firstnameErr.hasError) {
-            Text(
-                text = when (firstnameErr.errorCode) {
-                    InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
-                    else -> ""
-                },
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(start = 16.dp)
+            Spacer(modifier = Modifier.height(5.dp))
+            Divider(
+                color = MaterialTheme.colors.primary, thickness = 10.dp,
+                modifier = Modifier
+                    .fillMaxWidth(0.15F)
+                    .padding(start = 10.dp, bottom = 3.dp)
             )
-        }
-        OutlinedTextField(
-            value = lastname,
-            modifier = Modifier
-                .padding(bottom = 3.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textStyle = MaterialTheme.typography.subtitle1,
-            onValueChange = {
-                lastname = it
-                viewModel.clearLastname()
-            },
-            label = { Text(stringResource(id = R.string.lastname_label)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
-                unfocusedBorderColor = MaterialTheme.colors.secondary,
-                errorBorderColor = MaterialTheme.colors.error
-            ),
-            isError = lastnameErr.hasError
-        )
-        if (lastnameErr.hasError) {
-            Text(
-                text = when (lastnameErr.errorCode) {
-                    InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
-                    else -> ""
+            OutlinedTextField(
+                value = username,
+                modifier = Modifier
+                    .padding(bottom = 3.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                textStyle = MaterialTheme.typography.subtitle1,
+                onValueChange = {
+                    username = it
+                    viewModel.clearUsername()
                 },
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(start = 16.dp)
+                label = { Text(stringResource(id = R.string.username_label)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                    unfocusedBorderColor = MaterialTheme.colors.secondary,
+                    errorBorderColor = MaterialTheme.colors.error
+                ),
+                isError = usernameErr.hasError
             )
-        }
-        OutlinedTextField(
-            value = email,
-            modifier = Modifier
-                .padding(bottom = 3.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textStyle = MaterialTheme.typography.subtitle1,
-            onValueChange = {
-                email = it
-                viewModel.clearEmail()
-            },
-            label = { Text(stringResource(id = R.string.email_label)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
-                unfocusedBorderColor = MaterialTheme.colors.secondary,
-                errorBorderColor = MaterialTheme.colors.error
-            ),
-            isError = emailErr.hasError
-        )
-        if (emailErr.hasError) {
-            Text(
-                text = when (emailErr.errorCode) {
-                    InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
-                    ApiErrorCode.DATA_CONSTRAINT.code -> stringResource(id = R.string.email_username_taken_err)
-                    else -> ""
+            if (usernameErr.hasError) {
+                Text(
+                    text = when (usernameErr.errorCode) {
+                        InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
+                        ApiErrorCode.DATA_CONSTRAINT.code -> stringResource(id = R.string.email_username_taken_err)
+                        else -> ""
+                    },
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            OutlinedTextField(
+                value = firstname,
+                modifier = Modifier
+                    .padding(bottom = 3.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                textStyle = MaterialTheme.typography.subtitle1,
+                onValueChange = {
+                    firstname = it
+                    viewModel.clearFirstname()
                 },
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(start = 16.dp)
+                label = { Text(stringResource(id = R.string.firstname_label)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                    unfocusedBorderColor = MaterialTheme.colors.secondary,
+                    errorBorderColor = MaterialTheme.colors.error
+                ),
+                isError = firstnameErr.hasError
             )
-        }
-        OutlinedTextField(
-            value = password,
-            modifier = Modifier
-                .padding(bottom = 3.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textStyle = MaterialTheme.typography.subtitle1,
-            onValueChange = {
-                password = it
-                viewModel.clearPassword()
-            },
-            label = { Text(stringResource(id = R.string.password_label)) },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
-                unfocusedBorderColor = MaterialTheme.colors.secondary,
-                errorBorderColor = MaterialTheme.colors.error
-            ),
-            trailingIcon = {
-                val image = if (passwordVisible)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
+            if (firstnameErr.hasError) {
+                Text(
+                    text = when (firstnameErr.errorCode) {
+                        InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
+                        else -> ""
+                    },
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            OutlinedTextField(
+                value = lastname,
+                modifier = Modifier
+                    .padding(bottom = 3.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                textStyle = MaterialTheme.typography.subtitle1,
+                onValueChange = {
+                    lastname = it
+                    viewModel.clearLastname()
+                },
+                label = { Text(stringResource(id = R.string.lastname_label)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                    unfocusedBorderColor = MaterialTheme.colors.secondary,
+                    errorBorderColor = MaterialTheme.colors.error
+                ),
+                isError = lastnameErr.hasError
+            )
+            if (lastnameErr.hasError) {
+                Text(
+                    text = when (lastnameErr.errorCode) {
+                        InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
+                        else -> ""
+                    },
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            OutlinedTextField(
+                value = email,
+                modifier = Modifier
+                    .padding(bottom = 3.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                textStyle = MaterialTheme.typography.subtitle1,
+                onValueChange = {
+                    email = it
+                    viewModel.clearEmail()
+                },
+                label = { Text(stringResource(id = R.string.email_label)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                    unfocusedBorderColor = MaterialTheme.colors.secondary,
+                    errorBorderColor = MaterialTheme.colors.error
+                ),
+                isError = emailErr.hasError
+            )
+            if (emailErr.hasError) {
+                Text(
+                    text = when (emailErr.errorCode) {
+                        InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
+                        ApiErrorCode.DATA_CONSTRAINT.code -> stringResource(id = R.string.email_username_taken_err)
+                        else -> ""
+                    },
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            OutlinedTextField(
+                value = password,
+                modifier = Modifier
+                    .padding(bottom = 3.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                textStyle = MaterialTheme.typography.subtitle1,
+                onValueChange = {
+                    password = it
+                    viewModel.clearPassword()
+                },
+                label = { Text(stringResource(id = R.string.password_label)) },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                    unfocusedBorderColor = MaterialTheme.colors.secondary,
+                    errorBorderColor = MaterialTheme.colors.error
+                ),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
 
-                val description = if (passwordVisible) "Hide password" else "Show password"
+                    val description = if (passwordVisible) "Hide password" else "Show password"
 
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, description)
-                }
-            },
-            isError = uiState.passwordInputState.hasError
-        )
-        OutlinedTextField(
-            value = confirmPassword,
-            modifier = Modifier
-                .padding(bottom = 3.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textStyle = MaterialTheme.typography.subtitle1,
-            onValueChange = {
-                confirmPassword = it
-                viewModel.clearPassword()
-            },
-            label = { Text(stringResource(id = R.string.confirmpass_label)) },
-            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
-                unfocusedBorderColor = MaterialTheme.colors.secondary,
-                errorBorderColor = MaterialTheme.colors.error
-            ),
-            trailingIcon = {
-                val image = if (passwordVisible)
-                    Icons.Filled.Visibility
-                else Icons.Filled.VisibilityOff
-
-                val description = if (passwordVisible) "Hide password" else "Show password"
-
-                IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                    Icon(imageVector = image, description)
-                }
-            },
-            isError = passError.hasError
-        )
-        if (passError.hasError) {
-            Text(
-                text = when (passError.errorCode) {
-                    InputError.PASSNOTMATCH.code -> stringResource(id = R.string.pass_no_match)
-                    InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
-                    else -> {
-                        ""
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, description)
                     }
                 },
-                color = MaterialTheme.colors.error,
-                style = MaterialTheme.typography.body2,
-                modifier = Modifier.padding(start = 16.dp)
+                isError = uiState.passwordInputState.hasError
             )
-        }
-        TextButton(onClick = { navigateToLogin() }) {
-            Text(
-                text = stringResource(id = R.string.has_user_cta),
-                color = MaterialTheme.colors.secondary
+            OutlinedTextField(
+                value = confirmPassword,
+                modifier = Modifier
+                    .padding(bottom = 3.dp)
+                    .fillMaxWidth()
+                    .align(Alignment.CenterHorizontally),
+                textStyle = MaterialTheme.typography.subtitle1,
+                onValueChange = {
+                    confirmPassword = it
+                    viewModel.clearPassword()
+                },
+                label = { Text(stringResource(id = R.string.confirmpass_label)) },
+                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                colors = TextFieldDefaults.outlinedTextFieldColors(
+                    focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                    unfocusedBorderColor = MaterialTheme.colors.secondary,
+                    errorBorderColor = MaterialTheme.colors.error
+                ),
+                trailingIcon = {
+                    val image = if (passwordVisible)
+                        Icons.Filled.Visibility
+                    else Icons.Filled.VisibilityOff
+
+                    val description = if (passwordVisible) "Hide password" else "Show password"
+
+                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                        Icon(imageVector = image, description)
+                    }
+                },
+                isError = passError.hasError
             )
+            if (passError.hasError) {
+                Text(
+                    text = when (passError.errorCode) {
+                        InputError.PASSNOTMATCH.code -> stringResource(id = R.string.pass_no_match)
+                        InputError.EMPTY_ERROR.code -> stringResource(id = R.string.empty_input)
+                        else -> {
+                            ""
+                        }
+                    },
+                    color = MaterialTheme.colors.error,
+                    style = MaterialTheme.typography.body2,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+            }
+            TextButton(onClick = { navigateToLogin() }) {
+                Text(
+                    text = stringResource(id = R.string.has_user_cta),
+                    color = MaterialTheme.colors.secondary
+                )
+            }
         }
         Button(
             onClick = { onSubmit(username, email, firstname, lastname, password, confirmPassword) },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .fillMaxWidth(0.9F)
+                .height(60.dp)
         ) {
-            Text(stringResource(id = R.string.register_button_label).uppercase())
-        }
-        if (uiState.apiState.status == ApiStatus.LOADING) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
+            if (uiState.apiState.status == ApiStatus.LOADING) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            } else {
+                Text(stringResource(id = R.string.register_button_label).uppercase())
             }
         }
+
     }
 }

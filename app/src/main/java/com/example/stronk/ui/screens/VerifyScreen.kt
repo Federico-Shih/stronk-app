@@ -7,6 +7,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -31,62 +32,73 @@ fun VerifyScreen(
     val uiState = registerViewModel.uiState
     var verifyToken by rememberSaveable { mutableStateOf("") }
     var emailInput by rememberSaveable { mutableStateOf("") }
-    Column(modifier = modifier.padding(20.dp)) {
-        Spacer(modifier = Modifier.height(50.dp))
-        Text(
-            stringResource(id = R.string.verify_email_label),
-            modifier = Modifier.padding(top = 4.dp, start = 4.dp),
-            style = MaterialTheme.typography.h4
-        )
-        Spacer(modifier = Modifier.height(5.dp))
-        Divider(
-            color = MaterialTheme.colors.primary, thickness = 10.dp,
+    Column(
+        modifier = modifier
+            .padding(20.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth(0.15F)
-                .padding(start = 10.dp, bottom = 3.dp)
-        )
-        if (email == "") {
+                .fillMaxHeight()
+                .weight(1F)
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
+            Text(
+                stringResource(id = R.string.verify_email_label),
+                modifier = Modifier.padding(top = 4.dp, start = 4.dp),
+                style = MaterialTheme.typography.h4
+            )
+            Spacer(modifier = Modifier.height(5.dp))
+            Divider(
+                color = MaterialTheme.colors.primary, thickness = 10.dp,
+                modifier = Modifier
+                    .fillMaxWidth(0.15F)
+                    .padding(start = 10.dp, bottom = 3.dp)
+            )
+            if (email == "") {
+                OutlinedTextField(
+                    value = emailInput,
+                    modifier = Modifier
+                        .padding(bottom = 3.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.CenterHorizontally),
+                    textStyle = MaterialTheme.typography.subtitle1,
+                    onValueChange = {
+                        emailInput = it
+                    },
+                    label = { Text(stringResource(id = R.string.email_label)) },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = MaterialTheme.colors.secondaryVariant,
+                        unfocusedBorderColor = MaterialTheme.colors.secondary,
+                        errorBorderColor = MaterialTheme.colors.error
+                    ),
+                )
+            }
             OutlinedTextField(
-                value = emailInput,
+                value = verifyToken,
                 modifier = Modifier
                     .padding(bottom = 3.dp)
                     .fillMaxWidth()
                     .align(Alignment.CenterHorizontally),
                 textStyle = MaterialTheme.typography.subtitle1,
                 onValueChange = {
-                    emailInput = it
+                    if (it.length <= 6) {
+                        verifyToken = it.uppercase()
+                    }
                 },
-                label = { Text(stringResource(id = R.string.email_label)) },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+                label = { Text(stringResource(id = R.string.verify_token_label)) },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
                 colors = TextFieldDefaults.outlinedTextFieldColors(
                     focusedBorderColor = MaterialTheme.colors.secondaryVariant,
                     unfocusedBorderColor = MaterialTheme.colors.secondary,
                     errorBorderColor = MaterialTheme.colors.error
                 ),
             )
-        }
-        OutlinedTextField(
-            value = verifyToken,
-            modifier = Modifier
-                .padding(bottom = 3.dp)
-                .fillMaxWidth()
-                .align(Alignment.CenterHorizontally),
-            textStyle = MaterialTheme.typography.subtitle1,
-            onValueChange = {
-                if (it.length <= 6) {
-                    verifyToken = it.uppercase()
-                }
-            },
-            label = { Text(stringResource(id = R.string.verify_token_label)) },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
-            colors = TextFieldDefaults.outlinedTextFieldColors(
-                focusedBorderColor = MaterialTheme.colors.secondaryVariant,
-                unfocusedBorderColor = MaterialTheme.colors.secondary,
-                errorBorderColor = MaterialTheme.colors.error
-            ),
-        )
-        if (email != "") {
-            Text(text = stringResource(id = R.string.verify_note_label))
+            if (email != "") {
+                Text(text = stringResource(id = R.string.verify_note_label))
+            }
         }
         Button(
             onClick = {
@@ -98,18 +110,17 @@ fun VerifyScreen(
                     onVerified
                 )
             },
-            modifier = Modifier.align(Alignment.CenterHorizontally)
+            modifier = Modifier
+                .fillMaxWidth(0.9F)
+                .height(60.dp)
         ) {
-            Text(stringResource(id = R.string.verify_token_label).uppercase())
-        }
-        if (uiState.apiState.status == ApiStatus.LOADING) {
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                CircularProgressIndicator()
+            if (uiState.apiState.status == ApiStatus.LOADING) {
+                CircularProgressIndicator(color = Color.White)
+            } else {
+                Text(stringResource(id = R.string.verify_token_label).uppercase())
             }
         }
+
     }
     val context = LocalContext.current
     if (uiState.apiState.status == ApiStatus.FAILURE) {

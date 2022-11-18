@@ -185,20 +185,22 @@ class MainActivity : ComponentActivity() {
                 viewModel(factory = MyRoutinesViewModel.Factory)
             val exploreViewModel: ExploreViewModel = viewModel(factory = ExploreViewModel.Factory)
             var showConfirmExitDialog by remember { mutableStateOf(false) }
-            val loginViewModel: LoginViewModel =
-                viewModel(factory = LoginViewModel.Factory)
+
             val registerViewModel: RegisterViewModel =
                 viewModel(factory = RegisterViewModel.Factory)
 
             StronkTheme {
                 val scaffoldState: ScaffoldState = rememberScaffoldState()
                 val windowInfo = rememberWindowInfo()
+                val loginViewModel: LoginViewModel =
+                    viewModel(factory = LoginViewModel.Factory)
                 Scaffold(topBar = {
                     if (!currentScreen.hidesTopNav) {
                         AppBar(screen = when (currentScreen.name) {
-                            MainScreens.EXECUTE.name -> executeViewModel.uiState.executingRoutine?.name ?: ""
-                                                                  else -> stringResource(id = currentScreen.label)
-                                                                  },
+                            MainScreens.EXECUTE.name -> executeViewModel.uiState.executingRoutine?.name
+                                ?: ""
+                            else -> stringResource(id = currentScreen.label)
+                        },
                             canGoBack = currentScreen !in bottomBarScreens,
                             goBack = {
                                 if (!currentScreen.confirmationOnExit) {
@@ -397,7 +399,6 @@ class MainActivity : ComponentActivity() {
                                             if (mainViewModel.forceFetchUser()) {
                                                 mainViewModel.clearUiState()
                                                 mainViewModel.fetchCurrentUser()
-                                                myRoutinesViewModel.forceFetchRoutines()
                                                 navController.navigate(MainScreens.EXPLORE.name) {
                                                     popUpTo(MainScreens.AUTH.name) {
                                                         inclusive = true
@@ -409,7 +410,6 @@ class MainActivity : ComponentActivity() {
                                     LaunchedEffect(loginViewModel.uiState.apiState.status) {
                                         if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
                                             mainViewModel.fetchCurrentUser()
-                                            myRoutinesViewModel.forceFetchRoutines()
                                             navController.navigate(MainScreens.EXPLORE.name) {
                                                 popUpTo(MainScreens.AUTH.name) {
                                                     inclusive = true
