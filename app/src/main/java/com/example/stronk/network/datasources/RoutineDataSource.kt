@@ -25,7 +25,6 @@ class RoutineDataSource(
         orderBy: String? = null,
         direction: String? = null
     ): Paginated<RoutineData> {
-
         return handleApiResponse {
             routineApiService.getRoutines(
                 category,

@@ -42,6 +42,11 @@ fun SearchBar(
                         contentDescription = stringResource(R.string.clear)
                     )
                 }
+            } else {
+                Icon(
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = stringResource(id = R.string.searching)
+                )
             }
         },
     )
