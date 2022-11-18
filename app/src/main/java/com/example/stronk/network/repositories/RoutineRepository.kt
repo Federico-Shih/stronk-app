@@ -65,8 +65,8 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
                 exerciseInfo.add(
                     ExInfo(
                         name = exData.exercise.name,
-                        reps = exData.repetitions,
-                        duration = exData.duration,
+                        reps = if(exData.repetitions == 999) null else exData.repetitions ,
+                        duration = if(exData.duration == 999) null else exData.duration,
                         imageUrl = imageUrl,
                         description = exData.exercise.detail
                     )
