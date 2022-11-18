@@ -244,9 +244,10 @@ fun ExploreScreen(
                                 onNavigateToViewRoutine = onNavigateToViewRoutine,
                                 onGetMoreRoutines = {
                                     exploreViewModel.setCategoryViewMore(index)
+                                    exploreViewModel.getMoreRoutines(category.id)
                                     onNavigateToViewMore()
                                 },
-                                isLastPage = category.routines.size < exploreViewModel.routinePageSize,
+                                isLastPage = category.isLastPage && (category.routines.size <= exploreViewModel.routinePageSize),
                                 noRoutinesMessage = stringResource(R.string.no_routines_category),
                                 wantsList = (state.viewPreference == PreferencesManager.ViewPreference.LIST)
                             )

@@ -35,7 +35,7 @@ class ExploreViewModel(
 
     private var routinesJob: Job? = null
 
-    val routinePageSize = 2
+    val routinePageSize = 4
 
     init {
         getViewPreference()
