@@ -113,6 +113,14 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
         uiState = uiState.copy(finished = true)
     }
 
+    fun showTTS() {
+        uiState = uiState.copy(tts = true)
+    }
+
+    fun hideTTS() {
+        uiState = uiState.copy(tts = false)
+    }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {

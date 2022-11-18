@@ -338,8 +338,8 @@ fun RegisterForm(
         Button(
             onClick = { onSubmit(username, email, firstname, lastname, password, confirmPassword) },
             modifier = Modifier
-                .fillMaxWidth(0.9F)
-                .height(60.dp)
+                .fillMaxWidth(0.8F)
+                .height(50.dp)
         ) {
             if (uiState.apiState.status == ApiStatus.LOADING) {
                 Column(

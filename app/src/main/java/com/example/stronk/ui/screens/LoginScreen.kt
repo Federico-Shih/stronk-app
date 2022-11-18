@@ -168,8 +168,8 @@ fun LoginScreen(
                 }
             },
             modifier = Modifier
-                .fillMaxWidth(0.9F)
-                .height(60.dp)
+                .fillMaxWidth(0.8F)
+                .height(50.dp)
                 .animateContentSize()
         ) {
             if (uiState.apiState.status == ApiStatus.LOADING) {

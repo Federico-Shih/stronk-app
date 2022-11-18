@@ -40,8 +40,10 @@ fun MyRoutinesScreen(
                         ) else state.myRoutines,
                     title = stringResource(R.string.MyRoutines),
                     onNavigateToViewRoutine = onNavigateToViewRoutine,
-                    onGetMoreRoutines = { onNavigateToViewMore("myroutines") },
-                    isLastPage = state.myRoutines.size < myRoutinesViewModel.myRoutinesPageSize,
+                    onGetMoreRoutines = {
+                        myRoutinesViewModel.moreMyRoutines()
+                        onNavigateToViewMore("myroutines") },
+                    isLastPage = state.isLastPageMyRoutines && (state.myRoutines.size<= myRoutinesViewModel.myRoutinesPageSize),
                     noRoutinesMessage = stringResource(id = R.string.no_my_routines),
                     wantsList = state.viewPreference == PreferencesManager.ViewPreference.LIST
                 )
@@ -54,8 +56,10 @@ fun MyRoutinesScreen(
                         ) else state.favouriteRoutines,
                     title = stringResource(R.string.FavRoutines),
                     onNavigateToViewRoutine = onNavigateToViewRoutine,
-                    onGetMoreRoutines = { onNavigateToViewMore("favourites") },
-                    isLastPage = state.favouriteRoutines.size < myRoutinesViewModel.favoritePageSize,
+                    onGetMoreRoutines = {
+                        myRoutinesViewModel.moreFavouriteRoutines()
+                        onNavigateToViewMore("favourites") },
+                    isLastPage = state.isLastPageFav && (state.favouriteRoutines.size <= myRoutinesViewModel.favoritePageSize),
                     noRoutinesMessage = stringResource(id = R.string.no_fav_routines),
                     wantsList = state.viewPreference == PreferencesManager.ViewPreference.LIST
                 )

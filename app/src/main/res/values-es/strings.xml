@@ -79,7 +79,7 @@
     <string name="share_link">Compartir Enlace</string>
     <string name="show_qr_code">Mostrar Código QR</string>
     <string name="unknown_error_message">Unknown error</string>
-    <string name="register_label">Registrate en Stronk!</string>
+    <string name="register_label">Regístrate en Stronk!</string>
     <string name="empty_input">Obligatorio</string>
     <string name="pass_no_match">Contraseñas no coinciden</string>
     <string name="email_username_taken_err">Email o nombre de usuario tomado</string>
@@ -115,5 +115,7 @@
     <string name="email_not_verified">Correo Electrónico No Verificado</string>
     <string name="forbidden">Solicitud Prohibida</string>
     <string name="order_and_filters">Orden y Filtros</string>
+    <string name="listening">Escuchando...</string>
+    <string name="speech_recognition_not_available">Servicio de Reconocimiento de Voz no disponible</string>
 
 </resources>
