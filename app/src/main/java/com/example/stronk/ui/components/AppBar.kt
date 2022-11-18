@@ -36,7 +36,11 @@ fun AppBar(
         backgroundColor = MaterialTheme.colors.primary,
         contentColor = MaterialTheme.colors.onPrimary,
     ) {
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Row(horizontalArrangement = Arrangement.Start) {
                 if (canGoBack) {
                     IconButton(onClick = goBack) {
@@ -57,6 +61,28 @@ fun AppBar(
             }
 
             TopRightButtons(onGetViewModel, navigateTo)
+        }
+    }
+}
+
+@Composable
+fun NavigationRailBar(
+    modifier: Modifier = Modifier,
+    onNavClick: (route: String) -> Unit = {},
+    currentRoute: String,
+    screenList: List<MainScreens>
+) {
+    NavigationRail {
+        screenList.forEach {
+            NavigationRailItem(
+                onClick = {
+                    onNavClick(it.name)
+                },
+                icon = { Icon(imageVector = it.icon, contentDescription = it.name) },
+                label = { Text(stringResource(id = it.label)) },
+                alwaysShowLabel = true,
+                selected = currentRoute == it.name,
+            )
         }
     }
 }

@@ -4,17 +4,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.stronk.state.ExploreState
 
 @Composable
-fun rememberWindowInfo():WindowInfo{
-    val config= LocalConfiguration.current
+fun rememberWindowInfo(): WindowInfo {
+    val config = LocalConfiguration.current
     return WindowInfo(
-        screenWidthInfo = when{
+        screenWidthInfo = when {
             config.screenWidthDp < 600 -> WindowInfo.WindowType.Compact
             config.screenWidthDp < 840 -> WindowInfo.WindowType.Medium
             else -> WindowInfo.WindowType.Expanded
         },
-        screenHeightInfo = when{
+        screenHeightInfo = when {
             config.screenHeightDp < 480 -> WindowInfo.WindowType.Compact
             config.screenHeightDp < 900 -> WindowInfo.WindowType.Medium
             else -> WindowInfo.WindowType.Expanded
@@ -25,14 +26,18 @@ fun rememberWindowInfo():WindowInfo{
 }
 
 data class WindowInfo(
-    val screenWidthInfo:WindowType,
-    val screenHeightInfo:WindowType,
-    val screenWidth:Dp,
+    val screenWidthInfo: WindowType,
+    val screenHeightInfo: WindowType,
+    val screenWidth: Dp,
     val screenHeight: Dp
-){
-    sealed class WindowType{
-        object Compact: WindowType()
-        object Medium: WindowType()
-        object Expanded: WindowType()
+) {
+    sealed class WindowType {
+        object Compact : WindowType()
+        object Medium : WindowType()
+        object Expanded : WindowType()
     }
 }
+
+val WindowInfo.isTablet: Boolean get() =
+    screenWidthInfo == WindowInfo.WindowType.Medium && screenHeightInfo == WindowInfo.WindowType.Expanded
+            || screenWidthInfo == WindowInfo.WindowType.Expanded && screenHeightInfo == WindowInfo.WindowType.Medium

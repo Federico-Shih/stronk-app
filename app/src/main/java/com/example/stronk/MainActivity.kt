@@ -28,8 +28,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.navigation.navDeepLink
-import com.example.stronk.ui.components.AppBar
-import com.example.stronk.ui.components.BottomBar
 import com.example.stronk.ui.screens.*
 import com.example.stronk.ui.theme.StronkTheme
 import com.google.accompanist.pager.ExperimentalPagerApi
@@ -37,8 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.example.stronk.model.*
-import com.example.stronk.ui.components.ProfileButton
-import com.example.stronk.ui.components.RoutineLayoutButton
+import com.example.stronk.ui.components.*
 
 @Composable
 fun MainNavbarButtons(
@@ -195,6 +192,7 @@ class MainActivity : ComponentActivity() {
 
             StronkTheme {
                 val scaffoldState: ScaffoldState = rememberScaffoldState()
+                val windowInfo = rememberWindowInfo()
                 Scaffold(topBar = {
                     if (!currentScreen.hidesTopNav) {
                         AppBar(screen = stringResource(id = currentScreen.label),
@@ -227,7 +225,7 @@ class MainActivity : ComponentActivity() {
                             })
                     }
                 }, bottomBar = {
-                    if (!currentScreen.hidesBottomNav) {
+                    if (!currentScreen.hidesBottomNav && !windowInfo.isTablet) {
                         BottomBar(
                             onNavClick = { name ->
                                 if (name != currentScreen.name) {
@@ -244,138 +242,169 @@ class MainActivity : ComponentActivity() {
                     }
                 }, scaffoldState = scaffoldState
                 ) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(bottom = it.calculateBottomPadding()),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                    ) {
-                        NavHost(
-                            navController = navController, startDestination = initialRoute.name
-                        ) {
-                            composable(route = MainScreens.EXPLORE.name) {
-                                ExploreScreen(
-                                    onNavigateToViewRoutine = { routineId ->
-                                        navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
-                                    },
-                                    exploreViewModel = exploreViewModel,
-                                    onNavigateToViewMore = {
-                                        navController.navigate("${MainScreens.VIEW_MORE.name}/explore")
-                                    }
-                                )
-                            }
-                            composable(route = MainScreens.ROUTINES.name) {
-                                MyRoutinesScreen(
-                                    onNavigateToViewRoutine = { routineId ->
-                                        navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
-                                    },
-                                    myRoutinesViewModel = myRoutinesViewModel,
-                                    onNavigateToViewMore = { type ->
-                                        navController.navigate("${MainScreens.VIEW_MORE.name}/$type")
-                                    }
-                                )
-                            }
-                            composable(
-                                route = "${MainScreens.VIEW_MORE.name}/{type}",
-                                arguments = listOf(navArgument("type") {
-                                    type = NavType.StringType
-                                })
-                            ) { backStackEntry ->
-                                val type =
-                                    backStackEntry.arguments?.getString("type") ?: "myroutines"
-                                ViewMoreScreen(
-                                    onNavigateToViewRoutine = { routineId ->
-                                        navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
-                                    },
-                                    exploreViewModel = if (type == "explore") exploreViewModel else null,
-                                    myRoutinesViewModel = if (type == "myroutines" || type == "favourites") myRoutinesViewModel else null,
-                                    isFavorite = type == "favourites"
-                                )
-                            }
-                            composable(
-                                route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
-                                deepLinks = listOf(navDeepLink {
-                                    uriPattern = "https://www.stronk.com/routines/{routineId}"
-                                    action = Intent.ACTION_VIEW
-                                }),
-                                arguments = listOf(navArgument("routineId") {
-                                    type = NavType.IntType
-                                })
-                            ) { backStackEntry ->
-                                ViewRoutineScreen(
-                                    routineId = backStackEntry.arguments?.getInt("routineId") ?: 0,
-                                    onNavigateToExecution = { routineId ->
-                                        navController.navigate("${MainScreens.EXECUTE.name}/$routineId")
-                                    },
-                                    viewRoutineViewModel = viewRoutineViewModel
-                                )
-                            }
-                            composable(
-                                route = MainScreens.VERIFY.name,
-                            ) {
-                                VerifyScreen(
-                                    onVerified = {
-                                        navController.navigate(MainScreens.ROUTINES.name) {
-                                            popUpTo(MainScreens.AUTH.name)
-                                        }
-                                    },
-                                    email = "",
-                                    scaffoldState = scaffoldState,
-                                    username = loginViewModel.uiState.username,
-                                    password = loginViewModel.uiState.password
-                                )
-                            }
-                            composable(
-                                route = "${MainScreens.VERIFY.name}/{email}",
-                                arguments = listOf(navArgument("email") {
-                                    type = NavType.StringType
-                                })
-                            ) { backStackEntry ->
-                                VerifyScreen(
-                                    onVerified = { navController.navigate(MainScreens.ROUTINES.name) },
-                                    email = backStackEntry.arguments?.getString("email") ?: "",
-                                    scaffoldState = scaffoldState,
-                                    username = registerViewModel.uiState.username,
-                                    password = registerViewModel.uiState.password,
-                                )
-                            }
-                            composable(
-                                route = "${MainScreens.EXECUTE.name}/{routineId}",
-                                arguments = listOf(navArgument("routineId") {
-                                    type = NavType.IntType
-                                })
-                            ) { backStackEntry ->
-                                ExecuteRoutineScreen(
-                                    routineId = backStackEntry.arguments?.getInt("routineId") ?: 0,
-                                    onGoBack = {
-                                        navController.popBackStack()
-                                    },
-                                )
-                            }
-                            composable(
-                                route = MainScreens.AUTH.name
-                            ) {
-                                LoginScreen(
-                                    onSubmit = { username, password ->
-                                        loginViewModel.login(username, password)
-                                    },
-                                    dismissMessage = {
-                                        loginViewModel.dismissMessage()
-                                    },
-                                    uiState = loginViewModel.uiState,
-                                    scaffoldState = scaffoldState,
-                                    navigateToVerify = { navController.navigate(MainScreens.VERIFY.name) },
-                                    navigateToRegister = {
-                                        navController.navigate(MainScreens.REGISTER.name) {
-                                            popUpTo(MainScreens.AUTH.name) {
+                    Row {
+                        if (windowInfo.isTablet) {
+                            NavigationRailBar(
+                                onNavClick = { name ->
+                                    if (name != currentScreen.name) {
+                                        navController.navigate(name) {
+                                            popUpTo(name) {
                                                 inclusive = true
                                             }
                                         }
                                     }
+                                },
+                                currentRoute = currentScreen.name,
+                                screenList = bottomBarScreens.toList()
+                            )
+                        }
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .padding(bottom = it.calculateBottomPadding()),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                        ) {
+                            NavHost(
+                                navController = navController, startDestination = initialRoute.name
+                            ) {
+                                composable(route = MainScreens.EXPLORE.name) {
+                                    ExploreScreen(
+                                        onNavigateToViewRoutine = { routineId ->
+                                            navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+                                        },
+                                        exploreViewModel = exploreViewModel,
+                                        onNavigateToViewMore = {
+                                            navController.navigate("${MainScreens.VIEW_MORE.name}/explore")
+                                        }
+                                    )
+                                }
+                                composable(route = MainScreens.ROUTINES.name) {
+                                    MyRoutinesScreen(
+                                        onNavigateToViewRoutine = { routineId ->
+                                            navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+                                        },
+                                        myRoutinesViewModel = myRoutinesViewModel,
+                                        onNavigateToViewMore = { type ->
+                                            navController.navigate("${MainScreens.VIEW_MORE.name}/$type")
+                                        }
+                                    )
+                                }
+                                composable(
+                                    route = "${MainScreens.VIEW_MORE.name}/{type}",
+                                    arguments = listOf(navArgument("type") {
+                                        type = NavType.StringType
+                                    })
+                                ) { backStackEntry ->
+                                    val type =
+                                        backStackEntry.arguments?.getString("type") ?: "myroutines"
+                                    ViewMoreScreen(
+                                        onNavigateToViewRoutine = { routineId ->
+                                            navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId")
+                                        },
+                                        exploreViewModel = if (type == "explore") exploreViewModel else null,
+                                        myRoutinesViewModel = if (type == "myroutines" || type == "favourites") myRoutinesViewModel else null,
+                                        isFavorite = type == "favourites"
+                                    )
+                                }
+                                composable(
+                                    route = "${MainScreens.VIEW_ROUTINE.name}/{routineId}",
+                                    deepLinks = listOf(navDeepLink {
+                                        uriPattern = "https://www.stronk.com/routines/{routineId}"
+                                        action = Intent.ACTION_VIEW
+                                    }),
+                                    arguments = listOf(navArgument("routineId") {
+                                        type = NavType.IntType
+                                    })
+                                ) { backStackEntry ->
+                                    ViewRoutineScreen(
+                                        routineId = backStackEntry.arguments?.getInt("routineId")
+                                            ?: 0,
+                                        onNavigateToExecution = { routineId ->
+                                            navController.navigate("${MainScreens.EXECUTE.name}/$routineId")
+                                        },
+                                        viewRoutineViewModel = viewRoutineViewModel
+                                    )
+                                }
+                                composable(
+                                    route = MainScreens.VERIFY.name,
                                 ) {
-                                    if (mainViewModel.uiState.apiState.status == null) {
-                                        if (mainViewModel.forceFetchUser()) {
-                                            mainViewModel.clearUiState()
+                                    VerifyScreen(
+                                        onVerified = {
+                                            navController.navigate(MainScreens.ROUTINES.name) {
+                                                popUpTo(MainScreens.AUTH.name)
+                                            }
+                                        },
+                                        email = "",
+                                        scaffoldState = scaffoldState,
+                                        username = loginViewModel.uiState.username,
+                                        password = loginViewModel.uiState.password
+                                    )
+                                }
+                                composable(
+                                    route = "${MainScreens.VERIFY.name}/{email}",
+                                    arguments = listOf(navArgument("email") {
+                                        type = NavType.StringType
+                                    })
+                                ) { backStackEntry ->
+                                    VerifyScreen(
+                                        onVerified = { navController.navigate(MainScreens.ROUTINES.name) },
+                                        email = backStackEntry.arguments?.getString("email") ?: "",
+                                        scaffoldState = scaffoldState,
+                                        username = registerViewModel.uiState.username,
+                                        password = registerViewModel.uiState.password,
+                                    )
+                                }
+                                composable(
+                                    route = "${MainScreens.EXECUTE.name}/{routineId}",
+                                    arguments = listOf(navArgument("routineId") {
+                                        type = NavType.IntType
+                                    })
+                                ) { backStackEntry ->
+                                    ExecuteRoutineScreen(
+                                        routineId = backStackEntry.arguments?.getInt("routineId")
+                                            ?: 0,
+                                        onGoBack = {
+                                            navController.popBackStack()
+                                        },
+                                        executeViewModel = executeViewModel
+                                    )
+                                }
+                                composable(
+                                    route = MainScreens.AUTH.name
+                                ) {
+                                    LoginScreen(
+                                        onSubmit = { username, password ->
+                                            loginViewModel.login(username, password)
+                                        },
+                                        dismissMessage = {
+                                            loginViewModel.dismissMessage()
+                                        },
+                                        uiState = loginViewModel.uiState,
+                                        scaffoldState = scaffoldState,
+                                        navigateToVerify = { navController.navigate(MainScreens.VERIFY.name) },
+                                        navigateToRegister = {
+                                            navController.navigate(MainScreens.REGISTER.name) {
+                                                popUpTo(MainScreens.AUTH.name) {
+                                                    inclusive = true
+                                                }
+                                            }
+                                        }
+                                    ) {
+                                        if (mainViewModel.uiState.apiState.status == null) {
+                                            if (mainViewModel.forceFetchUser()) {
+                                                mainViewModel.clearUiState()
+                                                mainViewModel.fetchCurrentUser()
+                                                myRoutinesViewModel.forceFetchRoutines()
+                                                navController.navigate(MainScreens.EXPLORE.name) {
+                                                    popUpTo(MainScreens.AUTH.name) {
+                                                        inclusive = true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    LaunchedEffect(loginViewModel.uiState.apiState.status) {
+                                        if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
                                             mainViewModel.fetchCurrentUser()
                                             myRoutinesViewModel.forceFetchRoutines()
                                             navController.navigate(MainScreens.EXPLORE.name) {
@@ -383,73 +412,62 @@ class MainActivity : ComponentActivity() {
                                                     inclusive = true
                                                 }
                                             }
+                                            loginViewModel.clearUiState()
                                         }
                                     }
                                 }
-                                LaunchedEffect(loginViewModel.uiState.apiState.status) {
-                                    if (loginViewModel.uiState.apiState.status == ApiStatus.SUCCESS) {
-                                        mainViewModel.fetchCurrentUser()
-                                        myRoutinesViewModel.forceFetchRoutines()
-                                        navController.navigate(MainScreens.EXPLORE.name) {
-                                            popUpTo(MainScreens.AUTH.name) {
+                                composable(
+                                    route = MainScreens.QR_SCANNER.name
+                                ) {
+                                    ScanQrScreen(onNavigateToViewRoutine = { routineId ->
+                                        navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId") {
+                                            popUpTo(MainScreens.EXPLORE.name) {
                                                 inclusive = true
                                             }
                                         }
-                                        loginViewModel.clearUiState()
-                                    }
+                                    })
+                                }
+                                composable(
+                                    route = MainScreens.REGISTER.name
+                                ) {
+                                    RegisterScreen(
+                                        onSubmit = { email ->
+                                            navController.navigate("${MainScreens.VERIFY.name}/$email")
+                                        },
+                                        scaffoldState = scaffoldState,
+                                        navigateToLogin = { navController.navigate(MainScreens.AUTH.name) },
+                                        viewModel = registerViewModel
+                                    )
                                 }
                             }
-                            composable(
-                                route = MainScreens.QR_SCANNER.name
-                            ) {
-                                ScanQrScreen(onNavigateToViewRoutine = { routineId ->
-                                    navController.navigate("${MainScreens.VIEW_ROUTINE.name}/$routineId") {
-                                        popUpTo(MainScreens.EXPLORE.name) {
-                                            inclusive = true
-                                        }
-                                    }
-                                })
-                            }
-                            composable(
-                                route = MainScreens.REGISTER.name
-                            ) {
-                                RegisterScreen(
-                                    onSubmit = { email ->
-                                        navController.navigate("${MainScreens.VERIFY.name}/$email")
-                                    },
-                                    scaffoldState = scaffoldState,
-                                    navigateToLogin = { navController.navigate(MainScreens.AUTH.name) },
-                                    viewModel = registerViewModel
-                                )
-                            }
-                        }
-                        if (showConfirmExitDialog) {
-                            Dialog(onDismissRequest = { showConfirmExitDialog = false }) {
-                                Card(
-                                    backgroundColor = MaterialTheme.colors.background,
-                                    contentColor = MaterialTheme.colors.onBackground,
-                                ) {
-                                    Column(modifier = Modifier.padding(16.dp)) {
-                                        Text(
-                                            text = stringResource(id = R.string.exit_confirmation),
-                                            style = MaterialTheme.typography.h6,
-                                            modifier = Modifier.padding(bottom = 10.dp)
-                                        )
-                                        Row(
-                                            horizontalArrangement = Arrangement.End,
-                                            modifier = Modifier.fillMaxWidth()
-                                        ) {
-                                            Button(
-                                                onClick = { showConfirmExitDialog = false },
-                                                modifier = Modifier.padding(end = 10.dp)
+                            if (showConfirmExitDialog) {
+                                Dialog(onDismissRequest = { showConfirmExitDialog = false }) {
+                                    Card(
+                                        backgroundColor = MaterialTheme.colors.background,
+                                        contentColor = MaterialTheme.colors.onBackground,
+                                    ) {
+                                        Column(modifier = Modifier.padding(16.dp)) {
+                                            Text(
+                                                text = stringResource(id = R.string.exit_confirmation),
+                                                style = MaterialTheme.typography.h6,
+                                                modifier = Modifier.padding(bottom = 10.dp)
+                                            )
+                                            Row(
+                                                horizontalArrangement = Arrangement.End,
+                                                modifier = Modifier.fillMaxWidth()
                                             ) {
-                                                Text(text = stringResource(id = R.string.cancel).uppercase())
-                                            }
-                                            Button(onClick = {
-                                                showConfirmExitDialog = false
-                                                navController.popBackStack()
-                                            }) {
-                                                Text(text = stringResource(id = R.string.exit).uppercase())
+                                                Button(
+                                                    onClick = { showConfirmExitDialog = false },
+                                                    modifier = Modifier.padding(end = 10.dp)
+                                                ) {
+                                                    Text(text = stringResource(id = R.string.cancel).uppercase())
+                                                }
+                                                Button(onClick = {
+                                                    showConfirmExitDialog = false
+                                                    navController.popBackStack()
+                                                }) {
+                                                    Text(text = stringResource(id = R.string.exit).uppercase())
+                                                }
                                             }
                                         }
                                     }
