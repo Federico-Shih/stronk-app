@@ -58,15 +58,15 @@ class RoutineRepository(private val remoteDataSource: RoutineDataSource) {
             val content = exercises.content.sortedBy { exercise -> exercise.order }
             for (exData in content) {
                 val images = getExerciseImages(exData.exercise.id)
-                var imageUrl: String? = null // TODO: Poner imagen default
+                var imageUrl: String? = null
                 if (images.content.isNotEmpty()) {
                     imageUrl = images.content[0].url
                 }
                 exerciseInfo.add(
                     ExInfo(
                         name = exData.exercise.name,
-                        reps = exData.repetitions,
-                        duration = exData.duration,
+                        reps = if(exData.repetitions == 999) null else exData.repetitions ,
+                        duration = if(exData.duration == 999) null else exData.duration,
                         imageUrl = imageUrl,
                         description = exData.exercise.detail
                     )

@@ -104,7 +104,7 @@ fun RoutineButtonGrid(
                             val current = routineList[i]
                             RoutineButton(
                                 RoutineID = current.id,
-                                //TODO cambiar dependiendo de las categorías
+
                                 RoutineImageID = getResourceIdRoutineImage(
                                     category = current.category,
                                     routineId = current.id
@@ -125,7 +125,6 @@ fun RoutineButtonGrid(
                                 val current = routineList[i + 1]
                                 RoutineButton(
                                     RoutineID = current.id,
-                                    //TODO cambiar dependiendo de las categorías
                                     RoutineImageID = getResourceIdRoutineImage(
                                         category = current.category,
                                         routineId = current.id
