@@ -14,10 +14,3 @@ enum class ApiErrorCode(val code: Int) {
     CONNECTION_ERROR(98),
     UNEXPECTED_ERROR(99)
 }
-
-/*
-    companion object  {
-        const val CONNECTION_ERROR_CODE = 98
-        const val UNEXPECTED_ERROR_CODE = 99
-    }
- */

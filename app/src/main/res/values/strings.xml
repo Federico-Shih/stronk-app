@@ -103,5 +103,15 @@
     <string name="criteria">Criteria</string>
     <string name="apply">Apply</string>
     <string name="no_routines_category">There are no routines in this category</string>
+    <string name="unexpected_error">Unexpected Error</string>
+    <string name="invalid_data">Invalid Data</string>
+    <string name="data_constraint">Data Constraint</string>
+    <string name="not_found">Not Found</string>
+    <string name="invalid_user_pass">Invalid username or password</string>
+    <string name="db_error">Database Error</string>
+    <string name="invalid_req">Invalid Request</string>
+    <string name="unauthorized">Unauthorized</string>
+    <string name="email_not_verified">Email Not Verified</string>
+    <string name="forbidden">Forbidden Request</string>
 
 </resources>

@@ -104,5 +104,15 @@
     <string name="criteria">Criterio</string>
     <string name="apply">Aplicar</string>
     <string name="no_routines_category">No hay rutinas en esta categoria</string>
+    <string name="unexpected_error">Error Inesperado</string>
+    <string name="invalid_data">Datos Inválidos</string>
+    <string name="data_constraint">Restricción de Datos</string>
+    <string name="not_found">No Encotrado</string>
+    <string name="invalid_user_pass">Nombre de Usuario o Contraseña Inválidos</string>
+    <string name="db_error">Error en la Base de Datos</string>
+    <string name="invalid_req">Solicitud Inválida</string>
+    <string name="unauthorized">No Autorizado</string>
+    <string name="email_not_verified">Correo Electrónico No Verificado</string>
+    <string name="forbidden">Solicitud Prohibida</string>
 
 </resources>

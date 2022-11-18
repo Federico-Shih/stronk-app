@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.network.ApiErrorCode
+import com.example.stronk.network.DataSourceException
 import com.example.stronk.network.PreferencesManager
 import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.MyRoutinesState
@@ -118,13 +120,18 @@ class MyRoutinesViewModel(
                 myRoutinesPage = 1,
                 isLastPageMyRoutines = routines.isLastPage
             )
-        }.onFailure { e ->
-            uiState = uiState.copy(
-                loadState = ApiState(
-                    ApiStatus.FAILURE,
-                    "Falló el fetch de myRoutines ${e.message}"
+        }.onFailure { error ->
+            uiState = if (error is DataSourceException) {
+                uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "", error.code))
+            } else {
+                uiState.copy(
+                    loadState = ApiState(
+                        ApiStatus.FAILURE,
+                        "",
+                        ApiErrorCode.UNEXPECTED_ERROR.code
+                    )
                 )
-            )
+            }
             return
         }
         runCatching {
@@ -136,13 +143,18 @@ class MyRoutinesViewModel(
                 isLastPageFav = routines.isLastPage,
                 loadState = ApiState(ApiStatus.SUCCESS)
             )
-        }.onFailure { e ->
-            uiState = uiState.copy(
-                loadState = ApiState(
-                    ApiStatus.FAILURE,
-                    "Falló el fetch de Favorites ${e.message}"
+        }.onFailure { error ->
+            uiState = if (error is DataSourceException) {
+                uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "", error.code))
+            } else {
+                uiState.copy(
+                    loadState = ApiState(
+                        ApiStatus.FAILURE,
+                        "",
+                        ApiErrorCode.UNEXPECTED_ERROR.code
+                    )
                 )
-            )
+            }
         }
     }
 

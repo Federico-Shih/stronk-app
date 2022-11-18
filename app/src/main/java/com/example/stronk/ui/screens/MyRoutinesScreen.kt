@@ -25,12 +25,13 @@ fun MyRoutinesScreen(
     val state = myRoutinesViewModel.uiState
 
     Refreshable(refreshFunction = { myRoutinesViewModel.forceFetchRoutines() }) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-        ) {
-            LoadDependingContent(loadState = state.loadState) {
+
+        LoadDependingContent(loadState = state.loadState) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+            ) {
                 RoutineButtonGroup(
                     routineList = if (state.myRoutines.size > myRoutinesViewModel.myRoutinesPageSize)
                         state.myRoutines.subList(

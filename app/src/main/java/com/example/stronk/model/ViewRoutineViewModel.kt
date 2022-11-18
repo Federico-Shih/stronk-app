@@ -13,6 +13,8 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
 import com.example.stronk.misc.QrCodeGenerator
+import com.example.stronk.network.ApiErrorCode
+import com.example.stronk.network.DataSourceException
 import com.example.stronk.network.dtos.RatingDTO
 import com.example.stronk.network.repositories.RoutineRepository
 import com.example.stronk.state.*
@@ -25,7 +27,16 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
 
     fun initialize() {
         uiState = uiState.copy(
-            routine = Routine(0, "", "", Date(0), 0, "", UserRoutine(0, "", "", Date(0)), Category(0,"",null)),
+            routine = Routine(
+                0,
+                "",
+                "",
+                Date(0),
+                0,
+                "",
+                UserRoutine(0, "", "", Date(0)),
+                Category(0, "", null)
+            ),
             loadState = ApiState(ApiStatus.LOADING, ""),
             cycles = listOf(),
             faved = false,
@@ -37,12 +48,10 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
         runCatching {
             runCatching {
                 routineRepository.getRoutine(routineId)
-            }.onSuccess {
-                    routineData ->
+            }.onSuccess { routineData ->
                 runCatching {
                     routineRepository.getRoutineCycles(routineData.id)
-                }.onSuccess {
-                        cycles ->
+                }.onSuccess { cycles ->
                     uiState = uiState.copy(routine = routineData.asModel(), cycles = cycles)
                 }.onFailure {
                     throw it
@@ -52,20 +61,29 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
             }
             runCatching {
                 routineRepository.getAllFavouriteRoutines()
-            }.onSuccess {
-                    favourites ->
+            }.onSuccess { favourites ->
                 if (favourites.any { favourite -> favourite.id == routineId }) {
                     uiState = uiState.copy(faved = true)
                 }
             }
         }.onSuccess {
             uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS, "OK"))
-        }.onFailure {
-            uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, it.message ?: "Unknown error"))
+        }.onFailure { error ->
+            uiState = if (error is DataSourceException) {
+                uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "", error.code))
+            } else {
+                uiState.copy(
+                    loadState = ApiState(
+                        ApiStatus.FAILURE,
+                        "",
+                        ApiErrorCode.UNEXPECTED_ERROR.code
+                    )
+                )
+            }
         }
     }
 
-    fun fetchRoutine(routineId: Int) : Boolean {
+    fun fetchRoutine(routineId: Int): Boolean {
         viewModelScope.launch {
             forceFetchRoutine(routineId)
         }
@@ -82,8 +100,18 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
                 }
             }.onSuccess {
                 uiState = uiState.copy(faved = !uiState.faved)
-            }.onFailure {
-                uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, message = it.message ?: "Unknown error"))
+            }.onFailure { error ->
+                uiState = if (error is DataSourceException) {
+                    uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "", error.code))
+                } else {
+                    uiState.copy(
+                        loadState = ApiState(
+                            ApiStatus.FAILURE,
+                            "",
+                            ApiErrorCode.UNEXPECTED_ERROR.code
+                        )
+                    )
+                }
             }
         }
     }
@@ -95,8 +123,18 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
                 routineRepository.rateRoutine(uiState.routine.id, RatingDTO(rating))
             }.onSuccess {
                 uiState = uiState.copy(loadState = ApiState(ApiStatus.SUCCESS))
-            }.onFailure {
-                uiState = uiState.copy(loadState = ApiState(ApiStatus.FAILURE, it.message ?: "Unknown error"))
+            }.onFailure { error ->
+                uiState = if (error is DataSourceException) {
+                    uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "", error.code))
+                } else {
+                    uiState.copy(
+                        loadState = ApiState(
+                            ApiStatus.FAILURE,
+                            "",
+                            ApiErrorCode.UNEXPECTED_ERROR.code
+                        )
+                    )
+                }
             }
         }
     }
@@ -126,10 +164,12 @@ class ViewRoutineViewModel(private val routineRepository: RoutineRepository) : V
     fun hideRatingDialog() {
         uiState = uiState.copy(showRatingDialog = false)
     }
+
     companion object {
         val Factory: ViewModelProvider.Factory = viewModelFactory {
             initializer {
-                val application = (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
+                val application =
+                    (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as StronkApplication)
                 ViewRoutineViewModel(application.routineRepository)
             }
         }

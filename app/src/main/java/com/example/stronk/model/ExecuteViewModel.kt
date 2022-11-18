@@ -9,11 +9,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.stronk.StronkApplication
+import com.example.stronk.network.ApiErrorCode
+import com.example.stronk.network.DataSourceException
 import com.example.stronk.network.repositories.RoutineRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -22,7 +25,7 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
     var uiState by mutableStateOf(ExecuteRoutineState())
     var fetchJob: Job? = null
 
-    fun executeRoutine(id: Int) : Boolean {
+    fun executeRoutine(id: Int): Boolean {
         uiState = uiState.copy(loadState = ApiState(ApiStatus.LOADING))
         fetchJob?.cancel()
         fetchJob = viewModelScope.launch {
@@ -36,17 +39,26 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                     routineRepository.getRoutineCycles(id)
                 }.onSuccess { cycles ->
                     val firstNonEmptyCycle = cycles.indexOfFirst { it.exList.isNotEmpty() }
-                    uiState = uiState.copy(cycles = cycles, loadState = ApiState(ApiStatus.SUCCESS), cycleIndex = firstNonEmptyCycle)
+                    uiState = uiState.copy(
+                        cycles = cycles,
+                        loadState = ApiState(ApiStatus.SUCCESS),
+                        cycleIndex = firstNonEmptyCycle
+                    )
                 }.onFailure {
                     throw it
                 }
-            }.onFailure {
-                uiState = uiState.copy(
-                    loadState = ApiState(
-                        ApiStatus.FAILURE,
-                        it.message ?: "Unknown Error"
+            }.onFailure { error ->
+                uiState = if (error is DataSourceException) {
+                    uiState.copy(loadState = ApiState(ApiStatus.FAILURE, "", error.code))
+                } else {
+                    uiState.copy(
+                        loadState = ApiState(
+                            ApiStatus.FAILURE,
+                            "",
+                            ApiErrorCode.UNEXPECTED_ERROR.code
+                        )
                     )
-                )
+                }
             }
         }
         return true
@@ -67,7 +79,10 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                     uiState.copy(
                         exerciseIndex = 0,
                         cycleRepetition = 0,
-                        cycleIndex = uiState.cycles.subList(uiState.cycleIndex + 1, uiState.cycles.size).indexOfFirst { it.exList.isNotEmpty() } + uiState.cycleIndex + 1
+                        cycleIndex = uiState.cycles.subList(
+                            uiState.cycleIndex + 1,
+                            uiState.cycles.size
+                        ).indexOfFirst { it.exList.isNotEmpty() } + uiState.cycleIndex + 1
                     )
                 }
         }
@@ -83,7 +98,8 @@ class ExecuteViewModel(private val routineRepository: RoutineRepository) : ViewM
                     cycleRepetition = uiState.cycleRepetition - 1
                 )
             } else {
-                val prevCycleIndex = uiState.cycles.subList(0, uiState.cycleIndex).indexOfLast { it.exList.isNotEmpty() }
+                val prevCycleIndex = uiState.cycles.subList(0, uiState.cycleIndex)
+                    .indexOfLast { it.exList.isNotEmpty() }
                 uiState.copy(
                     exerciseIndex = uiState.cycles[prevCycleIndex].exList.size - 1,
                     cycleRepetition = uiState.cycles[prevCycleIndex].cycleReps - 1,
