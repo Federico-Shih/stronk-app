@@ -195,7 +195,10 @@ class MainActivity : ComponentActivity() {
                 val windowInfo = rememberWindowInfo()
                 Scaffold(topBar = {
                     if (!currentScreen.hidesTopNav) {
-                        AppBar(screen = stringResource(id = currentScreen.label),
+                        AppBar(screen = when (currentScreen.name) {
+                            MainScreens.EXECUTE.name -> executeViewModel.uiState.executingRoutine?.name ?: ""
+                                                                  else -> stringResource(id = currentScreen.label)
+                                                                  },
                             canGoBack = currentScreen !in bottomBarScreens,
                             goBack = {
                                 if (!currentScreen.confirmationOnExit) {

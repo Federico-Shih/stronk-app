@@ -1,6 +1,8 @@
 package com.example.stronk.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -29,7 +31,9 @@ fun Refreshable(
         ::refresh
     )
     Box(Modifier.pullRefresh(pullRefreshState)) {
-        content()
+        Column(modifier = Modifier.wrapContentSize()) {
+            content()
+        }
         PullRefreshIndicator(
             refreshing = refreshing, state = pullRefreshState, Modifier.align(
                 Alignment.TopCenter

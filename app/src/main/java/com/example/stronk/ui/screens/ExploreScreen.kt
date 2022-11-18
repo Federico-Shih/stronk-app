@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,6 +26,7 @@ import com.example.stronk.state.foundSomething
 import com.example.stronk.state.searching
 import com.example.stronk.state.*
 import com.example.stronk.ui.components.*
+import kotlinx.coroutines.launch
 
 @Composable
 fun ExploreScreen(
@@ -33,30 +35,35 @@ fun ExploreScreen(
     onNavigateToViewMore: () -> Unit,
 ) {
     val state = exploreViewModel.uiState
-
+    val scrollState = rememberScrollState()
+    val coroutine = rememberCoroutineScope()
     Refreshable(refreshFunction = { exploreViewModel.refresh() }) {
-        LoadDependingContent(loadState = state.loadState) {
-            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                ) {
-                    SearchBar(
-                        label = stringResource(id = R.string.search_for_routines),
-                        onValueChanged = { s -> exploreViewModel.searchRoutines(s) })
-
-                    IconButton(
-                        onClick = { exploreViewModel.showFilterMenu() }, modifier = Modifier
-                            .align(Alignment.CenterVertically)
-                            .size(70.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Filled.FilterList,
-                            contentDescription = stringResource(id = R.string.filter)
-                        )
-                    }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(10.dp)
+        ) {
+            SearchBar(
+                label = stringResource(id = R.string.search_for_routines),
+                onValueChanged = { s ->
+                    exploreViewModel.searchRoutines(s)
+                    coroutine.launch {
+                    scrollState.scrollTo(0)
                 }
+                })
+            IconButton(
+                onClick = { exploreViewModel.showFilterMenu() }, modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .size(70.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.FilterList,
+                    contentDescription = stringResource(id = R.string.filter)
+                )
+            }
+        }
+        LoadDependingContent(loadState = state.loadState) {
+            Column(modifier = Modifier.verticalScroll(scrollState)) {
                 if (state.showFilters) {
                     Dialog(onDismissRequest = { exploreViewModel.hideFilterMenu() }) {
                         Card(backgroundColor = MaterialTheme.colors.background) {
