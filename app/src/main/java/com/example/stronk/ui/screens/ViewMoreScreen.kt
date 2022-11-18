@@ -10,7 +10,9 @@ import com.example.stronk.R
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.model.MyRoutinesViewModel
 import com.example.stronk.network.PreferencesManager
+import com.example.stronk.state.Category
 import com.example.stronk.state.CategoryInfo
+import com.example.stronk.state.nameStringResourceId
 import com.example.stronk.ui.components.LoadDependingContent
 import com.example.stronk.ui.components.RoutineButtonGroup
 
@@ -29,7 +31,7 @@ fun ViewMoreScreen(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 RoutineButtonGroup(
                     routineList = category.routines,
-                    title = category.name,
+                    title = stringResource(id = (Category(0,category.name,null).nameStringResourceId)),
                     onNavigateToViewRoutine = onNavigateToViewRoutine,
                     onGetMoreRoutines = { exploreViewModel.getMoreRoutines(category.id) },
                     isLastPage = category.isLastPage,
