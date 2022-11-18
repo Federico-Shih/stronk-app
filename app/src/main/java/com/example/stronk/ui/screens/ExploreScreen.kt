@@ -12,14 +12,9 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.example.stronk.MainScreens
 import com.example.stronk.R
 import com.example.stronk.model.ExploreViewModel
 import com.example.stronk.network.PreferencesManager
@@ -42,7 +37,8 @@ fun ExploreScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(10.dp)
+                .padding(10.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             SearchBar(
                 label = stringResource(id = R.string.search_for_routines),
@@ -52,14 +48,19 @@ fun ExploreScreen(
                     scrollState.scrollTo(0)
                 }
                 })
-            IconButton(
+            Button(
                 onClick = { exploreViewModel.showFilterMenu() }, modifier = Modifier
                     .align(Alignment.CenterVertically)
-                    .size(70.dp)
+                    .padding(start = 8.dp, top = 6.dp),
+                colors = ButtonDefaults.buttonColors(backgroundColor = if(state.isNotDefault) MaterialTheme.colors.primary else MaterialTheme.colors.background),
+                elevation = ButtonDefaults.elevation(0.dp)
+
             ) {
                 Icon(
                     imageVector = Icons.Filled.FilterList,
-                    contentDescription = stringResource(id = R.string.filter)
+                    modifier = Modifier.size(24.dp),
+                    contentDescription = stringResource(id = R.string.filter),
+                    tint = if(state.isNotDefault) MaterialTheme.colors.onPrimary else MaterialTheme.colors.onBackground
                 )
             }
         }
@@ -127,7 +128,7 @@ fun ExploreScreen(
                                                     "date"
                                                 )
                                             }),
-                                        selectedIndex = state.filterIndex
+                                        selectedIndex = state.orderIndex
                                     )
                                     OrderBy(
                                         title = stringResource(id = R.string.direction),

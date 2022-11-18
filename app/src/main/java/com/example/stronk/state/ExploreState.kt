@@ -26,12 +26,13 @@ data class ExploreState(
     val categoryViewMore: Int? = null
 )
 
-val listForFilterIndex: List<String> = listOf("id", "name", "score", "difficulty", "date")
+val listForOrderIndex: List<String> = listOf("id", "name", "score", "difficulty", "date")
 val listForDifficulty: List<String> = listOf("beginner", "intermediate", "advanced")
 
 val ExploreState.searching: Boolean get() = searchString.isNotEmpty()
 val ExploreState.foundSomething: Boolean get() = searchedRoutines.isNotEmpty()
 val ExploreState.scoreFilteringIndex: Int get() =  if(scoreFilter==null) 0 else scoreFilter+1
 val ExploreState.directionIndex: Int get() = if(ascOrDesc=="asc") 0 else 1
-val ExploreState.filterIndex: Int get() = listForFilterIndex.indexOf(order)
+val ExploreState.orderIndex: Int get() = listForOrderIndex.indexOf(order)
 val ExploreState.difficultyIndex: Int get() = if(difficultyFilter==null){0} else {listForDifficulty.indexOf(difficultyFilter)+1}
+val ExploreState.isNotDefault: Boolean get() = difficultyFilter!=null || scoreFilter!=null || order!="id" || ascOrDesc!="asc"

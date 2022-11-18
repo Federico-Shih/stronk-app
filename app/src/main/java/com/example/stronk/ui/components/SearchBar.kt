@@ -24,7 +24,7 @@ fun SearchBar(
 
     OutlinedTextField(
         modifier = modifier
-            .fillMaxWidth(.85f),
+            .fillMaxWidth(.8f),
         value = text.value,
         onValueChange = {
             text.value = it
