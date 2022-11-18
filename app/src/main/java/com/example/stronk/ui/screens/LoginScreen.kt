@@ -168,8 +168,8 @@ fun LoginScreen(
                 }
             },
             modifier = Modifier
-                .fillMaxWidth(0.9F)
-                .height(60.dp)
+                .fillMaxWidth(0.8F)
+                .height(50.dp)
                 .animateContentSize()
         ) {
             if (uiState.apiState.status == ApiStatus.LOADING) {
@@ -180,7 +180,7 @@ fun LoginScreen(
                     CircularProgressIndicator(color = Color.White)
                 }
             } else {
-                Text(stringResource(id = R.string.login_button_label), fontSize = 20.sp)
+                Text(stringResource(id = R.string.login_button_label).uppercase(), fontSize = 20.sp)
             }
         }
 

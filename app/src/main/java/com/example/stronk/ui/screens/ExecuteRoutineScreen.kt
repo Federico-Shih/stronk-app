@@ -72,9 +72,7 @@ fun ExecuteRoutineScreen(
         rememberLauncherForActivityResult(contract = ActivityResultContracts.RequestPermission()) { result ->
             hasPermission = result
         }
-    LaunchedEffect(true) {
-        requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
-    }
+
 
     val speechRecognizerDialogLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.StartActivityForResult()
@@ -94,7 +92,7 @@ fun ExecuteRoutineScreen(
             }
         }
     }
-    //
+    // ----
 
     val pagerState = rememberPagerState(pageCount = 2)
 
@@ -154,10 +152,13 @@ fun ExecuteRoutineScreen(
         Column {
             Tabs(pagerState = pagerState)
             if (state.tts) {
+                LaunchedEffect(true) {
+                    requestPermissionLauncher.launch(Manifest.permission.RECORD_AUDIO)
+                }
                 if (!SpeechRecognizer.isRecognitionAvailable(context)) {
                     Toast.makeText(
                         context,
-                        "What? We can't hear you"/*cambiar*/,
+                        stringResource(id = R.string.speech_recognition_not_available),
                         Toast.LENGTH_LONG
                     ).show()
                 } else {
@@ -170,7 +171,7 @@ fun ExecuteRoutineScreen(
                         RecognizerIntent.EXTRA_LANGUAGE,
                         java.util.Locale.getDefault()
                     )
-                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "this is a prompt")
+                    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, stringResource(id = R.string.listening))
                     speechRecognizerDialogLauncher.launch(intent)
                 }
                 executeViewModel.hideTTS()

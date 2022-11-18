@@ -131,12 +131,12 @@ fun ExploreScreen(
                                     )
                                     OrderBy(
                                         title = stringResource(id = R.string.direction),
-                                        optionsList = listOf(Pair("asc") {
+                                        optionsList = listOf(Pair(stringResource(id = R.string.asc)) {
                                             exploreViewModel.setAscOrDescAndReload(
                                                 "asc"
                                             )
                                         },
-                                            Pair("desc") { exploreViewModel.setAscOrDescAndReload("desc") }),
+                                            Pair(stringResource(id = R.string.desc)) { exploreViewModel.setAscOrDescAndReload("desc") }),
                                         selectedIndex = state.directionIndex
                                     )
                                     Divider(modifier = Modifier.padding(vertical = 10.dp))
